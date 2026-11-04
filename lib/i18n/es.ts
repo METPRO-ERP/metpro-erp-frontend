@@ -265,6 +265,7 @@ export const es = {
     textoLabel: "Texto de la portada",
     camposTitulo: "Insertar campo",
     camposNota: "Los campos se llenan automáticamente al generar el PDF.",
+    notaOpcional: "El texto entre [[ y ]] solo aparece si la cotización tiene nota; si no, la frase termina en punto. Con la nota en la portada, la sección «Notas» del final del PDF no se repite.",
     campos: {
       Client: "Cliente",
       Contact_Name: "Contacto",
@@ -272,6 +273,7 @@ export const es = {
       Date: "Fecha",
       No_Cotizacion: "No. de cotización",
       No_Factura: "No. de factura",
+      Note: "Nota de la cotización",
     } as Record<string, string>,
     estructuraFija: "El logo, «Preparado para», «Preparado por» y la fecha se colocan automáticamente.",
     mostrar: "Mostrar la portada como página 1 en los PDF",
@@ -327,7 +329,7 @@ export const es = {
   pdf: {
     mostrarProductos: "Mostrar productos en el PDF",
     mostrarProductosAyuda: "Si lo desmarca, el PDF muestra solo el proyecto, los cargos y los totales. Los totales no cambian.",
-    medidas: "Medidas",
+    medidas: "Unidad",
     medidasPlaceholder: "Unidad, Ft, M2…",
   },
   historial: {

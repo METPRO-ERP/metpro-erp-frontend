@@ -173,6 +173,7 @@ export default function EncabezadoPage() {
             ))}
           </div>
           <p className="mt-1 text-xs text-muted">{t.camposNota}</p>
+          {settings.fields[tab].includes("Note") && <p className="mt-1 text-xs text-muted">{t.notaOpcional}</p>}
         </div>
 
         <label htmlFor="portada-texto" className="mb-1 block text-sm font-medium text-ink">
