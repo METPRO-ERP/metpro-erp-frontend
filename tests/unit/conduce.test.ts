@@ -51,6 +51,10 @@ describe("conduce form", () => {
     expect(b.ok).toBe(false);
     if (!b.ok) expect(Object.keys(b.errors)).toEqual(["1"]);
   });
+  it("ignores a stale entry on a line that became fully delivered", () => {
+    const b = buildLines(lines, { 1: "4", 2: "3", 3: "10" });
+    expect(b).toEqual({ ok: true, lines: [{ quote_item_id: 1, quantity: 4 }, { quote_item_id: 3, quantity: 10 }] });
+  });
   it("an all-empty form is flagged as empty", () => {
     const b = buildLines(lines, { 1: "", 3: "0" });
     expect(b).toEqual({ ok: false, errors: {}, empty: true });

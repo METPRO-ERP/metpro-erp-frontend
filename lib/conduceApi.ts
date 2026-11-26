@@ -143,6 +143,7 @@ export function buildLines(lines: DeliveryLine[], entries: Record<number, string
   const errors: Record<number, string> = {};
   const out: ConduceLineInput[] = [];
   for (const l of lines) {
+    if (l.pending <= 0) continue; // finished line: it has no input, so a stale entry must not count
     const c = checkQty(entries[l.quote_item_id] ?? "", l.pending);
     if (!c.ok) errors[l.quote_item_id] = c.error;
     else if (c.value !== null) out.push({ quote_item_id: l.quote_item_id, quantity: c.value });

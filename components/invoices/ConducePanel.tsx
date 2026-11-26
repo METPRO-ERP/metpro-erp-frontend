@@ -283,8 +283,8 @@ export default function ConducePanel({ invoiceId, isAdmin }: Props) {
               {formError}
             </p>
           )}
-          <p className="text-xs text-muted">{c.resumen(Object.values(entries).filter((v) => v.trim() !== "").length)}</p>
-          <div className="flex flex-wrap gap-2">
+          <p className="text-xs text-muted">{c.resumen(view.lines.filter((l) => l.pending > 0 && (entries[l.quote_item_id] ?? "").trim() !== "").length)}</p>
+          <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap [&>button]:w-full sm:[&>button]:w-auto">
             <Button onClick={submit} disabled={saving}>{saving ? c.creando : c.crear}</Button>
             <Button variant="outline" onClick={() => setEntries(defaultEntries(view.lines))} disabled={saving}>
               {c.entregarPendiente}
@@ -310,7 +310,7 @@ export default function ConducePanel({ invoiceId, isAdmin }: Props) {
                   </span>
                 )}
               </p>
-              <div className="flex gap-2">
+              <div className="flex flex-wrap gap-2">
                 <Button variant="outline" onClick={() => setPdfRow(r)}>{c.verPdf}</Button>
                 {isAdmin && !r.voided && (
                   <Button variant="outline" onClick={() => { setVoidId(r.id); setVoidReason(""); setVoidError(null); }}>
