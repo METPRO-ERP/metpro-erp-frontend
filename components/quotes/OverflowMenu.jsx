@@ -13,6 +13,7 @@ export default function OverflowMenu({
   onApprove,
   onReject,
   onConvertToInvoice,
+  onOpenPhases,
   canManage = true,
 }) {
   const [isOpen, setIsOpen] = useState(false)
@@ -104,6 +105,18 @@ export default function OverflowMenu({
                 className='w-full text-left px-4 py-2 hover:bg-canvas flex items-center gap-2 text-accent-strong'
               >
                 <span>{es.cot.convertir}</span>
+              </button>
+            )}
+
+            {onOpenPhases && canManage && (quote.status === 'Approved' || quote.status === 'Invoiced') && (
+              <button
+                onClick={() => {
+                  onOpenPhases()
+                  setIsOpen(false)
+                }}
+                className='w-full text-left px-4 py-2 hover:bg-canvas flex items-center gap-2'
+              >
+                <span>{es.facturacion.fases.abrir}</span>
               </button>
             )}
 

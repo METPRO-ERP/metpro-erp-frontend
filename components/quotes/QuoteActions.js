@@ -184,13 +184,16 @@ export async function editQuote(quoteId, token, payload) {
 /**
  * Convert quote to invoice
  */
-export async function convertToInvoice(quoteId, token) {
+export async function convertToInvoice(quoteId, token, billingMode) {
   try {
     const url = API_URL + "/quotes/" + quoteId + "/convert-to-invoice";
-    const response = await safeFetch(url, {
+    // billingMode is sent only when the phased mode was chosen. Without it the request is exactly what it was before.
+    const init = {
       method: "POST",
       headers: getHeaders(token, true),
-    });
+    };
+    if (billingMode) init.body = JSON.stringify({ billing_mode: billingMode });
+    const response = await safeFetch(url, init);
 
     await handleResponse(response);
     const data = unwrapEnvelope(await response.json());

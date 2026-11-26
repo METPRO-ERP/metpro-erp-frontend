@@ -14,6 +14,7 @@ import { useCurrentRole } from "@/lib/currentRole";
 import FullCopyButton from "@/components/FullCopyButton";
 import ProjectExpensesTab from "@/components/projects/ProjectExpensesTab";
 import ProjectCostTab from "@/components/projects/ProjectCostTab";
+import PhaseAggregateBlock from "@/components/projects/PhaseAggregateBlock";
 
 const t = es.proyectos;
 const inputClass =
@@ -191,6 +192,7 @@ export default function ProyectoDetallePage() {
               )}
             </dd>
           </div>
+          {proyecto.quote_id ? <PhaseAggregateBlock quoteId={proyecto.quote_id} /> : null}
           <div>
             <dt className="text-muted">{t.factura}</dt>
             <dd className="font-medium">

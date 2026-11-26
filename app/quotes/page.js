@@ -15,6 +15,9 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { getQuoteOptions } from '@/lib/quotingApi'
 import DuplicateQuoteModal from '@/components/quotes/DuplicateQuoteModal'
+import ConvertModeModal from '@/components/quotes/ConvertModeModal'
+import PhasePanel from '@/components/quotes/PhasePanel'
+import { getPhaseOptions } from '@/lib/billingApi'
 import { mergeQuotesWithInvoices, filterQuotesByStatus } from '@/components/quotes/quoteUtils'
 import { PageHeader } from "@/components/ui/page-header";
 import { Button } from "@/components/ui/button";
@@ -52,6 +55,17 @@ export default function QuotesPage() {
   useEffect(() => {
     getQuoteOptions().then((o) => setDupChangeEnabled(o.duplicate_change_client_enabled))
   }, [])
+
+  // Phased invoicing: the mode choice and the phase panel exist only when the backend says so. Fails closed.
+  const [phasedOn, setPhasedOn] = useState(false)
+  const [modeChoice, setModeChoice] = useState(null)   // quote_id waiting for the FULL / PHASED choice
+  const [phaseQuote, setPhaseQuote] = useState(null)   // quote_id whose phase panel is open
+  useEffect(() => {
+    if (!isAdmin) return
+    let active = true
+    getPhaseOptions().then((o) => { if (active) setPhasedOn(o.phased_enabled) })
+    return () => { active = false }
+  }, [isAdmin])
 
   const [loadError, setLoadError] = useState(null)
   const [quotes, setQuotes] = useState([])
@@ -215,10 +229,32 @@ export default function QuotesPage() {
   }
 
   async function handleConvertToInvoice(quoteId) {
+    if (phasedOn) {   // switches on: ask FULL or PHASED first. Switches off: exactly the old path below.
+      setModeChoice(quoteId)
+      return
+    }
+    return convertFull(quoteId)
+  }
+
+  async function startPhased(quoteId) {
+    setModeChoice(null)
+    try {
+      await convertToInvoice(quoteId, token, 'PHASED')
+      toast.success(es.facturacion.fases.exitoModo)
+      fetchQuotes()
+      setPhaseQuote(quoteId)
+    } catch (error) {
+      toast.error(es.cot.errorConversion + error.message)
+    }
+  }
+
+  async function convertFull(quoteId) {
     if (!confirm(es.cot.confirmarConvertir(quoteLabel(quoteId)))) return
     try {
       const data = await convertToInvoice(quoteId, token)
       toast.success(es.cot.exitoConversion(data.invoice_number ?? data.invoice_id))
+      if (data.ncf_warning?.expiry) toast(es.fiscal.ncf.aviso.vence)
+      if (data.ncf_warning?.exhaustion) toast(es.fiscal.ncf.aviso.agota)
       fetchQuotes()
       fetchInvoices()
     } catch (error) {
@@ -334,6 +370,7 @@ export default function QuotesPage() {
             }
           }}
           onConvertToInvoice={handleConvertToInvoice}
+          onOpenPhases={phasedOn ? (id) => setPhaseQuote(id) : undefined}
           onViewInvoice={handleViewInvoice}
           canManage={canManage}
           sentMap={sentMap}
@@ -342,6 +379,23 @@ export default function QuotesPage() {
         />
       )}
     </div>
+
+    {modeChoice && (
+      <ConvertModeModal
+        quoteLabel={quoteLabel(modeChoice)}
+        onFull={() => { const id = modeChoice; setModeChoice(null); convertFull(id) }}
+        onPhased={() => startPhased(modeChoice)}
+        onCancel={() => setModeChoice(null)}
+      />
+    )}
+    {phaseQuote && (
+      <PhasePanel
+        quoteId={phaseQuote}
+        quoteLabel={quoteLabel(phaseQuote)}
+        onClose={() => setPhaseQuote(null)}
+        onChanged={() => { fetchQuotes(); fetchInvoices() }}
+      />
+    )}
 
     <PDFPreviewModal
       isOpen={previewModal.isOpen}

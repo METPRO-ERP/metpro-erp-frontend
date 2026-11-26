@@ -23,6 +23,7 @@ export default function QuoteTable({
   onApprove,
   onReject,
   onConvertToInvoice,
+  onOpenPhases,
   onViewInvoice,
   canManage = true,
   sentMap,
@@ -109,6 +110,7 @@ export default function QuoteTable({
                   onApprove={() => onApprove(quote.quote_id)}
                   onReject={onReject ? () => onReject(quote.quote_id) : undefined}
                   onConvertToInvoice={() => onConvertToInvoice(quote.quote_id)}
+                  onOpenPhases={onOpenPhases ? () => onOpenPhases(quote.quote_id) : undefined}
                   canManage={canManage}
                 />
               </div>
