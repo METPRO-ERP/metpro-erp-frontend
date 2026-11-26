@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { fmtDay } from "@/lib/dates"
 import { money } from "@/lib/money"
+import { ncfDisplay } from "@/lib/invoiceNcf"
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { fetchInvoiceWithPayments, voidPayment, correctPayment, fetchPaymentOptions } from "@/lib/invoiceApi";
@@ -45,6 +46,8 @@ interface Invoice {
   amount_paid: number;
   amount_due: number;
   created_by_name?: string | null;
+  ncf?: string | null;
+  ncf_valid_until?: string | null;
   payments: Payment[];
   items?: InvoiceLine[];
   payments_error?: string | null;
@@ -180,6 +183,7 @@ export default function InvoiceDetailPage() {
   }
 
   const lines = invoice.items ?? [];
+  const ncf = ncfDisplay(invoice);
 
   const payments = invoice.payments ?? [];
 
@@ -212,6 +216,20 @@ export default function InvoiceDetailPage() {
             <p className="text-muted">Creado por</p>
             <p className="font-medium">{invoice.created_by_name || "—"}</p>
           </div>
+
+          {ncf && (
+            <div>
+              <p className="text-muted">NCF</p>
+              <p className="font-medium">{ncf.ncf}</p>
+            </div>
+          )}
+
+          {ncf?.validUntil && (
+            <div>
+              <p className="text-muted">Vence NCF</p>
+              <p className="font-medium">{ncf.validUntil}</p>
+            </div>
+          )}
         </div>
 
         <div className="mb-6">
