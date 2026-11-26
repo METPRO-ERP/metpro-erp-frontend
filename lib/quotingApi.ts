@@ -272,6 +272,8 @@ export interface DraftUpdateInput {
   project_name?: string | null;
   notes?: string | null;
   payment_terms?: string | null;
+  /** B1: sent only when changed (null = cleared). */
+  valid_until?: string | null; // YYYY-MM-DD
   items: QuoteLineInput[];
   included_charges: IncludedCharges;
   print_items?: boolean;

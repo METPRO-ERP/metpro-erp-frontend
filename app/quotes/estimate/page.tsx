@@ -10,6 +10,8 @@ import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useCurrentRole } from "@/lib/currentRole";
 import { formatMoney } from "@/lib/takeOffLines";
+import { termsForGenerate, validUntilIsPast } from "@/lib/quoteTerms";
+import { businessToday } from "@/lib/dates";
 import { takeOffInputClass, TotalRow } from "@/components/quotes/takeoff/LineCard";
 import { ParityPanel } from "@/components/quotes/estimate/ParityPanel";
 import {
@@ -71,6 +73,8 @@ export default function EstimatePage() {
   const [contactId, setContactId] = useState("");
   const [project, setProject] = useState("");
   const [notes, setNotes] = useState("");
+  const [paymentTerms, setPaymentTerms] = useState("");
+  const [validUntil, setValidUntil] = useState("");
 
   const [form, setForm] = useState<EstimateForm>(DEFAULT_FORM);
   const [drafts, setDrafts] = useState<OverrideDrafts>({});
@@ -98,7 +102,7 @@ export default function EstimatePage() {
   const idemKey = useRef<string>("");
   useEffect(() => {
     idemKey.current = crypto.randomUUID(); // new key whenever the content changes
-  }, [requestKey, clientId, contactId, project, notes]);
+  }, [requestKey, clientId, contactId, project, notes, paymentTerms, validUntil]);
 
   useEffect(() => {
     if (roleLoading || !isAdmin) return;
@@ -163,6 +167,7 @@ export default function EstimatePage() {
         contact_id: Number(contactId),
         project_name: project.trim() || null,
         notes: notes.trim() || null,
+        ...termsForGenerate({ paymentTerms, validUntil }),
       });
       router.push(`/quotes/${r.quote_id}/edit`);
     } catch (e) {
@@ -222,6 +227,17 @@ export default function EstimatePage() {
           <label className="block text-sm">
             <span className="mb-1 block font-medium text-ink">{es.est.notas}</span>
             <input className={takeOffInputClass} value={notes} onChange={(e) => setNotes(e.target.value)} />
+          </label>
+          <label className="block text-sm">
+            <span className="mb-1 block font-medium text-ink">{es.est.terminosPago}</span>
+            <input className={takeOffInputClass} value={paymentTerms} onChange={(e) => setPaymentTerms(e.target.value)} placeholder={es.cot.terminosPago} />
+          </label>
+          <label className="block text-sm">
+            <span className="mb-1 block font-medium text-ink">{es.est.validaHasta}</span>
+            <input type="date" className={takeOffInputClass} value={validUntil} min={businessToday()} onChange={(e) => setValidUntil(e.target.value)} />
+            {validUntilIsPast(null, validUntil, businessToday()) ? (
+              <span className="mt-1 block text-xs text-amber-700" role="status">{es.est.validaPasada}</span>
+            ) : null}
           </label>
         </div>
       </section>

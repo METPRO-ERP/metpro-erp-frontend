@@ -7,6 +7,8 @@ import { Suspense, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { api } from "@/lib/api";
+import { businessToday } from "@/lib/dates";
+import { normDay, termsForUpdate, validUntilIsPast } from "@/lib/quoteTerms";
 import {
   finalizeQuote,
   getQuote,
@@ -108,6 +110,7 @@ function DraftEditor() {
   const [projectName, setProjectName] = useState("");
   const [notes, setNotes] = useState("");
   const [paymentTerms, setPaymentTerms] = useState("");
+  const [validUntil, setValidUntil] = useState("");
   const [printItems, setPrintItems] = useState(true);
   // Tax type of this quote (A1). Changeable while Draft; the backend stores the snapshot on save.
   const { taxTypes } = useTaxTypes();
@@ -180,6 +183,7 @@ function DraftEditor() {
     setProjectName(q.project_name ?? "");
     setNotes(q.notes ?? "");
     setPaymentTerms(q.payment_terms ?? "");
+    setValidUntil(normDay(q.valid_until));
     setPrintItems(q.print_items !== false);
     setTaxTypeCode(q.tax_type_code ?? "");
     setSavedSnapshot(
@@ -187,6 +191,7 @@ function DraftEditor() {
         project_name: q.project_name ?? "",
         notes: q.notes ?? "",
         payment_terms: q.payment_terms ?? "",
+        valid_until: normDay(q.valid_until),
         print_items: q.print_items !== false,
         tax_type_code: q.tax_type_code ?? "",
         lines: loadedLines,
@@ -250,12 +255,13 @@ function DraftEditor() {
       project_name: projectName,
       notes,
       payment_terms: paymentTerms,
+      valid_until: normDay(validUntil),
       print_items: printItems,
       tax_type_code: taxTypeCode,
       lines,
       charges: charges ?? DEFAULT_INCLUDED_CHARGES,
     }),
-    [projectName, notes, paymentTerms, printItems, taxTypeCode, lines, charges]
+    [projectName, notes, paymentTerms, validUntil, printItems, taxTypeCode, lines, charges]
   );
   const dirty = savedSnapshot !== "" && snapshotOf(payload) !== savedSnapshot;
   const includedCount = lines.filter((l) => l.include).length;
@@ -301,7 +307,7 @@ function DraftEditor() {
       const updated = await updateDraftQuote(quoteId, {
         project_name: projectName.trim() || null,
         notes: notes.trim() || null,
-        payment_terms: paymentTerms.trim() || null,
+        ...termsForUpdate(quote?.valid_until, { paymentTerms, validUntil }),
         items: toQuoteItems(lines),
         included_charges: charges,
         print_items: printItems,
@@ -497,14 +503,29 @@ function DraftEditor() {
               className={takeOffInputClass}
               aria-label={es.cot.notas}
             />
-            <input
-              type="text"
-              value={paymentTerms}
-              onChange={(e) => setPaymentTerms(e.target.value)}
-              placeholder={es.cot.terminosPago}
-              className={takeOffInputClass}
-              aria-label={es.cot.terminosPago}
-            />
+            <label className="block text-sm">
+              <span className="mb-1 block font-medium text-ink">{es.cot.terminosPago}</span>
+              <input
+                type="text"
+                value={paymentTerms}
+                onChange={(e) => setPaymentTerms(e.target.value)}
+                placeholder={es.cot.terminosPago}
+                className={takeOffInputClass}
+              />
+            </label>
+            <label className="block text-sm">
+              <span className="mb-1 block font-medium text-ink">{es.cot.validaHasta}</span>
+              <input
+                type="date"
+                value={validUntil}
+                min={businessToday()}
+                onChange={(e) => setValidUntil(e.target.value)}
+                className={takeOffInputClass}
+              />
+              {validUntilIsPast(quote?.valid_until, validUntil, businessToday()) ? (
+                <span className="mt-1 block text-xs text-amber-700" role="status">{es.cot.validaPasada}</span>
+              ) : null}
+            </label>
             <PrintItemsToggle
               checked={printItems}
               onChange={(v) => {
@@ -590,6 +611,7 @@ function snapshotOf(p: {
   project_name: string;
   notes: string;
   payment_terms: string;
+  valid_until: string;
   print_items: boolean;
   tax_type_code: string;
   lines: TakeOffLine[];
@@ -599,6 +621,7 @@ function snapshotOf(p: {
     project_name: p.project_name.trim(),
     notes: p.notes.trim(),
     payment_terms: p.payment_terms.trim(),
+    valid_until: p.valid_until,
     print_items: p.print_items,
     tax_type_code: p.tax_type_code,
     items: toQuoteItems(p.lines),

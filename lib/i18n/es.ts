@@ -581,6 +581,8 @@ export const es = {
     nombreProyecto: "Nombre del proyecto",
     notas: "Notas",
     terminosPago: "Términos de pago",
+    validaHasta: "Válida hasta",
+    validaPasada: "Esa fecha ya pasó. La cotización quedaría vencida.",
     guardando: "Guardando…",
     finalizar: "Finalizar cotización",
     incluyaUno: "Incluya al menos un artículo para finalizar.",
@@ -705,6 +707,9 @@ export const es = {
   },
   // Estimado de ingeniería (admin). Medidas en metros: supuesto, no confirmado (D29).
   est: {
+    terminosPago: "Términos de pago",
+    validaHasta: "Válida hasta",
+    validaPasada: "Esa fecha ya pasó. La cotización quedaría vencida.",
     boton: "Estimado de ingeniería",
     titulo: "Estimado de ingeniería",
     subtitulo: "Calcula las cantidades de una nave y crea una cotización en borrador.",

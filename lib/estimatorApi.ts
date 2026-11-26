@@ -43,6 +43,9 @@ export interface GeneratePayload extends EstimateInputsPayload {
   contact_id: number;
   project_name?: string | null;
   notes?: string | null;
+  /** B1: optional. Left out when empty. */
+  payment_terms?: string;
+  valid_until?: string; // YYYY-MM-DD
 }
 
 export interface EstimateLine {

@@ -209,7 +209,7 @@ export default function QuotePublicView() {
             )}
             {quote.valid_until && (
               <div>
-                <span className="font-semibold">Válido hasta:</span> {fmtDay(quote.valid_until)}
+                <span className="font-semibold">{es.cot.validaHasta}:</span> {fmtDay(quote.valid_until)}
               </div>
             )}
             {quote.payment_terms && (
