@@ -1,4 +1,5 @@
 import { es } from "@/lib/i18n/es";
+import { Button } from "@/components/ui/button";
 export default function DeleteQuoteModal({ isOpen, onClose, onConfirm, quoteId, quoteLabel, quoteStatus }) {
   if (!isOpen) return null
 
@@ -33,18 +34,18 @@ export default function DeleteQuoteModal({ isOpen, onClose, onConfirm, quoteId, 
           )}
 
           <div className='flex gap-3 justify-end'>
-            <button
+            <Button
               onClick={onClose}
-              className='px-4 py-2 border border-line rounded-lg hover:bg-canvas'
+              variant='outline'
             >
               {es.cot.cancelar}
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={onConfirm}
-              className='px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700'
+              variant='destructive'
             >
               {es.cot.eliminar}
-            </button>
+            </Button>
           </div>
         </div>
       </div>

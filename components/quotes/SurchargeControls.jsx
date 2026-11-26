@@ -1,4 +1,5 @@
 import { es } from "@/lib/i18n/es";
+import { Button } from "@/components/ui/button";
 export default function SurchargeControls({ charges, setCharges }) {
   const handleToggle = (field) => {
     setCharges({ ...charges, [field]: !charges[field] })
@@ -191,13 +192,13 @@ export default function SurchargeControls({ charges, setCharges }) {
                     step='0.1'
                   />
                   <span className='text-sm'>%</span>
-                  <button
+                  <Button
                     type='button'
                     onClick={() => handleRemoveDynamicCharge(index)}
-                    className='text-red-600 hover:text-red-700 text-sm font-bold'
+                    variant='ghost' size='icon' aria-label={es.comun.eliminar}
                   >
                     ×
-                  </button>
+                  </Button>
                 </div>
               ))}
             </div>
@@ -207,13 +208,13 @@ export default function SurchargeControls({ charges, setCharges }) {
 
       {/* Add Dynamic Charge Button */}
       {dynamicCharges.length < 3 && (
-        <button
+        <Button
           type='button'
           onClick={handleAddDynamicCharge}
-          className='mt-3 w-full text-sm text-accent hover:text-accent-strong py-1 border border-dashed border-accent rounded'
+          variant='outline' size='sm' className='mt-3 w-full border-dashed text-accent hover:text-accent-strong'
         >
           {es.cot.agregarCargo}
-        </button>
+        </Button>
       )}
     </div>
   )

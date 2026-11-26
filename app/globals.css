@@ -61,3 +61,19 @@ button[title="Select from product database"] {
   min-width: 60px !important;
   z-index: 10 !important;
 }
+
+/* C1a: invisible 44px tap zone for buttons. Below 768px and on touch devices only.
+   Nothing is added on desktop with a mouse. The visible size does not change.
+   Adjacent buttons below md need at least 12px between them so zones do not overlap. */
+@media (max-width: 767px), (pointer: coarse) {
+  /* The element must be positioned (the Button base class sets relative; callers may use absolute). */
+  .hit-44::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: max(100%, 44px);
+    height: max(100%, 44px);
+    transform: translate(-50%, -50%);
+  }
+}

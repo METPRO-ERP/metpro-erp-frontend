@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { api } from "@/lib/api";
 import { PageHeader } from "@/components/ui/page-header";
 import { useCurrentRole } from "@/lib/currentRole";
+import { Button, buttonVariants } from "@/components/ui/button";
 
 // Matches the backend rule (users/models.py MIN_PASSWORD_LENGTH).
 const MIN_PASSWORD_LENGTH = 8;
@@ -100,16 +101,16 @@ export default function CreateUserPage() {
         )}
 
         <div className="flex justify-end gap-3">
-          <Link href="/users" className="px-4 py-2 text-sm text-muted hover:underline">
+          <Link href="/users" className={buttonVariants({ variant: "ghost", size: "sm" })}>
             {es.usr.cancelar}
           </Link>
-          <button
+          <Button
             type="submit"
             disabled={saving}
-            className="rounded bg-accent px-4 py-2 text-sm text-white hover:bg-accent-strong disabled:opacity-50"
+            variant="default"
           >
             {saving ? es.usr.creando : es.usr.crear}
-          </button>
+          </Button>
         </div>
       </form>
     </div>

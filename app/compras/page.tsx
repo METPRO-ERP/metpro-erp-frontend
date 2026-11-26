@@ -6,7 +6,7 @@ import type { Route } from "next";
 import toast from "react-hot-toast";
 import { es } from "@/lib/i18n/es";
 import { dt } from "@/components/ui/data-table";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { PageHeader } from "@/components/ui/page-header";
 import ErrorBanner from "@/components/ui/ErrorBanner";
 import { useCurrentRole } from "@/lib/currentRole";
@@ -98,8 +98,8 @@ export default function ComprasPage() {
         }
       />
       <div className="mb-4 flex gap-2 border-b" role="tablist">
-        <button role="tab" aria-selected={!showPo} onClick={() => setTab("rfq")} className={`px-3 py-2 text-sm font-medium ${!showPo ? "border-b-2 border-accent" : "text-muted"}`}>RFQ</button>
-        {poOn && <button role="tab" aria-selected={showPo} onClick={() => setTab("po")} className={`px-3 py-2 text-sm font-medium ${showPo ? "border-b-2 border-accent" : "text-muted"}`}>{tp.pestana}</button>}
+        <button role="tab" aria-selected={!showPo} onClick={() => setTab("rfq")} className={`min-h-11 md:min-h-0 px-3 py-2 text-sm font-medium ${!showPo ? "border-b-2 border-accent" : "text-muted"}`}>RFQ</button>
+        {poOn && <button role="tab" aria-selected={showPo} onClick={() => setTab("po")} className={`min-h-11 md:min-h-0 px-3 py-2 text-sm font-medium ${showPo ? "border-b-2 border-accent" : "text-muted"}`}>{tp.pestana}</button>}
       </div>
       <ErrorBanner message={error} onRetry={reload} />
       {showPo ? (
@@ -126,9 +126,9 @@ export default function ComprasPage() {
                   <td className={dt.td}>{PO_STATUS[p.status] ?? p.status}</td>
                   <td className={dt.tdRight}>
                     <div className="flex justify-end gap-2">
-                      <Link href={`/compras/po/${p.id}` as Route} className="rounded px-2 py-1 text-accent hover:bg-accent/10">{p.status === "Draft" ? t.editar : t.ver}</Link>
-                      <button onClick={() => downloadPoPdf(p.id, p.label).catch((e) => toast.error(t.errorPdf + errMsg(e)))} className="rounded px-2 py-1 text-accent hover:bg-accent/10">PDF</button>
-                      {p.status === "Draft" && <button onClick={() => removePo(p)} className="rounded px-2 py-1 text-red-600 hover:bg-red-50">{t.eliminar}</button>}
+                      <Link href={`/compras/po/${p.id}` as Route} className={buttonVariants({ variant: "ghost", size: "sm", className: "text-accent hover:bg-accent/10 hover:text-accent-strong" })}>{p.status === "Draft" ? t.editar : t.ver}</Link>
+                      <Button onClick={() => downloadPoPdf(p.id, p.label).catch((e) => toast.error(t.errorPdf + errMsg(e)))} variant="ghost" size="sm" className="text-accent hover:bg-accent/10 hover:text-accent-strong">PDF</Button>
+                      {p.status === "Draft" && <Button onClick={() => removePo(p)} variant="ghost" size="sm" className="text-red-600 hover:bg-red-50 hover:text-red-700">{t.eliminar}</Button>}
                     </div>
                   </td>
                 </tr>
@@ -160,9 +160,9 @@ export default function ComprasPage() {
                   <td className={dt.td}>{STATUS[r.status] ?? r.status}</td>
                   <td className={dt.tdRight}>
                     <div className="flex justify-end gap-2">
-                      <Link href={`/compras/rfq/${r.id}` as Route} className="rounded px-2 py-1 text-accent hover:bg-accent/10">{r.status === "Draft" ? t.editar : t.ver}</Link>
-                      <button onClick={() => downloadRfqPdf(r.id, r.label).catch((e) => toast.error(t.errorPdf + errMsg(e)))} className="rounded px-2 py-1 text-accent hover:bg-accent/10">PDF</button>
-                      {r.status === "Draft" && <button onClick={() => remove(r)} className="rounded px-2 py-1 text-red-600 hover:bg-red-50">{t.eliminar}</button>}
+                      <Link href={`/compras/rfq/${r.id}` as Route} className={buttonVariants({ variant: "ghost", size: "sm", className: "text-accent hover:bg-accent/10 hover:text-accent-strong" })}>{r.status === "Draft" ? t.editar : t.ver}</Link>
+                      <Button onClick={() => downloadRfqPdf(r.id, r.label).catch((e) => toast.error(t.errorPdf + errMsg(e)))} variant="ghost" size="sm" className="text-accent hover:bg-accent/10 hover:text-accent-strong">PDF</Button>
+                      {r.status === "Draft" && <Button onClick={() => remove(r)} variant="ghost" size="sm" className="text-red-600 hover:bg-red-50 hover:text-red-700">{t.eliminar}</Button>}
                     </div>
                   </td>
                 </tr>

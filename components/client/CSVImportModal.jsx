@@ -147,7 +147,7 @@ export default function CSVImportModal({ isOpen, onClose, onImportComplete }) {
       <div className="bg-surface rounded-lg shadow-card w-full max-w-2xl max-h-[90vh] flex flex-col">
         <div className="flex items-center justify-between p-5 border-b">
           <h3 className="text-xl font-bold text-ink">{es.csv.titulo}</h3>
-          <button onClick={handleClose} className="text-muted hover:text-muted text-2xl leading-none">×</button>
+          <Button onClick={handleClose} variant="ghost" size="icon" aria-label={es.comun.cerrar}>×</Button>
         </div>
         
         <div className="p-6 overflow-y-auto flex-1">
@@ -307,7 +307,6 @@ export default function CSVImportModal({ isOpen, onClose, onImportComplete }) {
           {importResult ? (
             <Button
               onClick={handleClose}
-              className="px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent-strong"
             >
               {es.csv.cerrar}
             </Button>
@@ -317,18 +316,12 @@ export default function CSVImportModal({ isOpen, onClose, onImportComplete }) {
                 onClick={handleClose}
                 disabled={isUploading}
                 variant="outline"
-                className="px-4 py-2"
               >
                 {es.csv.cancelar}
               </Button>
               <Button
                 onClick={handleUpload}
                 disabled={!file || isUploading}
-                className={`px-4 py-2 ${
-                  !file || isUploading
-                    ? 'bg-line cursor-not-allowed'
-                    : 'bg-accent text-white hover:bg-accent-strong'
-                }`}
               >
                 {isUploading ? (
                   <span className="flex items-center justify-center">

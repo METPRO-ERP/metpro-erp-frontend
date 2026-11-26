@@ -1,5 +1,6 @@
 import { es } from "@/lib/i18n/es";
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
 
 // Mounted fresh on each open (parent renders it only while modalOpen),
 // so the form is initialised once from the contact being edited.
@@ -52,20 +53,20 @@ export default function ContactModal({ contact, onClose, onSubmit }) {
           />
 
           <div className="flex justify-end gap-3">
-            <button
+            <Button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 bg-line rounded"
+              variant="outline"
             >
               Cancelar
-            </button>
+            </Button>
 
-            <button
+            <Button
               type="submit"
-              className="px-4 py-2 bg-accent text-white rounded"
+              variant="default"
             >
               Guardar
-            </button>
+            </Button>
           </div>
         </form>
       </div>

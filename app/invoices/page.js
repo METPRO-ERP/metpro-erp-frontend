@@ -158,7 +158,7 @@ export default function InvoicesPage() {
                   </td>
 
                   <td className={dt.tdRight}>
-                    <div className="flex flex-wrap items-center justify-end gap-2">
+                    <div className="flex flex-wrap items-center justify-end gap-3">
                     {sentMap[inv.id] && <SentBadge />}
                     {inv.status !== "Cancelled" && ( // B-10: cancelled invoices cannot be emailed
                       <SendToClientButton

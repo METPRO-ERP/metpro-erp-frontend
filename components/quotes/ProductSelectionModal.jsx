@@ -1,6 +1,7 @@
 import { es } from "@/lib/i18n/es";
 import { money } from "@/lib/money"
 import { useState } from 'react'
+import { Button } from "@/components/ui/button";
 
 export default function ProductSelectionModal({ isOpen, onClose, onSelect, products }) {
   const [searchTerm, setSearchTerm] = useState('')
@@ -19,12 +20,12 @@ export default function ProductSelectionModal({ isOpen, onClose, onSelect, produ
         {/* HEADER */}
         <div className='flex items-center justify-between p-5 border-b'>
           <h3 className='text-xl font-bold text-ink'>{es.cot.selProductoTitulo}</h3>
-          <button
+          <Button
             onClick={onClose}
-            className='text-muted hover:text-muted text-2xl'
+            variant='ghost' size='icon' aria-label={es.comun.cerrar}
           >
             &times;
-          </button>
+          </Button>
         </div>
 
         {/* SEARCH BAR */}
@@ -82,12 +83,12 @@ export default function ProductSelectionModal({ isOpen, onClose, onSelect, produ
 
         {/* FOOTER */}
         <div className='p-4 border-t bg-canvas flex justify-end'>
-          <button
+          <Button
             onClick={onClose}
-            className='px-4 py-2 border border-line rounded-lg hover:bg-canvas'
+            variant='outline'
           >
             {es.cot.cancelar}
-          </button>
+          </Button>
         </div>
 
       </div>

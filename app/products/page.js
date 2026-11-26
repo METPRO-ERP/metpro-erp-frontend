@@ -389,20 +389,20 @@ const handleUpdateProduct = async (e) => {
 
                   <td className={dt.tdRight}>
                     <div className='flex justify-end gap-2'>
-                      <button
+                      <Button
                         onClick={() => setEditingProduct(product)}
-                        className='text-accent hover:text-accent-strong'
+                        variant='ghost' size='sm' className='text-accent hover:bg-accent/10 hover:text-accent-strong'
                       >
                         {es.prod.editarBoton}
-                      </button>
+                      </Button>
 
                       {isAdmin && (
-                        <button
+                        <Button
                           onClick={() => handleDeleteProduct(product.id)}
-                          className='text-red-600 hover:text-red-700'
+                          variant='ghost' size='sm' className='text-red-600 hover:bg-red-50 hover:text-red-700'
                         >
                           Borrar
-                        </button>
+                        </Button>
                       )}
                     </div>
                   </td>

@@ -59,7 +59,7 @@ export function AddItemBar({
                   <button
                     type="button"
                     onClick={() => addProduct(p)}
-                    className="flex w-full justify-between px-3 py-2 text-left text-sm text-ink hover:bg-canvas"
+                    className="flex min-h-11 w-full items-center justify-between px-3 py-2 text-left md:min-h-0 text-sm text-ink hover:bg-canvas"
                   >
                     <span>{p.name}</span>
                     <span className="text-muted">{formatMoney(p.unit_price)}</span>

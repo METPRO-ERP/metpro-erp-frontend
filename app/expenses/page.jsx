@@ -12,6 +12,7 @@ import ExpensesSummary from "@/components/expenses/ExpensesSummary";
 import ExpensesChart from "@/components/expenses/ExpensesChart";
 import { PageHeader } from "@/components/ui/page-header";
 import { useCurrentRole } from "@/lib/currentRole";
+import { Button } from "@/components/ui/button";
 
 export default function ExpensesPage() {
   // Delete is admin only (API enforces the same rule).
@@ -203,12 +204,12 @@ export default function ExpensesPage() {
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-semibold">{es.gas.registrados}</h2>
 
-          <button
+          <Button
             onClick={() => exportExpensesCSV(filtered)}
-            className="bg-accent text-white px-4 py-2 rounded hover:bg-accent-strong"
+            variant="default"
           >
             {es.gas.exportarCsv}
-          </button>
+          </Button>
         </div>
 
         <ExpensesTable

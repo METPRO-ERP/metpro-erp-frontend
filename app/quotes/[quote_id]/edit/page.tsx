@@ -402,13 +402,13 @@ function DraftEditor() {
       {fromDuplicate && bannerOpen ? (
         <Alert className="mb-4 flex items-start justify-between gap-3">
           <AlertDescription>{es.cot.cotizacionDuplicada}</AlertDescription>
-          <button
+          <Button
             type="button"
             onClick={() => setBannerOpen(false)}
-            className="shrink-0 text-sm text-muted underline hover:text-ink"
+            variant="ghost" size="sm" className="shrink-0"
           >
             {es.cot.descartar}
-          </button>
+          </Button>
         </Alert>
       ) : null}
 
@@ -550,12 +550,13 @@ function DraftEditor() {
           {saveMessage ? <p className="text-sm text-muted">{saveMessage}</p> : null}
           {dirty ? <p className="text-sm text-muted">{es.cot.cambiosSinGuardar}</p> : null}
 
-          <Button onClick={handleSave} disabled={!canWrite || !dirty} variant="outline" className="w-full">
+          <Button onClick={handleSave} disabled={!canWrite || !dirty} variant="outline" size="lg" className="w-full">
             {saving ? es.cot.guardando : es.cot.guardarBorrador}
           </Button>
           <Button
             onClick={() => setConfirmOpen(true)}
             disabled={!canWrite || includedCount === 0}
+            size="lg"
             className="w-full"
           >
             {es.cot.finalizar}

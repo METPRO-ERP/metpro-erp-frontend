@@ -1,6 +1,7 @@
 import { dt } from "@/components/ui/data-table";
 import { fmtDay } from "@/lib/dates"
 import { money } from "@/lib/money"
+import { Button } from "@/components/ui/button";
 export default function ExpensesTable({ expenses, onDelete }) {
   if (expenses.length === 0) {
     return (
@@ -54,12 +55,12 @@ export default function ExpensesTable({ expenses, onDelete }) {
 
             <td className={dt.tdRight}>
               {onDelete && (
-                <button
+                <Button
                   onClick={() => onDelete(exp.expense_id)}
-                  className="text-red-600 hover:underline"
+                  variant="ghost" size="sm" className="text-red-600 hover:bg-red-50 hover:text-red-700"
                 >
                   Eliminar
-                </button>
+                </Button>
               )}
             </td>
           </tr>

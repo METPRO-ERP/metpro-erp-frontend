@@ -137,13 +137,13 @@ export default function LoginPage() {
             className={`${fb.control} h-10`}
             required
           />
-          <button
+          <Button
             type="button"
             onClick={() => setShowPassword(!showPassword)}
-            className="absolute right-2 top-1/2 -translate-y-1/2 px-2 text-xs font-medium text-muted hover:text-ink"
+            variant="ghost" size="sm" className="absolute right-2 top-1/2 -translate-y-1/2"
           >
             {showPassword ? t.ocultar : t.mostrar}
-          </button>
+          </Button>
         </div>
 
         <label className="flex items-center gap-2 text-sm text-ink mb-4">
@@ -158,7 +158,8 @@ export default function LoginPage() {
         <Button
           type="submit"
           disabled={loading}
-          className="w-full h-10"
+          size="lg"
+          className="w-full"
         >
           {loading ? (
             <span className="flex items-center justify-center gap-2">

@@ -5,6 +5,7 @@ import { fmtDay } from "@/lib/dates"
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
+import { buttonVariants } from "@/components/ui/button";
 
 // Public quote view by token. No login. Reads stored totals only.
 // Backend: GET /quotes/public/{token} and GET /quotes/public/{token}/pdf
@@ -105,7 +106,7 @@ export default function PublicQuotePage() {
             href={pdfUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-sm font-medium text-accent underline"
+            className={buttonVariants({ variant: "outline", size: "sm" })}
           >
             Descargar PDF
           </a>

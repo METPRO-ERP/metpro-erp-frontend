@@ -1,6 +1,7 @@
 import { es } from "@/lib/i18n/es";
 import { dt } from "@/components/ui/data-table";
 import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
 
 export default function ContactsList({ contacts, onEdit, onDelete }) {
   const router = useRouter();
@@ -28,28 +29,28 @@ export default function ContactsList({ contacts, onEdit, onDelete }) {
               <td className={dt.td}>{c.email}</td>
               <td className={dt.td}>{c.phone}</td>
 
-              <td className={`${dt.td} flex flex-wrap gap-2`}>
-                <button
-                  className="px-3 py-1 bg-accent text-white rounded"
+              <td className={`${dt.td} flex flex-wrap gap-x-2 gap-y-4`}>
+                <Button
+                  variant="default" size="sm"
                   onClick={() => router.push(`/quotes?contactId=${c.id}&companyId=${c.company_id}`)}
                 >
                   {es.con.usarEnCotizacion}
-                </button>
+                </Button>
 
-                <button
-                  className="px-3 py-1 bg-accent hover:bg-accent-strong text-white rounded"
+                <Button
+                  variant="default" size="sm"
                   onClick={() => onEdit(c)}
                 >
                   Editar
-                </button>
+                </Button>
 
                 {onDelete && (
-                  <button
-                    className="px-3 py-1 bg-red-600 text-white rounded"
+                  <Button
+                    variant="destructive" size="sm"
                     onClick={() => onDelete(c.id)}
                   >
                     Eliminar
-                  </button>
+                  </Button>
                 )}
               </td>
             </tr>

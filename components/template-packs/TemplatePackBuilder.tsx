@@ -428,14 +428,14 @@ export default function TemplatePackBuilder({ packId }: { packId?: number }) {
               >
                 ↓
               </Button>
-              <button
+              <Button
                 type="button"
                 onClick={() => removeCategory(cat.key)}
                 disabled={saving}
-                className="rounded px-3 py-1 text-sm font-medium text-red-600 hover:bg-red-50"
+                variant="ghost" size="sm" className="text-red-600 hover:bg-red-50 hover:text-red-700"
               >
                 {es.pl.quitar}
-              </button>
+              </Button>
             </div>
 
             {cat.items.length === 0 ? (
@@ -518,21 +518,21 @@ export default function TemplatePackBuilder({ packId }: { packId?: number }) {
                             </td>
                           )}
                           <td className="whitespace-nowrap py-2 text-right">
-                            <button type="button" className="px-1 text-muted hover:text-ink disabled:opacity-30" onClick={() => moveItem(cat.key, ii, -1)} disabled={saving || ii === 0} aria-label={es.pl.subirItem}>
+                            <Button type="button" variant="ghost" size="sm" onClick={() => moveItem(cat.key, ii, -1)} disabled={saving || ii === 0} aria-label={es.pl.subirItem}>
                               ↑
-                            </button>
-                            <button
+                            </Button>
+                            <Button
                               type="button"
-                              className="px-1 text-muted hover:text-ink disabled:opacity-30"
+                              variant="ghost" size="sm"
                               onClick={() => moveItem(cat.key, ii, 1)}
                               disabled={saving || ii === cat.items.length - 1}
                               aria-label={es.pl.bajarItem}
                             >
                               ↓
-                            </button>
-                            <button type="button" className="ml-2 px-1 text-red-600 hover:underline" onClick={() => removeItem(cat.key, item.key)} disabled={saving}>
+                            </Button>
+                            <Button type="button" variant="ghost" size="sm" className="ml-2 text-red-600 hover:bg-red-50 hover:text-red-700" onClick={() => removeItem(cat.key, item.key)} disabled={saving}>
                               {es.pl.quitar}
-                            </button>
+                            </Button>
                           </td>
                         </tr>
                       );
@@ -571,7 +571,7 @@ export default function TemplatePackBuilder({ packId }: { packId?: number }) {
                         <button
                           type="button"
                           onClick={() => addItem(cat.key, p.id)}
-                          className="flex w-full items-center justify-between gap-3 px-2 py-2 text-left text-sm hover:bg-surface"
+                          className="flex min-h-11 w-full items-center justify-between gap-3 px-2 py-2 text-left md:min-h-0 text-sm hover:bg-surface"
                         >
                           <span>
                             <span className="text-ink">{p.name}</span>
@@ -657,14 +657,14 @@ export default function TemplatePackBuilder({ packId }: { packId?: number }) {
                   />
                   {es.pl.activoPorDefecto}
                 </label>
-                <button
+                <Button
                   type="button"
                   onClick={() => removeCharge(ch.key)}
                   disabled={saving}
-                  className="rounded px-3 py-1 text-sm font-medium text-red-600 hover:bg-red-50"
+                  variant="ghost" size="sm" className="text-red-600 hover:bg-red-50 hover:text-red-700"
                 >
                   Remove
-                </button>
+                </Button>
               </div>
             ))}
           </div>

@@ -194,15 +194,15 @@ export default function TemplatePacksPage() {
                     {es.pl.editar}
                   </Button>
                 </Link>
-                <button
+                <Button
                   onClick={() => {
                     setDeleteId(pack.id);
                     setDeleteConfirm(true);
                   }}
-                  className="rounded px-3 py-1 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors"
+                  variant="ghost" size="sm" className="text-red-600 hover:bg-red-50 hover:text-red-700"
                 >
                   {es.pl.eliminar}
-                </button>
+                </Button>
               </div>
               )}
             </div>
@@ -219,21 +219,21 @@ export default function TemplatePacksPage() {
               {es.pl.eliminarTexto}
             </p>
             <div className="flex gap-3">
-              <button
+              <Button
                 onClick={handleDelete}
-                className="flex-1 rounded bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 transition-colors"
+                variant="destructive" className="flex-1"
               >
                 {es.pl.eliminar}
-              </button>
-              <button
+              </Button>
+              <Button
                 onClick={() => {
                   setDeleteConfirm(false);
                   setDeleteId(null);
                 }}
-                className="flex-1 rounded border border-line px-4 py-2 text-sm font-medium text-ink hover:bg-canvas transition-colors"
+                variant="outline" className="flex-1"
               >
                 {es.pl.cancelar}
-              </button>
+              </Button>
             </div>
           </div>
         </div>

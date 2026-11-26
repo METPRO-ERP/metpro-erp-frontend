@@ -5,6 +5,7 @@ import { es } from "@/lib/i18n/es";
 import { createPhase, getPhases, invoicePhase } from '@/lib/billingApi'
 import { convertToInvoice } from '@/components/quotes/QuoteActions'
 import { useToken } from '@/components/quotes/useToken'
+import { Button } from "@/components/ui/button";
 
 const t = es.facturacion.fases
 const money = (n) => Number(n || 0).toLocaleString('es-DO', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
@@ -108,7 +109,7 @@ export default function PhasePanel({ quoteId, quoteLabel, onClose, onChanged }) 
             <h2 className='text-lg font-semibold text-ink'>{t.titulo}</h2>
             <p className='text-sm text-muted'>{quoteLabel}</p>
           </div>
-          <button onClick={onClose} className='text-sm text-muted hover:text-ink'>{t.cerrar}</button>
+          <Button onClick={onClose} variant='ghost' size='sm'>{t.cerrar}</Button>
         </div>
 
         {error && <p role='alert' className='mt-3 rounded border border-red-200 bg-red-50 p-2 text-sm text-red-700'>{error}</p>}
@@ -117,9 +118,9 @@ export default function PhasePanel({ quoteId, quoteLabel, onClose, onChanged }) 
           <div className='mt-4'>
             <p className='text-sm text-ink'>{t.noIniciada}</p>
             {view.quote_status === 'Approved' && (
-              <button disabled={busy} onClick={startPhased} className='mt-3 rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white hover:bg-accent-strong disabled:opacity-50'>
+              <Button disabled={busy} onClick={startPhased} variant='default' className='mt-3'>
                 {t.iniciar}
-              </button>
+              </Button>
             )}
           </div>
         )}
@@ -156,9 +157,9 @@ export default function PhasePanel({ quoteId, quoteLabel, onClose, onChanged }) 
                         <td>{p.ncf ?? '—'}{p.invoice_number ? ` (${p.invoice_number})` : ''}</td>
                         <td className='text-right'>
                           {p.status === 'Planned' ? (
-                            <button disabled={busy} onClick={() => generate(p)} className='rounded bg-accent px-2 py-1 text-xs text-white hover:bg-accent-strong disabled:opacity-50'>
+                            <Button disabled={busy} onClick={() => generate(p)} variant='default' size='sm'>
                               {t.generar}
-                            </button>
+                            </Button>
                           ) : (
                             <span className='text-xs text-muted'>{p.invoice_status}</span>
                           )}
@@ -194,9 +195,9 @@ export default function PhasePanel({ quoteId, quoteLabel, onClose, onChanged }) 
                   </label>
                 )}
                 <div className='flex items-end'>
-                  <button disabled={busy} type='submit' className='rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white hover:bg-accent-strong disabled:opacity-50'>
+                  <Button disabled={busy} type='submit' variant='default'>
                     {t.agregar}
-                  </button>
+                  </Button>
                 </div>
               </form>
             )}

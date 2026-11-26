@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { es } from "@/lib/i18n/es";
+import { Button } from "@/components/ui/button";
 
 export default function ExpenseForm({ clients, projects = [], onSubmit, loading }) {
   const [form, setForm] = useState({
@@ -144,13 +145,13 @@ export default function ExpenseForm({ clients, projects = [], onSubmit, loading 
       </div>
 
       <div className="mt-4">
-        <button
+        <Button
           type="submit"
           disabled={loading}
-          className="bg-accent text-white px-4 py-2 rounded hover:bg-accent-strong"
+          variant="default"
         >
           {loading ? "Guardando..." : "Agregar Gasto"}
-        </button>
+        </Button>
       </div>
     </form>
   );

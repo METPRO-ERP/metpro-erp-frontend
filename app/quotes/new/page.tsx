@@ -260,7 +260,7 @@ export default function NewQuotePage() {
         <p className="text-sm text-muted">
           {selectedPack ? es.cot.plantillaSel(selectedPack.name) : blank ? es.cot.cotizacionEnBlanco : es.cot.sinPlantillaSel}
         </p>
-        <Button onClick={handleContinue} disabled={!canContinue} className="w-full sm:w-auto">
+        <Button onClick={handleContinue} disabled={!canContinue} size="lg" className="w-full sm:w-auto">
           {es.cot.continuar}
         </Button>
       </div>

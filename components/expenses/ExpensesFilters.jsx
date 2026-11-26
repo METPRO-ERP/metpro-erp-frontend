@@ -3,6 +3,7 @@ import { fb } from "@/components/ui/filter-bar";
 
 import { useState } from "react";
 import { es } from "@/lib/i18n/es";
+import { Button } from "@/components/ui/button";
 
 export default function ExpensesFilters({ onFilter, projects = [] }) {
   const [filters, setFilters] = useState({
@@ -96,12 +97,12 @@ export default function ExpensesFilters({ onFilter, projects = [] }) {
 
       </div>
 
-      <button
+      <Button
         onClick={apply}
-        className="mt-4 bg-accent text-white px-4 py-2 rounded hover:bg-accent-strong"
+        variant="default" className="mt-4"
       >
         Aplicar Filtros
-      </button>
+      </Button>
     </div>
   );
 }

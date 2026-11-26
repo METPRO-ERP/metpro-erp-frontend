@@ -1,5 +1,6 @@
 import { es } from "@/lib/i18n/es";
 import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
 
 export default function ContactCard({ contact, onEdit, onDelete }) {
   const router = useRouter();
@@ -17,26 +18,26 @@ export default function ContactCard({ contact, onEdit, onDelete }) {
       </div>
 
       <div className="flex gap-3 mt-5 flex-wrap">
-        <button
+        <Button
           onClick={() => router.push(`/quotes?contactId=${contact.id}&companyId=${contact.company_id}`)}
-          className="px-3 py-1.5 bg-accent text-white rounded-md hover:bg-accent-strong transition"
+          variant="default"
         >
           {es.con.usarEnCotizacion}
-        </button>
+        </Button>
 
-        <button
+        <Button
           onClick={onEdit}
-          className="px-3 py-1.5 bg-canvas text-ink rounded-md hover:bg-canvas transition"
+          variant="outline"
         >
           {es.con.editar}
-        </button>
+        </Button>
 
-        <button
+        <Button
           onClick={onDelete}
-          className="px-3 py-1.5 bg-red-600 text-white rounded-md hover:bg-red-700 transition"
+          variant="destructive"
         >
           {es.con.eliminar}
-        </button>
+        </Button>
       </div>
     </div>
   );

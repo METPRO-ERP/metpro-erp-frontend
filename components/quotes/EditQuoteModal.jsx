@@ -5,6 +5,7 @@ import SurchargeControls from './SurchargeControls'
 import QuoteTotalsDisplay from './QuoteTotalsDisplay'
 import { calculateQuoteTotals } from './quoteUtils'
 import { DEFAULT_CHARGES } from './quoteUtils'
+import { Button } from "@/components/ui/button";
 
 export default function EditQuoteModal({ isOpen, onClose, quote, onSave, clients }) {
   const [saveError, setSaveError] = useState('')
@@ -142,7 +143,7 @@ export default function EditQuoteModal({ isOpen, onClose, quote, onSave, clients
       <div className='bg-surface rounded-lg shadow-card max-w-4xl w-full max-h-[90vh] overflow-y-auto'>
         <div className='flex items-center justify-between p-6 border-b sticky top-0 bg-surface'>
           <h3 className='text-xl font-bold text-ink'>Edit Quote: {quote.quote_id}</h3>
-          <button onClick={onClose} className='text-muted hover:text-muted text-2xl'>&times;</button>
+          <Button onClick={onClose} variant='ghost' size='icon' aria-label={es.comun.cerrar}>&times;</Button>
         </div>
 
         <form onSubmit={handleSubmit} className='p-6 space-y-4'>
@@ -198,13 +199,13 @@ export default function EditQuoteModal({ isOpen, onClose, quote, onSave, clients
           <div>
             <div className='flex items-center justify-between mb-2'>
               <label className='block text-sm font-medium'>{es.cot.articulos}</label>
-              <button
+              <Button
                 type='button'
                 onClick={addItem}
-                className='text-sm px-3 py-1 bg-accent text-white rounded-lg hover:bg-accent-strong'
+                variant='default' size='sm'
               >
                 + Add Item
-              </button>
+              </Button>
             </div>
 
             <div className='border border-line rounded-lg overflow-hidden'>
@@ -283,13 +284,13 @@ export default function EditQuoteModal({ isOpen, onClose, quote, onSave, clients
                         ${lineTotal(item).toLocaleString('en-US', { minimumFractionDigits: 2 })}
                       </td>
                       <td className='px-3 py-2'>
-                        <button
+                        <Button
                           type='button'
                           onClick={() => removeItem(i)}
-                          className='text-red-600 hover:text-red-600 font-bold'
+                          variant='ghost' size='icon' aria-label={es.comun.eliminar}
                         >
                           ×
-                        </button>
+                        </Button>
                       </td>
                     </tr>
                   ))}
@@ -351,19 +352,19 @@ export default function EditQuoteModal({ isOpen, onClose, quote, onSave, clients
           )}
 
           <div className='flex gap-3 justify-end pt-4 border-t'>
-            <button
+            <Button
               type='button'
               onClick={onClose}
-              className='px-4 py-2 border border-line rounded-lg hover:bg-canvas'
+              variant='outline'
             >
               {es.cot.cancelar}
-            </button>
-            <button
+            </Button>
+            <Button
               type='submit'
-              className='px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent-strong'
+              variant='default'
             >
               {es.cot.guardarCambios}
-            </button>
+            </Button>
           </div>
         </form>
       </div>

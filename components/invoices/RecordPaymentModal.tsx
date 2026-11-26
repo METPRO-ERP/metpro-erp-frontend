@@ -4,6 +4,7 @@ import { businessToday } from "@/lib/dates";
 import { es } from "@/lib/i18n/es";
 import { useState } from "react";
 import { createPayment } from "@/lib/invoiceApi";
+import { Button } from "@/components/ui/button";
 
 interface Props {
   invoiceId: number;
@@ -127,21 +128,21 @@ const [form, setForm] = useState({
           )}
 
           <div className="flex justify-end gap-2 mt-4">
-            <button
+            <Button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 border rounded"
+              variant="outline"
             >
               {es.fact.cancelar}
-            </button>
+            </Button>
 
-            <button
+            <Button
               type="submit"
               disabled={loading}
-              className="bg-accent text-white px-4 py-2 rounded hover:bg-accent-strong"
+              variant="default"
             >
               {loading ? es.cot.guardando : es.fact.registrarPago}
-            </button>
+            </Button>
           </div>
         </form>
       </div>

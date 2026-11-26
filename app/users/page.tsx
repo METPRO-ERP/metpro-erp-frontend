@@ -214,27 +214,27 @@ export default function UsersPage() {
                 <td className={dt.td}>{u.is_active ? es.usr.si : es.usr.no}</td>
                 <td className={dt.td}>
                   {canManage(u) ? (
-                    <div className="flex flex-wrap gap-3">
-                      <button onClick={() => openEdit(u)} className="text-sm font-medium text-accent hover:underline">
+                    <div className="flex flex-wrap gap-x-3 gap-y-4">
+                      <Button onClick={() => openEdit(u)} variant="ghost" size="sm" className="text-accent hover:bg-accent/10 hover:text-accent-strong">
                         {es.usr.editar}
-                      </button>
-                      <button
+                      </Button>
+                      <Button
                         onClick={() => toggleActive(u)}
                         disabled={busyId === u.id}
-                        className="text-sm font-medium text-accent hover:underline disabled:opacity-50"
+                        variant="ghost" size="sm" className="text-accent hover:bg-accent/10 hover:text-accent-strong"
                       >
                         {u.is_active ? es.usr.desactivar : es.usr.activar}
-                      </button>
-                      <button onClick={() => openReset(u)} className="text-sm font-medium text-accent hover:underline">
+                      </Button>
+                      <Button onClick={() => openReset(u)} variant="ghost" size="sm" className="text-accent hover:bg-accent/10 hover:text-accent-strong">
                         {es.usr.restablecer}
-                      </button>
-                      <button
+                      </Button>
+                      <Button
                         onClick={() => deleteUser(u)}
                         disabled={busyId === u.id}
-                        className="text-sm font-medium text-red-600 hover:underline disabled:opacity-50"
+                        variant="ghost" size="sm" className="text-red-600 hover:bg-red-50 hover:text-red-700"
                       >
                         {es.usr.eliminar}
-                      </button>
+                      </Button>
                     </div>
                   ) : (
                     <span className="text-xs text-muted">{es.usr.soloSuperadmin}</span>
@@ -275,12 +275,12 @@ export default function UsersPage() {
             </label>
             {editError && <p role="alert" className="mb-3 text-sm text-red-600">{editError}</p>}
             <div className="flex justify-end gap-3">
-              <button onClick={() => setEditTarget(null)} disabled={editSaving} className="px-4 py-2 text-sm text-muted hover:underline disabled:opacity-50">
+              <Button onClick={() => setEditTarget(null)} disabled={editSaving} variant="ghost" size="sm">
                 {es.usr.cancelar}
-              </button>
-              <button onClick={submitEdit} disabled={editSaving} className="rounded bg-accent px-4 py-2 text-sm text-white hover:bg-accent-strong disabled:opacity-50">
+              </Button>
+              <Button onClick={submitEdit} disabled={editSaving} variant="default">
                 {editSaving ? es.usr.guardando : es.usr.guardar}
-              </button>
+              </Button>
             </div>
           </div>
         </div>
@@ -300,12 +300,12 @@ export default function UsersPage() {
             </label>
             {resetError && <p role="alert" className="mb-3 text-sm text-red-600">{resetError}</p>}
             <div className="flex justify-end gap-3">
-              <button onClick={() => setResetTarget(null)} disabled={resetSaving} className="px-4 py-2 text-sm text-muted hover:underline disabled:opacity-50">
+              <Button onClick={() => setResetTarget(null)} disabled={resetSaving} variant="ghost" size="sm">
                 {es.usr.cancelar}
-              </button>
-              <button onClick={submitReset} disabled={resetSaving} className="rounded bg-accent px-4 py-2 text-sm text-white hover:bg-accent-strong disabled:opacity-50">
+              </Button>
+              <Button onClick={submitReset} disabled={resetSaving} variant="default">
                 {resetSaving ? es.usr.guardando : es.usr.restablecer}
-              </button>
+              </Button>
             </div>
           </div>
         </div>

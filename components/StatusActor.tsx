@@ -4,6 +4,7 @@ import { useState } from "react";
 import { es } from "@/lib/i18n/es";
 import { lastChangeText, type HistoryKind } from "@/lib/statusHistory";
 import StatusHistoryModal from "@/components/StatusHistoryModal";
+import { Button } from "@/components/ui/button";
 
 interface Props {
   kind: HistoryKind;
@@ -25,14 +26,14 @@ export default function StatusActor({ kind, id, createdBy, lastBy, lastAt }: Pro
   }
   return (
     <>
-      <button
+      <Button
         type="button"
         onClick={() => setOpen(true)}
         title={es.historial.verHistorial}
-        className="text-xs text-accent mt-1 underline decoration-dotted text-left"
+        variant="ghost" size="sm" className="mt-1 text-left text-accent hover:bg-accent/10 hover:text-accent-strong"
       >
         {text}
-      </button>
+      </Button>
       {open && <StatusHistoryModal kind={kind} id={id} onClose={() => setOpen(false)} />}
     </>
   );

@@ -2,6 +2,7 @@ import { es } from "@/lib/i18n/es";
 import { money } from "@/lib/money"
 import { usePdfOptions } from "@/lib/pdfOptions";
 import { UnitInput } from "@/components/quotes/UnitInput";
+import { Button } from "@/components/ui/button";
 export default function QuoteItemRow({ 
   item, 
   index, 
@@ -31,13 +32,13 @@ const lineTotal = (base - discount).toFixed(2)
       <div className='flex justify-between items-center mb-3'>
         <h4 className='font-medium'>{es.cot.articuloN} {index + 1}</h4>
         {showRemove && (
-          <button
+          <Button
             type='button'
             onClick={() => onRemove(index)}
-            className='text-red-600 hover:text-red-700 font-bold text-xl'
+            variant='ghost' size='icon' aria-label={es.comun.eliminar}
           >
             ×
-          </button>
+          </Button>
         )}
       </div>
       
@@ -52,14 +53,14 @@ const lineTotal = (base - discount).toFixed(2)
               className='flex-1 border p-2 rounded text-sm'
               placeholder={es.cot.ingreseNombreProducto}
             />
-            <button
+            <Button
               type='button'
               onClick={() => onOpenProductModal(index)}
-              className='px-3 py-2 bg-accent text-white rounded hover:bg-accent-strong text-sm'
+              variant='default'
               title={es.cot.seleccionarBD}
             >
               📦
-            </button>
+            </Button>
           </div>
         </div>
         {medidas_enabled && (

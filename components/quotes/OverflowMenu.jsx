@@ -1,6 +1,7 @@
 import { es } from "@/lib/i18n/es";
 import { useState, useRef, useEffect } from 'react'
 import { useCurrentRole } from '@/lib/currentRole'
+import { Button } from "@/components/ui/button";
 
 export default function OverflowMenu({
   quote,
@@ -38,15 +39,15 @@ export default function OverflowMenu({
 
   return (
     <div className='relative' ref={menuRef}>
-      <button
+      <Button
         onClick={() => setIsOpen(!isOpen)}
-        className='p-2 hover:bg-canvas rounded-full transition'
+        variant='ghost' size='icon'
         aria-label={es.cot.masAcciones}
       >
         <svg className='w-5 h-5' fill='currentColor' viewBox='0 0 20 20'>
           <path d='M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z' />
         </svg>
-      </button>
+      </Button>
 
       {isOpen && (
         <div className='absolute right-0 mt-2 w-56 bg-surface rounded-lg shadow-card border z-50'>
@@ -56,7 +57,7 @@ export default function OverflowMenu({
                 onPreviewPDF()
                 setIsOpen(false)
               }}
-              className='w-full text-left px-4 py-2 hover:bg-canvas flex items-center gap-2'
+              className='w-full text-left px-4 py-2 min-h-11 md:min-h-0 hover:bg-canvas flex items-center gap-2'
             >
               <span>{es.cot.vistaPrevia}</span>
             </button>
@@ -66,7 +67,7 @@ export default function OverflowMenu({
                 onDownloadPDF()
                 setIsOpen(false)
               }}
-              className='w-full text-left px-4 py-2 hover:bg-canvas flex items-center gap-2'
+              className='w-full text-left px-4 py-2 min-h-11 md:min-h-0 hover:bg-canvas flex items-center gap-2'
             >
               <span>{es.cot.descargarPdf}</span>
             </button>
@@ -78,7 +79,7 @@ export default function OverflowMenu({
                   onApprove()
                   setIsOpen(false)
                 }}
-                className='w-full text-left px-4 py-2 hover:bg-canvas flex items-center gap-2 text-emerald-700'
+                className='w-full text-left px-4 py-2 min-h-11 md:min-h-0 hover:bg-canvas flex items-center gap-2 text-emerald-700'
               >
                 <span>{es.cot.aprobar}</span>
               </button>
@@ -90,7 +91,7 @@ export default function OverflowMenu({
                   onReject()
                   setIsOpen(false)
                 }}
-                className='w-full text-left px-4 py-2 hover:bg-canvas flex items-center gap-2 text-red-600'
+                className='w-full text-left px-4 py-2 min-h-11 md:min-h-0 hover:bg-canvas flex items-center gap-2 text-red-600'
               >
                 <span>{es.cot.rechazar}</span>
               </button>
@@ -102,7 +103,7 @@ export default function OverflowMenu({
                   onConvertToInvoice()
                   setIsOpen(false)
                 }}
-                className='w-full text-left px-4 py-2 hover:bg-canvas flex items-center gap-2 text-accent-strong'
+                className='w-full text-left px-4 py-2 min-h-11 md:min-h-0 hover:bg-canvas flex items-center gap-2 text-accent-strong'
               >
                 <span>{es.cot.convertir}</span>
               </button>
@@ -114,7 +115,7 @@ export default function OverflowMenu({
                   onOpenPhases()
                   setIsOpen(false)
                 }}
-                className='w-full text-left px-4 py-2 hover:bg-canvas flex items-center gap-2'
+                className='w-full text-left px-4 py-2 min-h-11 md:min-h-0 hover:bg-canvas flex items-center gap-2'
               >
                 <span>{es.facturacion.fases.abrir}</span>
               </button>
@@ -126,7 +127,7 @@ export default function OverflowMenu({
                   onGenerateConduce()
                   setIsOpen(false)
                 }}
-                className='w-full text-left px-4 py-2 hover:bg-canvas flex items-center gap-2'
+                className='w-full text-left px-4 py-2 min-h-11 md:min-h-0 hover:bg-canvas flex items-center gap-2'
               >
                 <span>{es.cot.generarConduce}</span>
               </button>
@@ -139,7 +140,7 @@ export default function OverflowMenu({
                 onDuplicate()
                 setIsOpen(false)
               }}
-              className='w-full text-left px-4 py-2 hover:bg-canvas flex items-center gap-2'
+              className='w-full text-left px-4 py-2 min-h-11 md:min-h-0 hover:bg-canvas flex items-center gap-2'
             >
               <span>{es.cot.duplicar}</span>
             </button>
@@ -150,7 +151,7 @@ export default function OverflowMenu({
                   onEdit()
                   setIsOpen(false)
                 }}
-                className='w-full text-left px-4 py-2 hover:bg-canvas flex items-center gap-2'
+                className='w-full text-left px-4 py-2 min-h-11 md:min-h-0 hover:bg-canvas flex items-center gap-2'
               >
                 <span>{es.cot.editar}</span>
               </button>
@@ -166,7 +167,7 @@ export default function OverflowMenu({
                     onDelete()
                     setIsOpen(false)
                   }}
-                  className='w-full text-left px-4 py-2 hover:bg-canvas flex items-center gap-2 text-red-600'
+                  className='w-full text-left px-4 py-2 min-h-11 md:min-h-0 hover:bg-canvas flex items-center gap-2 text-red-600'
                 >
                   <span>{es.cot.eliminar}</span>
                 </button>

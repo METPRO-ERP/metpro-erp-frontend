@@ -305,7 +305,7 @@ export default function InvoiceDetailPage() {
 
         <div className="bg-canvas p-4 rounded-lg mb-6">
           <h2 className="text-xl font-semibold mb-3">Acciones</h2>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-3">
             {invoice.status !== "Cancelled" && <SendToClientButton id={invoiceId} type="invoice" />}
             <Button onClick={() => setPreview("factura")}>Vista previa Factura</Button>
             {!conduceLedger && <Button onClick={() => setPreview("conduce")}>Vista previa Conduce</Button>}

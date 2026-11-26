@@ -157,14 +157,14 @@ export default function SendToClientModal({
                     {f.name}
                     <span className="ml-2 text-xs text-muted">{formatSize(f.size)}</span>
                   </span>
-                  <button
+                  <Button
                     type="button"
                     onClick={() => removeFile(i)}
                     disabled={loading}
-                    className="shrink-0 text-xs text-red-600 underline disabled:opacity-50"
+                    variant="ghost" size="sm" className="shrink-0 text-red-600 hover:bg-red-50 hover:text-red-700"
                   >
                     {t.quitar}
-                  </button>
+                  </Button>
                 </li>
               ))}
             </ul>

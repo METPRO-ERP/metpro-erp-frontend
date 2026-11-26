@@ -4,27 +4,31 @@ import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
 
+// C1a button system. One radius (6px), one weight (medium), four looks, four sizes.
+// primary = default, secondary = outline (secondary kept as an alias), danger = destructive, ghost.
+// `link` is for inline text inside prose only. Heights: sm 28, md 32 (default), lg 40, icon 32 square.
+// `hit-44` (app/globals.css) adds an invisible 44px tap zone below 768px and on touch devices only.
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-accent disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+  "hit-44 relative inline-flex items-center justify-center gap-1.5 whitespace-nowrap rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 focus-visible:ring-offset-1 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
   {
     variants: {
       variant: {
         default:
-          "bg-accent text-white shadow-card hover:bg-accent-strong",
+          "bg-accent text-white shadow-sm hover:bg-accent-strong active:bg-accent-strong",
         destructive:
-          "bg-red-600 text-white shadow-card hover:bg-red-700",
+          "bg-red-600 text-white shadow-sm hover:bg-red-700 active:bg-red-800",
         outline:
-          "border border-line bg-surface text-ink shadow-card hover:bg-canvas",
+          "border border-line bg-surface text-ink hover:border-ink/25 hover:bg-canvas active:bg-line/60",
         secondary:
-          "border border-line bg-canvas text-ink shadow-card hover:bg-line",
-        ghost: "text-ink hover:bg-canvas",
+          "border border-line bg-surface text-ink hover:border-ink/25 hover:bg-canvas active:bg-line/60",
+        ghost: "text-muted hover:bg-canvas hover:text-ink active:bg-line/60",
         link: "text-accent underline-offset-4 hover:underline",
       },
       size: {
-        default: "h-9 px-4 py-2",
-        sm: "h-8 rounded-md px-3 text-xs",
-        lg: "h-10 rounded-md px-8",
-        icon: "h-9 w-9",
+        default: "h-8 px-3 text-[13px]",
+        sm: "h-7 px-2.5 text-xs",
+        lg: "h-10 px-4 text-sm",
+        icon: "hit-44 h-8 w-8 text-base",
       },
     },
     defaultVariants: {

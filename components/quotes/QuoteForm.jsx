@@ -7,6 +7,7 @@ import { calculateQuoteTotals } from './quoteUtils'
 import TaxTypeSelect from './TaxTypeSelect'
 import TaxTypeInfo from './TaxTypeInfo'
 import { useAutoTax } from './useAutoTax'
+import { Button } from "@/components/ui/button";
 
 /** @type {Array<{code: string, label: string, rate: number, is_default: boolean}>} */
 const NO_TAX_TYPES = []
@@ -160,13 +161,13 @@ export default function QuoteForm({
           />
         ))}
         
-        <button
+        <Button
           type='button'
           onClick={handleAddItem}
-          className='w-full bg-accent/10 text-accent-strong py-2 rounded hover:bg-accent/10'
+          variant='outline' className='w-full'
         >
           {es.cot.agregarArticuloMas}
-        </button>
+        </Button>
       </div>
 
       {/* SURCHARGES */}
@@ -195,13 +196,13 @@ export default function QuoteForm({
       </div>
 
       {/* SUBMIT BUTTON */}
-      <button
+      <Button
         onClick={onSubmit}
         disabled={loading}
-        className='w-full bg-accent text-white py-3 rounded hover:bg-accent-strong disabled:opacity-50'
+        variant='default' size='lg' className='w-full'
       >
         {loading ? es.comun.creando : es.cot.crearCotizacion}
-      </button>
+      </Button>
     </div>
   )
 }

@@ -5,6 +5,7 @@ import { formatMoney, lineProblem, lineTotal, type TakeOffLine } from "@/lib/tak
 import type { DiscountType } from "@/lib/quotingApi";
 import { usePdfOptions } from "@/lib/pdfOptions";
 import { UnitInput } from "@/components/quotes/UnitInput";
+import { Button } from "@/components/ui/button";
 
 export const takeOffInputClass =
   "w-full rounded-md border border-line bg-surface px-2 py-1.5 text-sm text-ink focus:outline-none focus:ring-2 focus:ring-accent";
@@ -139,9 +140,9 @@ export function LineCard({
           <div className="flex items-center justify-between gap-3">
             <span className="text-sm text-ink">{es.cot.totalLineaValor(formatMoney(lineTotal(line)))}</span>
             {onRemove ? (
-              <button type="button" onClick={onRemove} className="text-sm text-muted underline hover:text-ink">
+              <Button type="button" onClick={onRemove} variant="ghost" size="sm">
                 {es.cot.quitar}
-              </button>
+              </Button>
             ) : null}
           </div>
 

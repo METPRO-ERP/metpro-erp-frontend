@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { es } from "@/lib/i18n/es";
 import { api } from "@/lib/api";
+import { Button } from "@/components/ui/button";
 
 interface Client {
   id: number;
@@ -112,17 +113,17 @@ export default function DuplicateQuoteModal({
         {error ? <p role="alert" className="mt-3 text-sm text-red-700">{error}</p> : null}
 
         <div className="mt-5 flex justify-end gap-2">
-          <button type="button" onClick={onClose} disabled={busy} className="rounded-lg border border-line px-4 py-2 text-sm hover:bg-canvas">
+          <Button type="button" onClick={onClose} disabled={busy} variant="outline">
             {es.cot.cancelar}
-          </button>
-          <button
+          </Button>
+          <Button
             type="button"
             disabled={!canConfirm}
             onClick={() => onConfirm(other ? { client_id: Number(clientId), contact_id: Number(contactId) } : null)}
-            className="rounded-lg bg-accent px-4 py-2 text-sm text-white disabled:opacity-50"
+            variant="default"
           >
             {es.cot.duplicarConfirmar}
-          </button>
+          </Button>
         </div>
       </div>
     </div>

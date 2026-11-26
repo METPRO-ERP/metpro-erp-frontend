@@ -1,5 +1,6 @@
 import { es } from "@/lib/i18n/es";
 import SealCheckbox from "@/components/SealCheckbox";
+import { Button } from "@/components/ui/button";
 
 // sealAvailable: a company seal exists. printSeal / onSealChange: the per-document choice for this preview.
 export default function PDFPreviewModal({ isOpen, onClose, quoteId, quoteLabel, pdfUrl, sealAvailable = false, printSeal = false, onSealChange }) {
@@ -12,12 +13,12 @@ export default function PDFPreviewModal({ isOpen, onClose, quoteId, quoteLabel, 
           <h3 className='text-xl font-bold text-ink'>
             {es.cot.vistaPreviaCot} {quoteLabel || quoteId}
           </h3>
-          <button
+          <Button
             onClick={onClose}
-            className='text-muted hover:text-muted text-2xl font-bold'
+            variant='ghost' size='icon' aria-label={es.comun.cerrar}
           >
             &times;
-          </button>
+          </Button>
         </div>
 
         <div className='flex-1 overflow-hidden'>
@@ -40,12 +41,12 @@ export default function PDFPreviewModal({ isOpen, onClose, quoteId, quoteLabel, 
           {sealAvailable && onSealChange && (
             <SealCheckbox checked={printSeal} onChange={onSealChange} disabled={!pdfUrl} />
           )}
-          <button
+          <Button
             onClick={onClose}
-            className='px-4 py-2 border border-line rounded-lg hover:bg-canvas'
+            variant='outline'
           >
             {es.comun.cerrar}
-          </button>
+          </Button>
         </div>
       </div>
     </div>

@@ -155,7 +155,7 @@ export default function ProyectoDetallePage() {
             role="tab"
             aria-selected={tab === key}
             onClick={() => setTab(key)}
-            className={`-mb-px border-b-2 px-4 py-2 text-sm font-medium ${
+            className={`min-h-11 md:min-h-0 -mb-px border-b-2 px-4 py-2 text-sm font-medium ${
               tab === key ? "border-accent text-ink" : "border-transparent text-muted hover:text-ink"
             }`}
           >

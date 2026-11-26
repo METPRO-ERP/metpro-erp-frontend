@@ -10,7 +10,7 @@ import { api } from '@/lib/api'
 import CSVImportModal from '@/components/client/CSVImportModal'
 import { useCurrentRole } from '@/lib/currentRole'
 import { PageHeader } from '@/components/ui/page-header'
-import { Button } from '@/components/ui/button'
+import { Button, buttonVariants } from '@/components/ui/button'
 import ErrorBanner from '@/components/ui/ErrorBanner'
 import SuppliersPanel from '@/components/suppliers/SuppliersPanel'
 
@@ -300,26 +300,26 @@ export default function ClientsPage() {
 
                   <td className={dt.tdRight}>
                     <div className='flex justify-end gap-2'>
-                      <button
+                      <Button
                         onClick={() => setEditingClient(client)}
-                        className='text-accent hover:text-accent-strong px-2 py-1 rounded hover:bg-accent/10 transition'
+                        variant='ghost' size='sm' className='text-accent hover:bg-accent/10 hover:text-accent-strong'
                       >
                         Editar
-                      </button>
+                      </Button>
 
                       {isAdmin && (
-                        <button
+                        <Button
                           onClick={() => handleDeleteClient(client.id)}
-                          className='text-red-600 hover:text-red-700 px-2 py-1 rounded hover:bg-red-50 transition'
+                          variant='ghost' size='sm' className='text-red-600 hover:bg-red-50 hover:text-red-700'
                         >
                           Eliminar
-                        </button>
+                        </Button>
                       )}
 
                       {/* NEW: Manage Contacts */}
                       <Link
                         href={`/contacts/${client.id}`}
-                        className='text-accent hover:text-accent-strong px-2 py-1 rounded hover:bg-accent/10 transition'
+                        className={buttonVariants({ variant: 'ghost', size: 'sm', className: 'text-accent hover:bg-accent/10 hover:text-accent-strong' })}
                       >
                         Contactos
                       </Link>

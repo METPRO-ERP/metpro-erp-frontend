@@ -12,6 +12,7 @@ import { es } from "@/lib/i18n/es";
 import { checkUnauthorized, safeFetch } from "@/lib/api";
 import { useCurrentRole } from "@/lib/currentRole";
 import { usePdfOptions } from "@/lib/pdfOptions";
+import { Button } from "@/components/ui/button";
 
 export default function FullCopyButton({
   kind,
@@ -67,15 +68,15 @@ export default function FullCopyButton({
 
   return (
     <span className={`inline-flex flex-col gap-1 print:hidden ${className}`}>
-      <button
+      <Button
         type="button"
         onClick={open}
         disabled={busy}
         title={es.cot.copiaCompletaAyuda}
-        className="rounded-lg border border-line px-3 py-1.5 text-sm hover:bg-canvas disabled:opacity-50"
+        variant="outline"
       >
         {es.cot.copiaCompleta}
-      </button>
+      </Button>
       {error && <span role="alert" className="text-xs text-red-700">{error}</span>}
     </span>
   );

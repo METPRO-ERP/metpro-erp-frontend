@@ -5,6 +5,7 @@ import { es } from "@/lib/i18n/es";
 import { fmtDateTime } from "@/lib/dates";
 import { getStatusLabel } from "@/lib/i18n/statusLabel";
 import { fetchStatusHistory, type HistoryKind, type StatusHistory } from "@/lib/statusHistory";
+import { Button } from "@/components/ui/button";
 
 interface Props {
   kind: HistoryKind;
@@ -61,9 +62,9 @@ export default function StatusHistoryModal({ kind, id, onClose }: Props) {
           </table>
         )}
         <div className="flex justify-end mt-6">
-          <button onClick={onClose} className="px-4 py-2 border border-line rounded-lg hover:bg-canvas">
+          <Button onClick={onClose} variant="outline">
             {es.historial.cerrar}
-          </button>
+          </Button>
         </div>
       </div>
     </div>

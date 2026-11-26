@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useSyncExternalStore } from "react";
 import { clearCurrentRoleCache } from "@/lib/currentRole";
 import { es } from "@/lib/i18n/es";
+import { Button } from "@/components/ui/button";
 
 const noopSubscribe = () => () => {};
 
@@ -28,7 +29,7 @@ export default function Header() {
         <div className="flex justify-between items-center h-16">
 
           {/* LEFT: Logo + Company Name */}
-          <Link href="/dashboard" className="flex items-center gap-3">
+          <Link href="/dashboard" className="hit-44 relative flex items-center gap-3">
             <img
               src="/logo.png"
               alt={es.nav.logoAlt}
@@ -45,12 +46,9 @@ export default function Header() {
           {/* RIGHT: Logout */}
           <div className="flex items-center gap-4">
 
-            <button
-              onClick={handleLogout}
-              className="text-sm font-medium text-muted hover:text-ink transition-colors"
-            >
+            <Button variant="ghost" onClick={handleLogout}>
               {es.nav.cerrarSesion}
-            </button>
+            </Button>
 
           </div>
         </div>

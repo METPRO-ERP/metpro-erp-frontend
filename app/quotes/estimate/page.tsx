@@ -306,9 +306,9 @@ export default function EstimatePage() {
                           <span className="col-span-4 text-right sm:col-span-2">{formatMoney(ln.unit_price)}</span>
                           <span className="col-span-4 text-right font-medium sm:col-span-3" data-testid={`total-${ln.row}`}>{formatMoney(ln.total)}</span>
                         </div>
-                        <button type="button" className="mt-1 text-xs text-accent underline" onClick={() => setOpen((p) => ({ ...p, [ln.row]: !p[ln.row] }))}>
+                        <Button type="button" variant="ghost" size="sm" className="mt-1 text-accent hover:bg-accent/10 hover:text-accent-strong" onClick={() => setOpen((p) => ({ ...p, [ln.row]: !p[ln.row] }))}>
                           {es.est.cambiar}
-                        </button>
+                        </Button>
                         {open[ln.row] || d ? (
                           <div className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-4">
                             <label className="block text-xs text-muted">{es.est.nuevoPrecio}
@@ -320,7 +320,7 @@ export default function EstimatePage() {
                             <label className="col-span-2 block text-xs text-muted">{es.est.motivo}
                               <input className={takeOffInputClass} value={d?.reason ?? ""} onChange={(e) => patchDraft(ln.row, { reason: e.target.value })} />
                             </label>
-                            <button type="button" className="text-left text-xs text-muted underline" onClick={() => clearDraft(ln.row)}>{es.est.quitarCambio}</button>
+                            <Button type="button" variant="ghost" size="sm" className="text-left" onClick={() => clearDraft(ln.row)}>{es.est.quitarCambio}</Button>
                           </div>
                         ) : null}
                       </li>
@@ -349,7 +349,7 @@ export default function EstimatePage() {
       {genError ? <Alert variant="destructive" className="mb-3"><AlertDescription>{genError}</AlertDescription></Alert> : null}
       <div className="flex flex-col-reverse gap-3 border-t border-line pt-4 sm:flex-row sm:items-center sm:justify-between">
         <p className="text-sm text-muted">{canGenerate ? "" : es.est.falta}</p>
-        <Button onClick={handleGenerate} disabled={!canGenerate} className="w-full sm:w-auto">
+        <Button onClick={handleGenerate} disabled={!canGenerate} size="lg" className="w-full sm:w-auto">
           {generating ? es.est.generando : es.est.generar}
         </Button>
       </div>

@@ -141,14 +141,14 @@ export default function TerminosPage() {
               <label htmlFor={`sec-${key}`} className="text-sm font-semibold text-ink">
                 {t.secciones[key] ?? settings.titles[key] ?? key}
               </label>
-              <button
+              <Button
                 type="button"
-                className="text-xs text-accent underline disabled:opacity-40"
+                variant="ghost" size="sm" className="text-accent hover:bg-accent/10 hover:text-accent-strong"
                 disabled={draft.sections[key] === settings.defaults[key]}
                 onClick={() => setSection(key, settings.defaults[key])}
               >
                 {t.restaurarSeccion}
-              </button>
+              </Button>
             </div>
             <textarea
               id={`sec-${key}`}

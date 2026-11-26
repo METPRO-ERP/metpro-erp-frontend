@@ -227,7 +227,7 @@ export default function PoForm({ id }: { id?: number }) {
               <ul className="absolute z-10 mt-1 w-full rounded border bg-surface shadow" data-testid="product-matches">
                 {matches.map((p) => (
                   <li key={p.id}>
-                    <button type="button" onClick={() => addProduct(p)} className="w-full px-3 py-2 text-left text-sm hover:bg-accent/10">{p.name}</button>
+                    <button type="button" onClick={() => addProduct(p)} className="min-h-11 w-full px-3 py-2 text-left text-sm hover:bg-accent/10 md:min-h-0">{p.name}</button>
                   </li>
                 ))}
               </ul>
@@ -255,7 +255,7 @@ export default function PoForm({ id }: { id?: number }) {
                     <td className="p-1"><input aria-label={`${r.unidad} ${i + 1}`} value={it.unit ?? ""} disabled={locked} onChange={(e) => patch(i, "unit", e.target.value)} className={input} /></td>
                     <td className="p-1"><input aria-label={`${t.precio} ${i + 1}`} type="number" min="0" step="any" value={it.unit_price} disabled={locked} onChange={(e) => patch(i, "unit_price", e.target.value === "" ? 0 : Number(e.target.value))} className={input} /></td>
                     <td className="p-1 pt-3 text-right" data-testid={`amount-${i}`}>{money(lineAmount(it.quantity, it.unit_price))}</td>
-                    <td className="p-1">{!locked && <button type="button" onClick={() => setItems(items.filter((_, idx) => idx !== i))} className="px-2 py-1 text-red-600 hover:bg-red-50">{r.quitar}</button>}</td>
+                    <td className="p-1">{!locked && <Button type="button" onClick={() => setItems(items.filter((_, idx) => idx !== i))} variant="ghost" size="sm" className="text-red-600 hover:bg-red-50 hover:text-red-700">{r.quitar}</Button>}</td>
                   </tr>
                 ))}
               </tbody>

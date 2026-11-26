@@ -1,5 +1,6 @@
 'use client'
 import { es } from "@/lib/i18n/es";
+import { Button } from "@/components/ui/button";
 
 const t = es.facturacion.modo
 
@@ -11,16 +12,16 @@ export default function ConvertModeModal({ quoteLabel, onFull, onPhased, onCance
         <h2 className='text-lg font-semibold text-ink'>{t.titulo}</h2>
         <p className='mt-1 text-sm text-muted'>{quoteLabel}</p>
         <p className='mt-3 text-sm text-ink'>{t.descripcion}</p>
-        <div className='mt-5 flex flex-col gap-2'>
-          <button onClick={onFull} className='rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white hover:bg-accent-strong'>
+        <div className='mt-5 flex flex-col gap-4'>
+          <Button onClick={onFull} variant='default'>
             {t.completa}
-          </button>
-          <button onClick={onPhased} className='rounded-lg border border-line px-4 py-2 text-sm font-medium text-ink hover:bg-canvas'>
+          </Button>
+          <Button onClick={onPhased} variant='outline'>
             {t.fases}
-          </button>
-          <button onClick={onCancel} className='px-4 py-2 text-sm text-muted hover:text-ink'>
+          </Button>
+          <Button onClick={onCancel} variant='ghost' size='sm'>
             {es.comun.cancelar}
-          </button>
+          </Button>
         </div>
       </div>
     </div>

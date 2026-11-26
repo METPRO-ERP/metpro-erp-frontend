@@ -186,13 +186,13 @@ export default function SuppliersPanel() {
                   <td className={dt.td}>{r.is_active ? t.activo : t.inactivo}</td>
                   <td className={dt.tdRight}>
                     <div className="flex justify-end gap-2">
-                      <button onClick={() => edit(r)} className="rounded px-2 py-1 text-accent transition hover:bg-accent/10 hover:text-accent-strong">
+                      <Button onClick={() => edit(r)} variant="ghost" size="sm" className="text-accent hover:bg-accent/10 hover:text-accent-strong">
                         {t.editarBtn}
-                      </button>
+                      </Button>
                       {isAdmin && (
-                        <button onClick={() => remove(r.id)} className="rounded px-2 py-1 text-red-600 transition hover:bg-red-50 hover:text-red-700">
+                        <Button onClick={() => remove(r.id)} variant="ghost" size="sm" className="text-red-600 hover:bg-red-50 hover:text-red-700">
                           {t.eliminar}
-                        </button>
+                        </Button>
                       )}
                     </div>
                   </td>
