@@ -18,6 +18,8 @@ import SendToClientButton from "@/components/SendToClientButton";
 import FullCopyButton from "@/components/FullCopyButton";
 import InvoiceDocPreviewModal from "@/components/invoices/InvoiceDocPreviewModal";
 import { type InvoiceDocKind } from "@/lib/invoiceDocs";
+import ConducePanel from "@/components/invoices/ConducePanel";
+import { getConduceOptions } from "@/lib/conduceApi";
 
 interface Payment {
   id: number;
@@ -71,6 +73,12 @@ export default function InvoiceDetailPage() {
   const [paymentOpen, setPaymentOpen] = useState(false);
   const [preview, setPreview] = useState<InvoiceDocKind | null>(null);
   const { isAdmin } = useCurrentRole();
+  const [conduceLedger, setConduceLedger] = useState(false);
+  useEffect(() => {
+    let active = true;
+    getConduceOptions().then((o) => { if (active) setConduceLedger(o.enabled); });
+    return () => { active = false; };
+  }, []);
   // B-14: payment being voided (admin) and the reason typed for it.
   const [voiding, setVoiding] = useState<Payment | null>(null);
   const [voidReason, setVoidReason] = useState("");
@@ -300,11 +308,13 @@ export default function InvoiceDetailPage() {
           <div className="flex flex-wrap gap-2">
             {invoice.status !== "Cancelled" && <SendToClientButton id={invoiceId} type="invoice" />}
             <Button onClick={() => setPreview("factura")}>Vista previa Factura</Button>
-            <Button onClick={() => setPreview("conduce")}>Vista previa Conduce</Button>
+            {!conduceLedger && <Button onClick={() => setPreview("conduce")}>Vista previa Conduce</Button>}
             <FullCopyButton kind="invoice" id={invoiceId} />
             {recordAdminOnly && !isAdmin ? null : <Button onClick={() => setPaymentOpen(true)}>Pago</Button>}
           </div>
         </div>
+
+        {conduceLedger && <ConducePanel invoiceId={invoiceId} isAdmin={isAdmin} />}
 
         <div>
           <h2 className="text-xl font-semibold mb-3">Historial de Pagos</h2>

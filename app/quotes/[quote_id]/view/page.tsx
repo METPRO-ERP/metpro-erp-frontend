@@ -12,6 +12,7 @@ import { fmtDay, fmtTimestamp } from "@/lib/dates";
 import StatusHistoryLink from "@/components/StatusHistoryLink";
 import { money as libMoney, qty } from "@/lib/money";
 import FullCopyButton from "@/components/FullCopyButton";
+import QuoteDeliveryState from "@/components/quotes/QuoteDeliveryState";
 
 
 interface QuoteItem {
@@ -200,6 +201,7 @@ export default function QuotePublicView() {
               <span className="font-semibold">Creado por:</span> {quote.created_by_name || "—"}
             </div>
             <StatusHistoryLink kind="quote" id={quote.quote_id} refreshKey={quote.status} label={es.historial.ultimoCambio} />
+            <QuoteDeliveryState quoteId={quote.quote_id} />
             {quote.project_name && (
               <div className="sm:col-span-2">
                 <span className="font-semibold">Proyecto:</span> {quote.project_name}
