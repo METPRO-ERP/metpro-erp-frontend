@@ -1253,6 +1253,8 @@ export const es = {
     cargando: "Cargando entregas…",
     errCarga: "No se pudo cargar el estado de entrega.",
     sinLineas: "Indique al menos una cantidad a entregar.",
+    avisoExceden: "Hay líneas que exceden lo pendiente. Revise las cantidades marcadas.",
+    avisoInvalidas: "Hay cantidades no válidas. Revise las cantidades marcadas.",
     errNumero: "Cantidad no válida.",
     errDecimales: "Máximo 2 decimales.",
     errMaximo: (p: string) => `Máximo pendiente: ${p}`,

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
-  buildLines, checkQty, conduceErrorText, defaultEntries, fmtQty, stateLabel, stateTone, type DeliveryLine,
+  attemptMessage, attemptProblem, buildLines, checkQty, conduceErrorText, firstViolationId, defaultEntries, fmtQty, stateLabel, stateTone, type DeliveryLine,
 } from "@/lib/conduceApi";
 
 const L = (id: number, quoted: number, delivered: number): DeliveryLine => ({
@@ -74,5 +74,35 @@ describe("delivery state and errors", () => {
     expect(conduceErrorText({ code: "CONDUCE_INVOICE_CANCELLED", message: "x" })).toMatch(/cancelada/);
     expect(conduceErrorText(new Error("boom"))).toBe("boom");
     expect(conduceErrorText(null)).toBe("No se pudo completar la operación.");
+  });
+});
+
+describe("create attempt message (nit fix)", () => {
+  const lines = [L(1, 10, 6), L(2, 5, 5), L(3, 100.5, 0)];
+  it("an over-pending entry blocks the attempt and the message names the problem", () => {
+    const entries = { 1: "9", 3: "10" };
+    expect(buildLines(lines, entries).ok).toBe(false);
+    expect(attemptProblem(lines, entries)).toBe("over");
+    expect(attemptMessage("over")).toBe("Hay líneas que exceden lo pendiente. Revise las cantidades marcadas.");
+  });
+  it("scrolls to the first violating line in display order, skipping finished lines", () => {
+    expect(firstViolationId(lines, { 1: "4", 2: "9", 3: "999" })).toBe(3);
+    expect(firstViolationId(lines, { 1: "9", 3: "999" })).toBe(1);
+  });
+  it("junk input gets the invalid message, an empty form keeps its own", () => {
+    expect(attemptProblem(lines, { 1: "abc", 3: "1" })).toBe("invalid");
+    expect(attemptMessage("invalid")).toBe("Hay cantidades no válidas. Revise las cantidades marcadas.");
+    expect(attemptProblem(lines, { 1: "", 3: "0" })).toBe("empty");
+    expect(attemptMessage("empty")).toBe("Indique al menos una cantidad a entregar.");
+  });
+  it("a valid form has no problem, no message, no violation, and builds the same payload as before", () => {
+    const entries = defaultEntries(lines);
+    expect(attemptProblem(lines, entries)).toBeNull();
+    expect(attemptMessage(null)).toBeNull();
+    expect(firstViolationId(lines, entries)).toBeNull();
+    expect(buildLines(lines, entries)).toEqual({ ok: true, lines: [{ quote_item_id: 1, quantity: 4 }, { quote_item_id: 3, quantity: 100.5 }] });
+  });
+  it("a stale entry on a finished line is not a violation", () => {
+    expect(attemptProblem(lines, { 1: "4", 2: "3", 3: "10" })).toBeNull();
   });
 });

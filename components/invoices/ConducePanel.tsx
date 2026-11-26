@@ -6,11 +6,14 @@ import { Button } from "@/components/ui/button";
 import { es } from "@/lib/i18n/es";
 import { fmtDay } from "@/lib/dates";
 import {
+  attemptMessage,
+  attemptProblem,
   buildLines,
   conduceErrorText,
   createConduce,
   defaultEntries,
   fetchConducePdf,
+  firstViolationId,
   fmtQty,
   getInvoiceDelivery,
   stateLabel,
@@ -146,7 +149,18 @@ export default function ConducePanel({ invoiceId, isAdmin }: Props) {
     const built = buildLines(view.lines, entries);
     if (!built.ok) {
       setErrors(built.errors);
-      setFormError(built.empty ? c.sinLineas : null);
+      const msg = attemptMessage(attemptProblem(view.lines, entries));
+      setFormError(msg);
+      // The inline warning can be off-screen (360px): bring the first wrong line into view and say why.
+      const bad = firstViolationId(view.lines, entries);
+      if (bad !== null) {
+        const el = document.getElementById(`q-${bad}`);
+        if (el) {
+          el.scrollIntoView({ block: "center", behavior: "smooth" });
+          el.focus({ preventScroll: true });
+        }
+      }
+      if (msg) toast.error(msg);
       return;
     }
     setErrors({});

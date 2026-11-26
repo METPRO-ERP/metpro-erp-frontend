@@ -153,6 +153,46 @@ export function buildLines(lines: DeliveryLine[], entries: Record<number, string
   return { ok: true, lines: out };
 }
 
+export type AttemptProblem = "over" | "invalid" | "empty" | null;
+
+/**
+ * Why a create attempt cannot go out, for the message above the button. Same rules as buildLines
+ * (finished lines are skipped); it only classifies. null = the form is valid and creates as before.
+ */
+export function attemptProblem(lines: DeliveryLine[], entries: Record<number, string>): AttemptProblem {
+  let invalid = false;
+  let over = false;
+  let any = false;
+  for (const l of lines) {
+    if (l.pending <= 0) continue;
+    const c = checkQty(entries[l.quote_item_id] ?? "", l.pending);
+    if (!c.ok) {
+      const exceeds = /^\d+([.,]\d{1,2})?$/.test((entries[l.quote_item_id] ?? "").trim());
+      if (exceeds) over = true;
+      else invalid = true;
+    } else if (c.value !== null) any = true;
+  }
+  if (over) return "over";
+  if (invalid) return "invalid";
+  return any ? null : "empty";
+}
+
+/** First line (in display order) whose entry is wrong, so the page can scroll to it. */
+export function firstViolationId(lines: DeliveryLine[], entries: Record<number, string>): number | null {
+  for (const l of lines) {
+    if (l.pending <= 0) continue;
+    if (!checkQty(entries[l.quote_item_id] ?? "", l.pending).ok) return l.quote_item_id;
+  }
+  return null;
+}
+
+export function attemptMessage(problem: AttemptProblem): string | null {
+  if (problem === "over") return es.cond.avisoExceden;
+  if (problem === "invalid") return es.cond.avisoInvalidas;
+  if (problem === "empty") return es.cond.sinLineas;
+  return null;
+}
+
 export function stateLabel(state: string | null | undefined): string {
   return (es.cond.estados as Record<string, string>)[state ?? ""] ?? "—";
 }
