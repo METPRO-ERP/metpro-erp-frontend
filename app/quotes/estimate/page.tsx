@@ -11,7 +11,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useCurrentRole } from "@/lib/currentRole";
 import { formatMoney } from "@/lib/takeOffLines";
 import { termsForGenerate, validUntilIsPast } from "@/lib/quoteTerms";
-import { usePaymentDueEnabled, parseDays, creditDaysForCreate } from "@/lib/paymentDue";
+import { usePaymentDueEnabled, parseDays, creditDaysForCreate, useClientTermsInheritance } from "@/lib/paymentDue";
 import PaymentTermsFields from "@/components/quotes/PaymentTermsFields";
 import { businessToday } from "@/lib/dates";
 import { takeOffInputClass, TotalRow } from "@/components/quotes/takeoff/LineCard";
@@ -38,7 +38,7 @@ import {
   type OverrideDrafts,
 } from "@/lib/estimatorCalc";
 
-interface Client { id: number; company_name: string }
+interface Client { id: number; company_name: string; default_credit_days?: number | null; default_payment_terms?: string | null }
 interface Contact { id: number; name: string; email?: string | null }
 
 const FIELD_LABEL: Record<NumberField, string> = {
@@ -75,10 +75,12 @@ export default function EstimatePage() {
   const [contactId, setContactId] = useState("");
   const [project, setProject] = useState("");
   const [notes, setNotes] = useState("");
-  const [paymentTerms, setPaymentTerms] = useState("");
   const [validUntil, setValidUntil] = useState("");
   const paymentDueEnabled = usePaymentDueEnabled();
-  const [paymentDays, setPaymentDays] = useState("");
+  // R4 (D-T): same inheritance as take-off. The client select feeds it; any edit of either field wins.
+  const selectedClient = clients.find((c) => String(c.id) === clientId) ?? null;
+  const { terms: paymentTerms, days: paymentDays, inherited: termsInherited, setTerms: setPaymentTerms, setDays: setPaymentDays } =
+    useClientTermsInheritance(paymentDueEnabled, selectedClient);
 
   const [form, setForm] = useState<EstimateForm>(DEFAULT_FORM);
   const [drafts, setDrafts] = useState<OverrideDrafts>({});
@@ -238,7 +240,7 @@ export default function EstimatePage() {
             <input className={takeOffInputClass} value={paymentTerms} onChange={(e) => setPaymentTerms(e.target.value)} placeholder={es.cot.terminosPago} />
           </label>
           {paymentDueEnabled ? (
-            <PaymentTermsFields value={paymentDays} onChange={setPaymentDays} inputClass={takeOffInputClass} className="" />
+            <PaymentTermsFields value={paymentDays} onChange={setPaymentDays} inputClass={takeOffInputClass} className="" inherited={termsInherited} />
           ) : null}
           <label className="block text-sm">
             <span className="mb-1 block font-medium text-ink">{es.est.validaHasta}</span>

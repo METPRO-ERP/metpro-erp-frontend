@@ -713,6 +713,7 @@ export const es = {
     dias: "Días de crédito",
     diasAyuda: "Días desde la fecha de la factura. Vacío: la factura no lleva vencimiento.",
     etiqueta: "Vencimiento de pago",
+    heredado: "Heredado del cliente. Puede cambiarlo; solo afecta esta cotización.",
     editar: "Editar vencimiento",
     nuevaFecha: "Nueva fecha de vencimiento",
     nota: "Motivo del cambio (obligatorio)",
@@ -816,6 +817,8 @@ export const es = {
     errorHttp: (c: number) => `Error ${c}`,
   },
   cli: {
+    terminosDefecto: "Plazo y términos de pago por defecto",
+    terminosDefectoAyuda: "Se usa al crear cotizaciones nuevas. No cambia cotizaciones ni facturas existentes.",
     sesionExpirada: "Su sesión expiró. Inicie sesión nuevamente.",
     errorCargar: "Error al cargar los clientes. Intente de nuevo.",
     creado: "¡Cliente creado correctamente!",

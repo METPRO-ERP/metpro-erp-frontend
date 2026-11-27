@@ -38,6 +38,7 @@ export default function QuoteForm({
   paymentDueEnabled = false,
   paymentDays = '',
   setPaymentDays,
+  termsInherited = false,
   onSubmit,
   loading,
   onOpenProductModal,
@@ -141,7 +142,7 @@ export default function QuoteForm({
 
       {/* PAYMENT TERM (days). Only with PAYMENT_DUE_ENABLED on. */}
       {paymentDueEnabled && setPaymentDays && (
-        <PaymentTermsFields value={paymentDays} onChange={setPaymentDays} />
+        <PaymentTermsFields value={paymentDays} onChange={setPaymentDays} inherited={termsInherited} />
       )}
 
       {/* VALID UNTIL */}

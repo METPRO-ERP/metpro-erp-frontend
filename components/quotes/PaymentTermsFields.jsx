@@ -6,7 +6,7 @@ import { PRESETS, CUSTOM, NO_PRESET, CREDIT_DAYS_MAX, parseDays, presetKey } fro
  * B2 days control. Rendered only when PAYMENT_DUE_ENABLED is on (the caller decides).
  * value is the days as a string ("" = no structured term). The free payment_terms text stays a separate field.
  */
-export default function PaymentTermsFields({ value, onChange, inputClass = "w-full border p-2 rounded", disabled = false, className = "mb-4" }) {
+export default function PaymentTermsFields({ value, onChange, inputClass = "w-full border p-2 rounded", disabled = false, className = "mb-4", inherited = false }) {
   const days = parseDays(value);
   const [forceCustom, setForceCustom] = useState(false);
   const key = forceCustom ? CUSTOM : presetKey(days);
@@ -39,6 +39,7 @@ export default function PaymentTermsFields({ value, onChange, inputClass = "w-fu
         ))}
         <option value={CUSTOM}>{es.vencimiento.personalizado}</option>
       </select>
+      {inherited && <p className="text-xs text-muted mt-1" data-testid="terms-inherited">{es.vencimiento.heredado}</p>}
       {key === CUSTOM && (
         <div className="mt-2">
           <label className="block text-sm font-medium mb-1" htmlFor="plazo-dias">{es.vencimiento.dias}</label>

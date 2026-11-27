@@ -19,7 +19,7 @@ import { PageHeader } from "@/components/ui/page-header";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import QuoteForm from "@/components/quotes/QuoteForm";
-import { usePaymentDueEnabled, parseDays, creditDaysForCreate } from "@/lib/paymentDue";
+import { usePaymentDueEnabled, parseDays, creditDaysForCreate, useClientTermsInheritance, type ClientDefaultTerms } from "@/lib/paymentDue";
 import { useTaxTypes } from "@/components/quotes/useTaxTypes";
 import QuoteCostEstimate from "@/components/quotes/QuoteCostEstimate";
 import ProductSelectionModal from "@/components/quotes/ProductSelectionModal";
@@ -62,7 +62,7 @@ function TakeOffScreen() {
   const blank = params.get("blank") === "1";
   const paramsOk = Boolean(clientId && contactId && (packId || blank));
 
-  const [client, setClient] = useState<{ id: number; company_name: string } | null>(null);
+  const [client, setClient] = useState<({ id: number; company_name: string } & ClientDefaultTerms) | null>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [contacts, setContacts] = useState<any[]>([]);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -78,10 +78,11 @@ function TakeOffScreen() {
   });
   const [projectName, setProjectName] = useState("");
   const [notes, setNotes] = useState("");
-  const [paymentTerms, setPaymentTerms] = useState("");
   const [validUntil, setValidUntil] = useState("");
   const paymentDueEnabled = usePaymentDueEnabled();
-  const [paymentDays, setPaymentDays] = useState("");
+  // R4: the client's default term prefills both fields until the user edits either one.
+  const { terms: paymentTerms, days: paymentDays, inherited: termsInherited, setTerms: setPaymentTerms, setDays: setPaymentDays } =
+    useClientTermsInheritance(paymentDueEnabled, client);
   // Tax type: "" = the default. The selector shows only when 2+ types are active.
   const { taxTypes } = useTaxTypes();
   const [taxTypeCode, setTaxTypeCode] = useState("");
@@ -99,7 +100,7 @@ function TakeOffScreen() {
     let cancelled = false;
     api(`/clients/${clientId}`)
       .then((data) => {
-        if (!cancelled) setClient(data as { id: number; company_name: string });
+        if (!cancelled) setClient(data as { id: number; company_name: string } & ClientDefaultTerms);
       })
       .catch((err: Error) => {
         if (!cancelled) setSaveError(es.cot.errorCliente(err.message));
@@ -307,6 +308,7 @@ function TakeOffScreen() {
         paymentDueEnabled={paymentDueEnabled}
         paymentDays={paymentDays}
         setPaymentDays={setPaymentDays}
+        termsInherited={termsInherited}
         onSubmit={handleSave}
         loading={saving}
         onOpenProductModal={(index?: number) => {

@@ -60,6 +60,56 @@ export function creditDaysForUpdate(
   return { credit_days: current };
 }
 
+/**
+ * Release R4: client-level default payment term. The default is a PREFILL on the new-quote form only.
+ * Backend stores what the form sends; it never inherits, and a client default edit never moves an existing quote or invoice.
+ */
+export interface ClientDefaultTerms {
+  default_credit_days?: number | null;
+  default_payment_terms?: string | null;
+}
+
+/** The client's default as form values, or null when switch is off or the client has none. */
+export function clientDefaultTerms(
+  enabled: boolean,
+  c: ClientDefaultTerms | null | undefined
+): { days: string; terms: string } | null {
+  if (!enabled || !c) return null;
+  const d = parseDays(c.default_credit_days ?? null);
+  const t = typeof c.default_payment_terms === "string" ? c.default_payment_terms.trim() : "";
+  if (d === null && !t) return null;
+  return { days: d === null ? "" : String(d), terms: t };
+}
+
+export interface TermsEdit {
+  terms: string;
+  days: string;
+}
+
+/**
+ * Pure rule. `edited` is null until the user types in either field. Once set, the quote's own value wins and the
+ * client's default is never applied again. Untouched: the client's default fills both fields (switch off or no
+ * default: empty). Derived on every render, so there is no effect and no stale inherited value when the client changes.
+ */
+export function resolveTerms(
+  edited: TermsEdit | null,
+  enabled: boolean,
+  c: ClientDefaultTerms | null | undefined
+): { terms: string; days: string; inherited: boolean } {
+  if (edited) return { ...edited, inherited: false };
+  const d = clientDefaultTerms(enabled, c);
+  return d ? { terms: d.terms, days: d.days, inherited: true } : { terms: "", days: "", inherited: false };
+}
+
+/** State for the two term fields with inheritance. Any edit by the user marks them touched and hides the note. */
+export function useClientTermsInheritance(enabled: boolean, c: ClientDefaultTerms | null | undefined) {
+  const [edited, setEdited] = useState<TermsEdit | null>(null);
+  const cur = resolveTerms(edited, enabled, c);
+  const setTerms = (terms: string) => setEdited({ terms, days: cur.days });
+  const setDays = (days: string) => setEdited({ terms: cur.terms, days });
+  return { ...cur, setTerms, setDays };
+}
+
 let cached: Promise<boolean> | null = null;
 
 export function getPaymentDueEnabled(): Promise<boolean> {

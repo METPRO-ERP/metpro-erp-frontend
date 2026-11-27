@@ -14,6 +14,8 @@ import { Button, buttonVariants } from '@/components/ui/button'
 import { ResponsiveList, ListCard } from '@/components/ui/responsive-list'
 import ErrorBanner from '@/components/ui/ErrorBanner'
 import SuppliersPanel from '@/components/suppliers/SuppliersPanel'
+import PaymentTermsFields from '@/components/quotes/PaymentTermsFields'
+import { usePaymentDueEnabled, parseDays } from '@/lib/paymentDue'
 
 export default function ClientsPage() {
   const { isAdmin } = useCurrentRole()
@@ -34,6 +36,8 @@ export default function ClientsPage() {
   // Clientes / Suplidores dropdown. Shown only when the backend switch SUPPLIERS_ENABLED is on.
   const [suppliersEnabled, setSuppliersEnabled] = useState(false)
   const [view, setView] = useState('clientes')
+  // R4: default payment term on the client. Fields exist only while PAYMENT_DUE_ENABLED is on (fail closed).
+  const paymentDueEnabled = usePaymentDueEnabled()
 
   useEffect(() => {
     fetchClients()
@@ -281,6 +285,39 @@ export default function ClientsPage() {
             className='border p-2 rounded md:col-span-2'
             rows='3'
           />
+
+          {paymentDueEnabled && (
+            <div className='md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4'>
+              <div>
+                <PaymentTermsFields
+                  value={String((editingClient ? editingClient.default_credit_days : newClient.default_credit_days) ?? '')}
+                  onChange={(v) =>
+                    editingClient
+                      ? setEditingClient({ ...editingClient, default_credit_days: parseDays(v) })
+                      : setNewClient({ ...newClient, default_credit_days: parseDays(v) })
+                  }
+                  className=''
+                  inputClass='w-full border p-2 rounded'
+                />
+              </div>
+              <div>
+                <label className='block text-sm font-medium mb-2' htmlFor='cliente-terminos-defecto'>{es.cli.terminosDefecto}</label>
+                <input
+                  id='cliente-terminos-defecto'
+                  type='text'
+                  aria-label={es.cli.terminosDefecto}
+                  value={(editingClient ? editingClient.default_payment_terms : newClient.default_payment_terms) || ''}
+                  onChange={(e) =>
+                    editingClient
+                      ? setEditingClient({ ...editingClient, default_payment_terms: e.target.value })
+                      : setNewClient({ ...newClient, default_payment_terms: e.target.value })
+                  }
+                  className='w-full border p-2 rounded'
+                />
+                <p className='text-xs text-muted mt-1'>{es.cli.terminosDefectoAyuda}</p>
+              </div>
+            </div>
+          )}
 
           <div className='md:col-span-2 flex gap-2'>
             <Button type='submit' disabled={loading}>
