@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import SealCheckbox from "@/components/SealCheckbox";
 import { useSealSettings } from "@/lib/useSealSettings";
 import { es } from "@/lib/i18n/es";
+import { ModalShell } from "@/components/ui/modal-shell";
 
 const t = es.envio;
 
@@ -49,17 +50,17 @@ export default function SendToClientModal({
   if (id === null || id === undefined || id === "" || id === 0) {
     console.error("SendToClientModal received invalid ID:", id);
     return (
-      <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-        <div className="bg-surface rounded-lg shadow-card p-6 w-full max-w-md">
-          <h2 className="text-xl font-semibold mb-4 text-center">{t.documentoInvalido}</h2>
-          <p className="text-ink mb-6">{t.documentoInvalidoTexto}</p>
-          <div className="flex justify-end">
-            <Button variant="outline" onClick={onClose}>
-              {t.cerrar}
-            </Button>
-          </div>
-        </div>
-      </div>
+      <ModalShell
+        title={t.documentoInvalido}
+        centerTitle
+        footer={
+          <Button variant="outline" onClick={onClose}>
+            {t.cerrar}
+          </Button>
+        }
+      >
+        <p className="text-ink">{t.documentoInvalidoTexto}</p>
+      </ModalShell>
     );
   }
 
@@ -134,50 +135,11 @@ export default function SendToClientModal({
   };
 
   return (
-    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-      <div className="bg-surface rounded-lg shadow-card p-6 w-full max-w-md">
-        <h2 className="text-xl font-semibold mb-4 text-center">
-          {type === "quote" ? t.tituloCotizacion : t.tituloFactura}
-        </h2>
-
-        <p className="text-ink mb-4 break-words whitespace-normal">{t.pregunta}</p>
-
-        <div className="mb-6">
-          <input ref={inputRef} type="file" multiple className="hidden" onChange={handlePick} disabled={loading} />
-          <Button type="button" variant="outline" onClick={() => inputRef.current?.click()} disabled={loading}>
-            {t.adjuntar}
-          </Button>
-          <p className="mt-2 text-xs text-muted">{t.adjuntosNota}</p>
-
-          {files.length > 0 && (
-            <ul className="mt-3 divide-y divide-line rounded-md border border-line" aria-label={t.adjuntosTitulo}>
-              {files.map((f, i) => (
-                <li key={`${f.name}-${i}`} className="flex items-center justify-between gap-3 px-3 py-2 text-sm">
-                  <span className="min-w-0 truncate" title={f.name}>
-                    {f.name}
-                    <span className="ml-2 text-xs text-muted">{formatSize(f.size)}</span>
-                  </span>
-                  <Button
-                    type="button"
-                    onClick={() => removeFile(i)}
-                    disabled={loading}
-                    variant="ghost" size="sm" className="shrink-0 text-red-600 hover:bg-red-50 hover:text-red-700"
-                  >
-                    {t.quitar}
-                  </Button>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-
-        {seal.configured && (
-          <div className="mb-6">
-            <SealCheckbox checked={printSeal} onChange={setSealChoice} disabled={loading} />
-          </div>
-        )}
-
-        <div className="flex justify-end gap-3">
+    <ModalShell
+      title={type === "quote" ? t.tituloCotizacion : t.tituloFactura}
+      centerTitle
+      footer={
+        <>
           <Button variant="outline" onClick={handleClose} disabled={loading}>
             {es.comun.cancelar}
           </Button>
@@ -185,8 +147,45 @@ export default function SendToClientModal({
           <Button onClick={handleSend} disabled={loading}>
             {loading ? t.enviando : t.enviar}
           </Button>
-        </div>
+        </>
+      }
+    >
+      <p className="text-ink mb-4 break-words whitespace-normal">{t.pregunta}</p>
+
+      <div className="mb-6">
+        <input ref={inputRef} type="file" multiple className="hidden" onChange={handlePick} disabled={loading} />
+        <Button type="button" variant="outline" onClick={() => inputRef.current?.click()} disabled={loading}>
+          {t.adjuntar}
+        </Button>
+        <p className="mt-2 text-xs text-muted">{t.adjuntosNota}</p>
+
+        {files.length > 0 && (
+          <ul className="mt-3 divide-y divide-line rounded-md border border-line" aria-label={t.adjuntosTitulo}>
+            {files.map((f, i) => (
+              <li key={`${f.name}-${i}`} className="flex items-center justify-between gap-3 px-3 py-2 text-sm">
+                <span className="min-w-0 truncate" title={f.name}>
+                  {f.name}
+                  <span className="ml-2 text-xs text-muted">{formatSize(f.size)}</span>
+                </span>
+                <Button
+                  type="button"
+                  onClick={() => removeFile(i)}
+                  disabled={loading}
+                  variant="ghost" size="sm" className="shrink-0 text-red-600 hover:bg-red-50 hover:text-red-700"
+                >
+                  {t.quitar}
+                </Button>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
-    </div>
+
+      {seal.configured && (
+        <div className="mb-6">
+          <SealCheckbox checked={printSeal} onChange={setSealChoice} disabled={loading} />
+        </div>
+      )}
+    </ModalShell>
   );
 }

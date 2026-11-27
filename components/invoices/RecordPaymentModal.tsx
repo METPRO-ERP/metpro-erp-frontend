@@ -5,6 +5,7 @@ import { es } from "@/lib/i18n/es";
 import { useState } from "react";
 import { createPayment } from "@/lib/invoiceApi";
 import { Button } from "@/components/ui/button";
+import { ModalShell } from "@/components/ui/modal-shell";
 
 interface Props {
   invoiceId: number;
@@ -67,85 +68,76 @@ const [form, setForm] = useState({
   }
 
   return (
-    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-      <div className="bg-surface p-6 rounded shadow-card w-full max-w-md">
-        <h2 className="text-xl font-semibold mb-4">{es.fact.registrarPago}</h2>
+    <ModalShell
+      title={es.fact.registrarPago}
+      footer={
+        <>
+          <Button type="button" onClick={onClose} variant="outline">
+            {es.fact.cancelar}
+          </Button>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block mb-1 font-medium">{es.fact.monto}</label>
-            <input
-              type="number"
-              name="amount"
-              min="0.01"
-              step="0.01"
-              value={form.amount}
-              onChange={handleChange}
-              className="border p-2 rounded w-full"
-              required
-            />
-          </div>
+          <Button type="submit" form="record-payment-form" disabled={loading} variant="default">
+            {loading ? es.cot.guardando : es.fact.registrarPago}
+          </Button>
+        </>
+      }
+    >
+      <form id="record-payment-form" onSubmit={handleSubmit} className="space-y-4">
+        <div>
+          <label className="block mb-1 font-medium">{es.fact.monto}</label>
+          <input
+            type="number"
+            name="amount"
+            min="0.01"
+            step="0.01"
+            value={form.amount}
+            onChange={handleChange}
+            className="border p-2 rounded w-full"
+            required
+          />
+        </div>
 
-          <div>
-            <label className="block mb-1 font-medium">{es.fact.metodoPago}</label>
-            <input
-              type="text"
-              name="method"
-              value={form.method}
-              onChange={handleChange}
-              className="border p-2 rounded w-full"
-              placeholder="Efectivo, Transferencia, Tarjeta"
-              required
-            />
-          </div>
+        <div>
+          <label className="block mb-1 font-medium">{es.fact.metodoPago}</label>
+          <input
+            type="text"
+            name="method"
+            value={form.method}
+            onChange={handleChange}
+            className="border p-2 rounded w-full"
+            placeholder="Efectivo, Transferencia, Tarjeta"
+            required
+          />
+        </div>
 
-          <div>
-            <label className="block mb-1 font-medium">{es.fact.fechaPago}</label>
-            <input
-              type="date"
-              name="payment_date"
-              value={form.payment_date}
-              onChange={handleChange}
-              className="border p-2 rounded w-full"
-              required
-            />
-          </div>
+        <div>
+          <label className="block mb-1 font-medium">{es.fact.fechaPago}</label>
+          <input
+            type="date"
+            name="payment_date"
+            value={form.payment_date}
+            onChange={handleChange}
+            className="border p-2 rounded w-full"
+            required
+          />
+        </div>
 
-          <div>
-            <label className="block mb-1 font-medium">{es.fact.notasOpcional}</label>
-            <textarea
-              name="notes"
-              value={form.notes}
-              onChange={handleChange}
-              className="border p-2 rounded w-full"
-            />
-          </div>
+        <div>
+          <label className="block mb-1 font-medium">{es.fact.notasOpcional}</label>
+          <textarea
+            name="notes"
+            value={form.notes}
+            onChange={handleChange}
+            className="border p-2 rounded w-full"
+          />
+        </div>
 
-          {error && (
-            <p role="alert" className="rounded border border-red-200 bg-red-50 p-2 text-sm text-red-700">
-              {error}
-            </p>
-          )}
-
-          <div className="flex justify-end gap-2 mt-4">
-            <Button
-              type="button"
-              onClick={onClose}
-              variant="outline"
-            >
-              {es.fact.cancelar}
-            </Button>
-
-            <Button
-              type="submit"
-              disabled={loading}
-              variant="default"
-            >
-              {loading ? es.cot.guardando : es.fact.registrarPago}
-            </Button>
-          </div>
-        </form>
-      </div>
-    </div>
+        {error && (
+          <p role="alert" className="rounded border border-red-200 bg-red-50 p-2 text-sm text-red-700">
+            {error}
+          </p>
+        )}
+      </form>
+    </ModalShell>
   );
 }
