@@ -366,7 +366,7 @@ function DraftEditor() {
           <AlertDescription>{loadError}</AlertDescription>
         </Alert>
         <div className="mt-4">
-          <Link href="/quotes" className="text-accent underline">
+          <Link href="/quotes" className="hit-44 relative inline-block text-accent underline">
             {es.cot.volverCotizaciones}
           </Link>
         </div>
@@ -510,7 +510,8 @@ function DraftEditor() {
               className={takeOffInputClass}
               aria-label={es.cot.notas}
             />
-            <label className="block text-sm">
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
+            <label className="block text-sm sm:col-span-2 lg:col-span-1">
               <span className="mb-1 block font-medium text-ink">{es.cot.terminosPago}</span>
               <input
                 type="text"
@@ -521,7 +522,7 @@ function DraftEditor() {
               />
             </label>
             {paymentDueEnabled ? (
-              <PaymentTermsFields value={paymentDays} onChange={setPaymentDays} inputClass={takeOffInputClass} disabled={!canWrite} />
+              <PaymentTermsFields value={paymentDays} onChange={setPaymentDays} inputClass={takeOffInputClass} disabled={!canWrite} className="" />
             ) : null}
             <label className="block text-sm">
               <span className="mb-1 block font-medium text-ink">{es.cot.validaHasta}</span>
@@ -536,6 +537,7 @@ function DraftEditor() {
                 <span className="mt-1 block text-xs text-amber-700" role="status">{es.cot.validaPasada}</span>
               ) : null}
             </label>
+            </div>
             <PrintItemsToggle
               checked={printItems}
               onChange={(v) => {
@@ -557,24 +559,31 @@ function DraftEditor() {
             />
           ) : null}
 
-          {saveMessage ? <p className="text-sm text-muted">{saveMessage}</p> : null}
-          {dirty ? <p className="text-sm text-muted">{es.cot.cambiosSinGuardar}</p> : null}
-
-          <Button onClick={handleSave} disabled={!canWrite || !dirty} variant="outline" size="lg" className="w-full">
-            {saving ? es.cot.guardando : es.cot.guardarBorrador}
-          </Button>
-          <Button
-            onClick={() => setConfirmOpen(true)}
-            disabled={!canWrite || includedCount === 0}
-            size="lg"
-            className="w-full"
-          >
-            {es.cot.finalizar}
-          </Button>
-          {includedCount === 0 ? (
-            <p className="text-xs text-muted">{es.cot.incluyaUno}</p>
-          ) : null}
         </aside>
+      </div>
+
+      {/* C3: the primary actions stay in view (sticky at the foot of the page), not after the whole form. */}
+      <div className="sticky bottom-0 z-30 -mx-4 mt-6 border-t border-line bg-surface/95 px-4 py-3 backdrop-blur sm:-mx-6 sm:px-6" data-testid="quote-action-bar">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+          <div className="min-w-0 space-y-0.5 text-sm text-muted" aria-live="polite">
+            {saveMessage ? <p>{saveMessage}</p> : null}
+            {dirty ? <p>{es.cot.cambiosSinGuardar}</p> : null}
+            {includedCount === 0 ? <p className="text-xs">{es.cot.incluyaUno}</p> : null}
+          </div>
+          <div className="flex gap-3">
+            <Button onClick={handleSave} disabled={!canWrite || !dirty} variant="outline" size="lg" className="flex-1 sm:flex-none">
+              {saving ? es.cot.guardando : es.cot.guardarBorrador}
+            </Button>
+            <Button
+              onClick={() => setConfirmOpen(true)}
+              disabled={!canWrite || includedCount === 0}
+              size="lg"
+              className="flex-1 sm:flex-none"
+            >
+              {es.cot.finalizar}
+            </Button>
+          </div>
+        </div>
       </div>
 
       <Dialog open={confirmOpen} onOpenChange={(open) => !finalizing && setConfirmOpen(open)}>

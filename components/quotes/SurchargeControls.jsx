@@ -43,22 +43,22 @@ export default function SurchargeControls({ charges, setCharges }) {
       <label className='block text-sm font-medium mb-3'>{es.cot.cargosAdicionales}</label>
       <div className='border rounded-lg p-4 space-y-3'>
         <div className='flex items-center justify-between'>
-          <div className='flex items-center gap-2'>
+          <label className='flex items-center gap-2 max-md:min-h-11'>
             <input aria-label={es.cot.cargos.supervision}
               type='checkbox'
               checked={charges.supervision}
               onChange={() => handleToggle('supervision')}
-              className='w-4 h-4'
+              className='w-4 h-4 max-md:h-6 max-md:w-6'
             />
-            <label className='text-sm font-medium'>{es.cot.cargos.supervision}</label>
-          </div>
+            <span className='text-sm font-medium'>{es.cot.cargos.supervision}</span>
+          </label>
           <div className='flex items-center gap-2'>
             <input aria-label={`${es.cot.cargos.supervision} (%)`}
               type='number'
               value={charges.supervision_percentage}
               onChange={(e) => handlePercentageChange('supervision_percentage', e.target.value)}
               disabled={!charges.supervision}
-              className='w-20 border rounded px-2 py-1 text-sm'
+              className='w-20 border rounded px-2 py-1 text-sm max-md:h-11 max-md:w-24'
               min='0'
               step='0.1'
             />
@@ -67,22 +67,22 @@ export default function SurchargeControls({ charges, setCharges }) {
         </div>
 
         <div className='flex items-center justify-between'>
-          <div className='flex items-center gap-2'>
+          <label className='flex items-center gap-2 max-md:min-h-11'>
             <input aria-label={es.cot.cargos.admin}
               type='checkbox'
               checked={charges.admin}
               onChange={() => handleToggle('admin')}
-              className='w-4 h-4'
+              className='w-4 h-4 max-md:h-6 max-md:w-6'
             />
-            <label className='text-sm font-medium'>{es.cot.cargos.admin}</label>
-          </div>
+            <span className='text-sm font-medium'>{es.cot.cargos.admin}</span>
+          </label>
           <div className='flex items-center gap-2'>
             <input aria-label={`${es.cot.cargos.admin} (%)`}
               type='number'
               value={charges.admin_percentage}
               onChange={(e) => handlePercentageChange('admin_percentage', e.target.value)}
               disabled={!charges.admin}
-              className='w-20 border rounded px-2 py-1 text-sm'
+              className='w-20 border rounded px-2 py-1 text-sm max-md:h-11 max-md:w-24'
               min='0'
               step='0.1'
             />
@@ -91,22 +91,22 @@ export default function SurchargeControls({ charges, setCharges }) {
         </div>
 
         <div className='flex items-center justify-between'>
-          <div className='flex items-center gap-2'>
+          <label className='flex items-center gap-2 max-md:min-h-11'>
             <input aria-label={es.cot.cargos.insurance}
               type='checkbox'
               checked={charges.insurance}
               onChange={() => handleToggle('insurance')}
-              className='w-4 h-4'
+              className='w-4 h-4 max-md:h-6 max-md:w-6'
             />
-            <label className='text-sm font-medium'>{es.cot.cargos.insurance}</label>
-          </div>
+            <span className='text-sm font-medium'>{es.cot.cargos.insurance}</span>
+          </label>
           <div className='flex items-center gap-2'>
             <input aria-label={`${es.cot.cargos.insurance} (%)`}
               type='number'
               value={charges.insurance_percentage}
               onChange={(e) => handlePercentageChange('insurance_percentage', e.target.value)}
               disabled={!charges.insurance}
-              className='w-20 border rounded px-2 py-1 text-sm'
+              className='w-20 border rounded px-2 py-1 text-sm max-md:h-11 max-md:w-24'
               min='0'
               step='0.1'
             />
@@ -115,22 +115,22 @@ export default function SurchargeControls({ charges, setCharges }) {
         </div>
 
         <div className='flex items-center justify-between'>
-          <div className='flex items-center gap-2'>
+          <label className='flex items-center gap-2 max-md:min-h-11'>
             <input aria-label={es.cot.cargos.transport}
               type='checkbox'
               checked={charges.transport}
               onChange={() => handleToggle('transport')}
-              className='w-4 h-4'
+              className='w-4 h-4 max-md:h-6 max-md:w-6'
             />
-            <label className='text-sm font-medium'>{es.cot.cargos.transport}</label>
-          </div>
+            <span className='text-sm font-medium'>{es.cot.cargos.transport}</span>
+          </label>
           <div className='flex items-center gap-2'>
             <input aria-label={`${es.cot.cargos.transport} (%)`}
               type='number'
               value={charges.transport_percentage}
               onChange={(e) => handlePercentageChange('transport_percentage', e.target.value)}
               disabled={!charges.transport}
-              className='w-20 border rounded px-2 py-1 text-sm'
+              className='w-20 border rounded px-2 py-1 text-sm max-md:h-11 max-md:w-24'
               min='0'
               step='0.1'
             />
@@ -139,22 +139,22 @@ export default function SurchargeControls({ charges, setCharges }) {
         </div>
 
         <div className='flex items-center justify-between'>
-          <div className='flex items-center gap-2'>
+          <label className='flex items-center gap-2 max-md:min-h-11'>
             <input aria-label={es.cot.cargos.contingency}
               type='checkbox'
               checked={charges.contingency}
               onChange={() => handleToggle('contingency')}
-              className='w-4 h-4'
+              className='w-4 h-4 max-md:h-6 max-md:w-6'
             />
-            <label className='text-sm font-medium'>{es.cot.cargos.contingency}</label>
-          </div>
+            <span className='text-sm font-medium'>{es.cot.cargos.contingency}</span>
+          </label>
           <div className='flex items-center gap-2'>
             <input aria-label={`${es.cot.cargos.contingency} (%)`}
               type='number'
               value={charges.contingency_percentage}
               onChange={(e) => handlePercentageChange('contingency_percentage', e.target.value)}
               disabled={!charges.contingency}
-              className='w-20 border rounded px-2 py-1 text-sm'
+              className='w-20 border rounded px-2 py-1 text-sm max-md:h-11 max-md:w-24'
               min='0'
               step='0.1'
             />
@@ -168,26 +168,28 @@ export default function SurchargeControls({ charges, setCharges }) {
             <div className='text-xs font-medium text-muted mb-2'>{es.cot.cargosPersonalizados}</div>
             <div className='space-y-2'>
               {dynamicCharges.map((dc, index) => (
-                <div key={dc.id} className='flex items-center gap-2'>
-                  <input aria-label={dc.name || es.cot.nombreCargo}
-                    type='checkbox'
-                    checked={dc.enabled}
-                    onChange={() => handleDynamicChargeToggle(index)}
-                    className='w-4 h-4'
-                  />
+                <div key={dc.id} className='flex items-center gap-2 max-md:min-h-11'>
+                  <label className='flex shrink-0 items-center justify-center max-md:h-11 max-md:w-11'>
+                    <input aria-label={dc.name || es.cot.nombreCargo}
+                      type='checkbox'
+                      checked={dc.enabled}
+                      onChange={() => handleDynamicChargeToggle(index)}
+                      className='w-4 h-4 max-md:h-6 max-md:w-6'
+                    />
+                  </label>
                   <input aria-label={es.cot.nombreCargo}
                     type='text'
                     value={dc.name}
                     onChange={(e) => handleDynamicChargeNameChange(index, e.target.value)}
                     placeholder={es.cot.nombreCargo}
-                    className='flex-1 border rounded px-2 py-1 text-sm'
+                    className='flex-1 border rounded px-2 py-1 text-sm max-md:h-11'
                   />
                   <input aria-label={`${dc.name || es.cot.nombreCargo} (%)`}
                     type='number'
                     value={dc.percentage}
                     onChange={(e) => handleDynamicChargePercentageChange(index, e.target.value)}
                     disabled={!dc.enabled}
-                    className='w-20 border rounded px-2 py-1 text-sm'
+                    className='w-20 border rounded px-2 py-1 text-sm max-md:h-11 max-md:w-24'
                     min='0'
                     step='0.1'
                   />

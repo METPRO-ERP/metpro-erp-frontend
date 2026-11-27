@@ -4,6 +4,7 @@ import ErrorBanner from "@/components/ui/ErrorBanner";
 import { api } from "@/lib/api";
 import type { DynamicCharge } from "@/lib/quotingApi";
 import { dt } from "@/components/ui/data-table";
+import { ResponsiveList, ListCard } from "@/components/ui/responsive-list";
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
@@ -225,14 +226,28 @@ export default function QuotePublicView() {
           <div className="mb-4 border-b border-line pb-2 text-xs font-semibold uppercase tracking-wider text-muted">
             {es.cot.detalleItems}
           </div>
-          <div className={dt.wrap}>
+          <ResponsiveList
+            below="sm"
+            items={quote.items}
+            getKey={(_item, i) => i}
+            renderCard={(item) => (
+              <ListCard
+                title={<span className="break-words">{item.product_name}</span>}
+                fields={[
+                  { label: "Cantidad", value: qty(item.quantity) },
+                  { label: es.cot.precioUnit, value: fmt(item.unit_price), numeric: true },
+                  { label: es.cot.total, value: <span className="font-medium">{fmt(item.quantity * item.unit_price)}</span>, numeric: true },
+                ]}
+              />
+            )}
+          >
             <table className={dt.table}>
               <thead className={dt.thead}>
                 <tr>
-                  <th className="whitespace-nowrap px-1 py-2 text-left text-[11px] font-semibold uppercase tracking-wide text-muted sm:px-4 sm:py-2.5">Descripción</th>
-                  <th className="whitespace-nowrap px-1 py-2 text-right text-[11px] font-semibold uppercase tracking-wide text-muted sm:px-4 sm:py-2.5">Cantidad</th>
-                  <th className="whitespace-nowrap px-1 py-2 text-right text-[11px] font-semibold uppercase tracking-wide text-muted sm:px-4 sm:py-2.5">{es.cot.precioUnit}</th>
-                  <th className="whitespace-nowrap px-1 py-2 text-right text-[11px] font-semibold uppercase tracking-wide text-muted sm:px-4 sm:py-2.5">{es.cot.total}</th>
+                  <th className={dt.th}>Descripción</th>
+                  <th className={dt.thRight}>Cantidad</th>
+                  <th className={dt.thRight}>{es.cot.precioUnit}</th>
+                  <th className={dt.thRight}>{es.cot.total}</th>
                 </tr>
               </thead>
               <tbody className={dt.tbody}>
@@ -240,16 +255,16 @@ export default function QuotePublicView() {
                   const lineTotal = item.quantity * item.unit_price;
                   return (
                     <tr key={i} className={dt.tr}>
-                      <td className="px-1 py-2.5 text-xs text-ink sm:px-4 sm:py-3 sm:text-sm">{item.product_name}</td>
-                      <td className="whitespace-nowrap px-1 py-2.5 text-right text-xs tabular-nums text-ink sm:px-4 sm:py-3 sm:text-sm">{qty(item.quantity)}</td>
-                      <td className="whitespace-nowrap px-1 py-2.5 text-right text-xs tabular-nums text-ink sm:px-4 sm:py-3 sm:text-sm">{fmt(item.unit_price)}</td>
-                      <td className="whitespace-nowrap px-1 py-2.5 text-right text-xs tabular-nums text-ink sm:px-4 sm:py-3 sm:text-sm">{fmt(lineTotal)}</td>
+                      <td className="px-4 py-3 text-sm text-ink">{item.product_name}</td>
+                      <td className={dt.tdRight}>{qty(item.quantity)}</td>
+                      <td className={dt.tdRight}>{fmt(item.unit_price)}</td>
+                      <td className={dt.tdRight}>{fmt(lineTotal)}</td>
                     </tr>
                   );
                 })}
               </tbody>
             </table>
-          </div>
+          </ResponsiveList>
         </div>
 
         {/* Totals */}

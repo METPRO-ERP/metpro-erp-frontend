@@ -26,7 +26,7 @@ export default function DueDatePanel({
   invoiceId: number;
   dueDate: string | null | undefined;
   isAdmin: boolean;
-  onChanged: () => void;
+  onChanged: (savedDueDate?: string | null) => void | Promise<void>;
 }) {
   const enabled = usePaymentDueEnabled();
   const [open, setOpen] = useState(false);
@@ -55,11 +55,11 @@ export default function DueDatePanel({
     setBusy(true);
     setErr(null);
     try {
-      await updateInvoiceDueDate(invoiceId, date, note);
+      const saved = (await updateInvoiceDueDate(invoiceId, date, note)) as { new_due_date?: string } | null;
       setOpen(false);
       setHistory(null);
       toast.success(es.vencimiento.etiqueta);
-      onChanged();
+      await onChanged(saved?.new_due_date ?? date);
     } catch (e) {
       setErr(e instanceof Error && e.message ? e.message : es.vencimiento.errorGuardar);
     } finally {
@@ -84,7 +84,7 @@ export default function DueDatePanel({
       <p className="text-muted">{es.vencimiento.etiqueta}</p>
       <p className="font-medium">{dueDate ? fmtDay(dueDate) : "—"}</p>
       {isAdmin ? (
-        <div className="mt-1 flex flex-wrap gap-2">
+        <div className="mt-1 flex flex-wrap gap-3">
           <Button variant="outline" onClick={openEditor}>{es.vencimiento.editar}</Button>
           <Button variant="outline" onClick={toggleHistory}>{es.vencimiento.historial}</Button>
         </div>

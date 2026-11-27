@@ -1,5 +1,6 @@
 "use client";
 
+import { Chip } from "@/components/ui/chip";
 import { es } from "@/lib/i18n/es";
 import { formatMoney, lineProblem, lineTotal, type TakeOffLine } from "@/lib/takeOffLines";
 import type { DiscountType } from "@/lib/quotingApi";
@@ -8,7 +9,7 @@ import { UnitInput } from "@/components/quotes/UnitInput";
 import { Button } from "@/components/ui/button";
 
 export const takeOffInputClass =
-  "w-full rounded-md border border-line bg-surface px-2 py-1.5 text-sm text-ink focus:outline-none focus:ring-2 focus:ring-accent";
+  "w-full rounded-md border border-line bg-surface px-2 py-1.5 text-sm text-ink focus:outline-none focus:ring-2 focus:ring-accent max-md:min-h-11";
 
 export function TotalRow({ label, value, strong }: { label: string; value: number | undefined; strong?: boolean }) {
   return (
@@ -38,19 +39,19 @@ export function LineCard({
   return (
     <li className={`rounded-lg border bg-surface p-4 shadow-card ${line.include ? "border-line" : "border-line opacity-60"}`}>
       <div className="flex items-start gap-3">
-        <input
-          type="checkbox"
-          checked={line.include}
-          onChange={(e) => onChange({ include: e.target.checked })}
-          className="mt-1 h-4 w-4"
-          aria-label={es.cot.incluir(line.name || es.cot.articuloGenerico)}
-        />
+        <label className="flex shrink-0 items-center justify-center max-md:-ml-2.5 max-md:h-11 max-md:w-11">
+          <input
+            type="checkbox"
+            checked={line.include}
+            onChange={(e) => onChange({ include: e.target.checked })}
+            className="mt-1 h-4 w-4 max-md:mt-0 max-md:h-6 max-md:w-6"
+            aria-label={es.cot.incluir(line.name || es.cot.articuloGenerico)}
+          />
+        </label>
         <div className="min-w-0 flex-1 space-y-3">
           <div className="flex flex-wrap items-center gap-2">
             {line.category ? <span className="text-xs text-muted">{line.category}</span> : null}
-            <span className="rounded-full border border-line px-2 py-0.5 text-xs text-muted">
-              {es.cot.tiposLinea[line.item_type] ?? line.item_type}
-            </span>
+            <Chip>{es.cot.tiposLinea[line.item_type] ?? line.item_type}</Chip>
           </div>
 
           {isManual ? (
@@ -147,12 +148,12 @@ export function LineCard({
           </div>
 
           {printControls || !line.print_on_pdf ? (
-            <label className="flex items-center gap-2 text-xs text-muted">
+            <label className="flex items-center gap-2 text-xs text-muted max-md:min-h-11">
               <input
                 type="checkbox"
                 checked={!line.print_on_pdf}
                 onChange={(e) => onChange({ print_on_pdf: !e.target.checked })}
-                className="h-4 w-4"
+                className="h-4 w-4 max-md:h-6 max-md:w-6"
               />
               {es.cot.noImprimir}
             </label>

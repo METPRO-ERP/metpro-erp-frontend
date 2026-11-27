@@ -238,7 +238,7 @@ export default function EstimatePage() {
             <input className={takeOffInputClass} value={paymentTerms} onChange={(e) => setPaymentTerms(e.target.value)} placeholder={es.cot.terminosPago} />
           </label>
           {paymentDueEnabled ? (
-            <PaymentTermsFields value={paymentDays} onChange={setPaymentDays} inputClass={takeOffInputClass} />
+            <PaymentTermsFields value={paymentDays} onChange={setPaymentDays} inputClass={takeOffInputClass} className="" />
           ) : null}
           <label className="block text-sm">
             <span className="mb-1 block font-medium text-ink">{es.est.validaHasta}</span>
@@ -355,11 +355,14 @@ export default function EstimatePage() {
 
       {badRow !== null ? <p className="mb-2 text-sm text-red-600">{es.est.cambioSinMotivo(badRow)}</p> : null}
       {genError ? <Alert variant="destructive" className="mb-3"><AlertDescription>{genError}</AlertDescription></Alert> : null}
-      <div className="flex flex-col-reverse gap-3 border-t border-line pt-4 sm:flex-row sm:items-center sm:justify-between">
-        <p className="text-sm text-muted">{canGenerate ? "" : es.est.falta}</p>
-        <Button onClick={handleGenerate} disabled={!canGenerate} size="lg" className="w-full sm:w-auto">
-          {generating ? es.est.generando : es.est.generar}
-        </Button>
+      {/* C3: the generate action stays in view (sticky at the foot of the page). */}
+      <div className="sticky bottom-0 z-30 -mx-4 border-t border-line bg-surface/95 px-4 py-3 backdrop-blur sm:-mx-6 sm:px-6" data-testid="estimate-action-bar">
+        <div className="flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-sm text-muted">{canGenerate ? "" : es.est.falta}</p>
+          <Button onClick={handleGenerate} disabled={!canGenerate} size="lg" className="w-full sm:w-auto">
+            {generating ? es.est.generando : es.est.generar}
+          </Button>
+        </div>
       </div>
     </div>
   );

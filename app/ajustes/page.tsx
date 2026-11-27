@@ -26,7 +26,7 @@ export default function AjustesPage() {
         title={es.ajustes.titulo}
         subtitle={es.ajustes.subtitulo}
         actions={
-          <Link href={"/dashboard" as Route} className="text-sm text-accent hover:underline">
+          <Link href={"/dashboard" as Route} className="hit-44 relative inline-block text-sm text-accent hover:underline">
             {es.ajustes.volver}
           </Link>
         }

@@ -250,7 +250,7 @@ function TakeOffScreen() {
           </AlertDescription>
         </Alert>
         <div className="mt-4">
-          <Link href="/quotes/new" className="text-accent underline">
+          <Link href="/quotes/new" className="hit-44 relative inline-block text-accent underline">
             {es.cot.volverNueva}
           </Link>
         </div>

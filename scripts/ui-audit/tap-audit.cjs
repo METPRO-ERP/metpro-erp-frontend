@@ -36,7 +36,7 @@ const probe = (arg) => {
     const pts = [];
     const dv = Math.min(6, (44 - r.height) / 2 - 1), dh = Math.min(6, (44 - r.width) / 2 - 1);
     if (r.height < 44) { pts.push([cx, r.top - dv]); pts.push([cx, r.bottom + dv]); }
-    if (r.width < 44) { pts.push([r.left - dh, cy]); pts.push([r.right + dh, cy]); }
+    if (r.width < 44 && dh >= 1) { pts.push([r.left - dh, cy]); pts.push([r.right + dh, cy]); } // dh < 1: width within 2px of 44, no probe point outside the box
     seen.add(el);
     for (const [x, y] of pts) {
       if (x < 0 || y < 0 || x > innerWidth || y > innerHeight) continue;

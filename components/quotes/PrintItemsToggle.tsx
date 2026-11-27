@@ -20,13 +20,13 @@ export function PrintItemsToggle({
   const { print_items_enabled } = usePdfOptions();
   if (!print_items_enabled && checked) return null;
   return (
-    <label className="flex items-start gap-2 text-sm text-ink">
+    <label className="flex items-start gap-2 text-sm text-ink max-md:min-h-11 max-md:items-center">
       <input
         type="checkbox"
         checked={checked}
         disabled={disabled}
         onChange={(e) => onChange(e.target.checked)}
-        className="mt-0.5 h-4 w-4"
+        className="mt-0.5 h-4 w-4 max-md:mt-0 max-md:h-6 max-md:w-6"
         data-testid="print-items-toggle"
       />
       <span>

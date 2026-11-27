@@ -159,13 +159,13 @@ export default function EncabezadoPage() {
 
         <div className="mb-3">
           <p className="mb-1 text-sm font-medium text-ink">{t.camposTitulo}</p>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2 max-md:gap-y-5">
             {settings.fields[tab].map((f) => (
               <button
                 key={f}
                 type="button"
                 onClick={() => insertField(f)}
-                className="rounded-md border border-line bg-canvas px-2 py-1 text-xs text-ink hover:border-accent"
+                className="hit-44 relative rounded-md border border-line bg-canvas px-2 py-1 text-xs text-ink hover:border-accent"
                 title={`{${f}}`}
               >
                 {t.campos[f] ?? f}

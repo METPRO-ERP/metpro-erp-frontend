@@ -26,17 +26,23 @@ export interface ResponsiveListProps<T> {
   /** The desktop table. */
   children: React.ReactNode
   bare?: boolean
+  /** Where cards give way to the table: below md (default, lists) or below sm (detail pages, C3). */
+  below?: "sm" | "md"
 }
 
-export function ResponsiveList<T>({ items, getKey, renderCard, children, bare }: ResponsiveListProps<T>) {
+// Static class names so Tailwind sees them.
+const CARDS_ONLY = { sm: "sm:hidden", md: "md:hidden" } as const
+const TABLE_ONLY = { sm: "hidden sm:block", md: "hidden md:block" } as const
+
+export function ResponsiveList<T>({ items, getKey, renderCard, children, bare, below = "md" }: ResponsiveListProps<T>) {
   return (
     <>
-      <ul className="space-y-3 md:hidden">
+      <ul className={cn("space-y-3", CARDS_ONLY[below])}>
         {items.map((item, i) => (
           <li key={getKey(item, i)}>{renderCard(item)}</li>
         ))}
       </ul>
-      <div className="hidden md:block">
+      <div className={TABLE_ONLY[below]}>
         <TableScroll bare={bare}>{children}</TableScroll>
       </div>
     </>

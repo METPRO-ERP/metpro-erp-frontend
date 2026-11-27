@@ -20,6 +20,8 @@ import InvoiceDocPreviewModal from "@/components/invoices/InvoiceDocPreviewModal
 import { type InvoiceDocKind } from "@/lib/invoiceDocs";
 import ConducePanel from "@/components/invoices/ConducePanel";
 import DueDatePanel from "@/components/invoices/DueDatePanel";
+import { ResponsiveList, ListCard, TableScroll } from "@/components/ui/responsive-list";
+import { dt } from "@/components/ui/data-table";
 import { getConduceOptions } from "@/lib/conduceApi";
 
 interface Payment {
@@ -156,6 +158,13 @@ export default function InvoiceDetailPage() {
     }
   };
 
+  // C3 fix: after an audited due-date edit the page shows the saved value at once (taken from the PATCH answer),
+  // then refetches the invoice. Client-side only.
+  const applySavedDueDate = async (saved?: string | null) => {
+    if (saved) setInvoice((prev) => (prev ? { ...prev, due_date: saved } : prev));
+    await loadInvoice();
+  };
+
   const loadInvoice = async () => {
     try {
       const data = await fetchInvoiceWithPayments(invoiceId);
@@ -186,7 +195,7 @@ export default function InvoiceDetailPage() {
         <p role="alert" className="rounded border border-red-200 bg-red-50 p-3 text-sm text-red-700">
           No se pudo cargar la factura: {error || "no encontrada"}
         </p>
-        <Link href="/invoices" className="mt-4 inline-block text-sm text-accent underline">
+        <Link href="/invoices" className={`mt-4 text-sm ${dt.link}`}>
           Volver a facturas
         </Link>
       </div>
@@ -207,7 +216,7 @@ export default function InvoiceDetailPage() {
         <div className="grid grid-cols-2 gap-4 mb-6">
           <div>
             <p className="text-muted">Cliente</p>
-            <p className="font-medium">{invoice.client_name}</p>
+            <p className="break-words font-medium">{invoice.client_name}</p>
           </div>
 
           <div>
@@ -231,18 +240,18 @@ export default function InvoiceDetailPage() {
           {ncf && (
             <div>
               <p className="text-muted">NCF</p>
-              <p className="font-medium">{ncf.ncf}</p>
+              <p className="break-all font-medium">{ncf.ncf}</p>
             </div>
           )}
 
           {ncf?.validUntil && (
             <div>
               <p className="text-muted">Vence NCF</p>
-              <p className="font-medium">{ncf.validUntil}</p>
+              <p className="break-words font-medium">{ncf.validUntil}</p>
             </div>
           )}
 
-          <DueDatePanel invoiceId={invoiceId} dueDate={invoice.due_date} isAdmin={isAdmin} onChanged={loadInvoice} />
+          <DueDatePanel invoiceId={invoiceId} dueDate={invoice.due_date} isAdmin={isAdmin} onChanged={applySavedDueDate} />
         </div>
 
         <div className="mb-6">
@@ -250,56 +259,75 @@ export default function InvoiceDetailPage() {
           {lines.length === 0 ? (
             <p className="text-muted">Sin líneas.</p>
           ) : (
-            <div className="overflow-x-auto">{/* E-04: scroll inside on phones */}
-            <table className="min-w-full divide-y divide-line bg-surface text-sm">
-              <thead className="bg-canvas">
-                <tr>
-                  <th className="px-4 py-2 text-left text-xs font-medium text-muted uppercase">Descripción</th>
-                  <th className="px-4 py-2 text-right text-xs font-medium text-muted uppercase">Cant.</th>
-                  <th className="px-4 py-2 text-right text-xs font-medium text-muted uppercase">Precio</th>
-                  <th className="px-4 py-2 text-right text-xs font-medium text-muted uppercase">Desc.</th>
-                  <th className="px-4 py-2 text-right text-xs font-medium text-muted uppercase">Total</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-line">
-                {lines.map((l, i) => {
-                  const gross = Number(l.quantity || 0) * Number(l.unit_price || 0);
-                  const total = l.total ?? gross - Number(l.discount_value || 0);
-                  return (
-                    <tr key={i}>
-                      <td className="px-4 py-2">{l.product_name}</td>
-                      <td className="px-4 py-2 text-right">{Number(l.quantity || 0)}</td>
-                      <td className="px-4 py-2 text-right">{money(Number(l.unit_price || 0))}</td>
-                      <td className="px-4 py-2 text-right">{money(Number(l.discount_value || 0))}</td>
-                      <td className="px-4 py-2 text-right font-medium">{money(Number(total))}</td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-            </div>
+            <ResponsiveList
+              below="sm"
+              items={lines}
+              getKey={(_l, i) => i}
+              renderCard={(l) => {
+                const gross = Number(l.quantity || 0) * Number(l.unit_price || 0);
+                const total = l.total ?? gross - Number(l.discount_value || 0);
+                return (
+                  <ListCard
+                    title={<span className="break-words">{l.product_name}</span>}
+                    fields={[
+                      { label: "Cant.", value: Number(l.quantity || 0) },
+                      { label: "Precio", value: money(Number(l.unit_price || 0)), numeric: true },
+                      { label: "Desc.", value: money(Number(l.discount_value || 0)), numeric: true },
+                      { label: "Total", value: <span className="font-medium">{money(Number(total))}</span>, numeric: true },
+                    ]}
+                  />
+                );
+              }}
+            >
+              <table className={dt.table}>
+                <thead className={dt.thead}>
+                  <tr>
+                    <th className={dt.th}>Descripción</th>
+                    <th className={dt.thRight}>Cant.</th>
+                    <th className={dt.thRight}>Precio</th>
+                    <th className={dt.thRight}>Desc.</th>
+                    <th className={dt.thRight}>Total</th>
+                  </tr>
+                </thead>
+                <tbody className={dt.tbody}>
+                  {lines.map((l, i) => {
+                    const gross = Number(l.quantity || 0) * Number(l.unit_price || 0);
+                    const total = l.total ?? gross - Number(l.discount_value || 0);
+                    return (
+                      <tr key={i} className={dt.tr}>
+                        <td className="px-4 py-3 text-ink">{l.product_name}</td>
+                        <td className={dt.tdRight}>{Number(l.quantity || 0)}</td>
+                        <td className={dt.tdRight}>{money(Number(l.unit_price || 0))}</td>
+                        <td className={dt.tdRight}>{money(Number(l.discount_value || 0))}</td>
+                        <td className={`${dt.tdRight} font-medium`}>{money(Number(total))}</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </ResponsiveList>
           )}
         </div>
 
         <div className="bg-canvas p-4 rounded-lg mb-6">
           <h2 className="text-xl font-semibold mb-3">Totales</h2>
 
-          <div className="grid grid-cols-3 gap-4">
-            <div>
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4">
+            <div className="flex items-baseline justify-between gap-3 sm:block">
               <p className="text-muted">Total</p>
               <p className="font-bold text-lg">
                 {money((invoice.total_amount ?? 0))}
               </p>
             </div>
 
-            <div>
+            <div className="flex items-baseline justify-between gap-3 sm:block">
               <p className="text-muted">Pagado</p>
               <p className="font-bold text-lg text-emerald-600">
                 {money((invoice.amount_paid ?? 0))}
               </p>
             </div>
 
-            <div>
+            <div className="flex items-baseline justify-between gap-3 sm:block">
               <p className="text-muted">Pendiente</p>
               <p className="font-bold text-lg text-red-600">
                 {money((invoice.amount_due ?? 0))}
@@ -332,37 +360,37 @@ export default function InvoiceDetailPage() {
           {payments.length === 0 ? (
             <p className="text-muted">No hay pagos registrados.</p>
           ) : (
-            <div className="overflow-x-auto">{/* E-04: scroll inside on phones */}
-            <table className="min-w-full divide-y divide-line bg-surface">
-              <thead className="bg-canvas">
+            <TableScroll>
+            <table className={dt.table}>
+              <thead className={dt.thead}>
                 <tr>
-                  <th className="px-4 py-2 text-left text-xs font-medium text-muted uppercase">
+                  <th className={dt.th}>
                     Fecha
                   </th>
-                  <th className="px-4 py-2 text-left text-xs font-medium text-muted uppercase">
+                  <th className={dt.th}>
                     Método
                   </th>
-                  <th className="px-4 py-2 text-right text-xs font-medium text-muted uppercase">
+                  <th className={dt.thRight}>
                     Monto
                   </th>
-                  <th className="px-4 py-2 text-left text-xs font-medium text-muted uppercase">
+                  <th className={dt.th}>
                     Notas
                   </th>
-                  {isAdmin && <th className="px-4 py-2"><span className="sr-only">Acciones</span></th>}
+                  {isAdmin && <th className={dt.th}><span className="sr-only">Acciones</span></th>}
                 </tr>
               </thead>
 
-              <tbody className="divide-y divide-line">
+              <tbody className={dt.tbody}>
                 {payments.map((p) => (
-                  <tr key={p.id} className={p.voided_at ? "text-muted" : undefined}>
-                    <td className="px-4 py-2">
+                  <tr key={p.id} className={`${dt.tr} ${p.voided_at ? "text-muted" : ""}`}>
+                    <td className={dt.td}>
                       {fmtDay(p.payment_date)}
                     </td>
-                    <td className="px-4 py-2">{p.method}</td>
-                    <td className={`px-4 py-2 text-right font-medium ${p.voided_at ? "line-through" : ""}`}>
+                    <td className={dt.td}>{p.method}</td>
+                    <td className={`${dt.tdRight} font-medium ${p.voided_at ? "line-through" : ""}`}>
                       {money((p.amount ?? 0))}
                     </td>
-                    <td className="px-4 py-2">
+                    <td className="px-4 py-3 text-ink">
                       {p.notes || "-"}
                       {p.voided_at && (
                         <div className="text-xs text-red-700">
@@ -382,7 +410,7 @@ export default function InvoiceDetailPage() {
                       </div>
                     </td>
                     {isAdmin && (
-                      <td className="px-4 py-2 text-right">
+                      <td className="whitespace-nowrap px-4 py-3 text-right">
                         {!p.voided_at && (
                           <div className="flex justify-end gap-2">
                             {correctionEnabled && invoice.status !== "Cancelled" && (
@@ -399,7 +427,7 @@ export default function InvoiceDetailPage() {
                 ))}
               </tbody>
             </table>
-            </div>
+            </TableScroll>
           )}
         </div>
       </div>

@@ -121,7 +121,7 @@ export default function ProyectoDetallePage() {
         <p role="alert" className="rounded border border-red-200 bg-red-50 p-3 text-sm text-red-700">
           {error || t.noEncontrado}
         </p>
-        <Link href="/proyectos" className="mt-4 inline-block text-sm text-accent underline">
+        <Link href="/proyectos" className="hit-44 relative mt-4 inline-block text-sm text-accent underline">
           {es.comun.volver}
         </Link>
       </div>

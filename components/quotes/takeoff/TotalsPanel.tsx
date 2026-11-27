@@ -45,12 +45,12 @@ export function TotalsPanel({
             const pct = Number(charges[pctKey] ?? 0);
             return (
               <div key={key} className="flex items-center justify-between gap-2 text-sm text-ink">
-                <label className="flex items-center gap-2">
+                <label className="flex items-center gap-2 max-md:min-h-11">
                   <input
                     type="checkbox"
                     checked={Boolean(charges[key])}
                     onChange={() => onToggleCharge(key)}
-                    className="h-4 w-4"
+                    className="h-4 w-4 max-md:h-6 max-md:w-6"
                   />
                   {label}
                 </label>
@@ -68,7 +68,7 @@ export function TotalsPanel({
                         if (Number.isFinite(v)) onChangePercentage(key, Math.min(100, Math.max(0, v)));
                       }}
                       aria-label={es.cot.porcentajeDe(label)}
-                      className="w-20 rounded border border-line px-2 py-1 text-right disabled:opacity-50"
+                      className="w-20 rounded border border-line px-2 py-1 text-right disabled:opacity-50 max-md:h-11 max-md:w-24"
                     />
                     <span className="text-muted">%</span>
                   </span>
