@@ -1,6 +1,8 @@
 import { es } from "@/lib/i18n/es";
 import { money } from "@/lib/money"
 import { dt } from "@/components/ui/data-table";
+import { ResponsiveList, ListCard } from '@/components/ui/responsive-list'
+import { quoteRowKey } from '@/lib/listFields'
 import StatusPill from '@/components/ui/StatusPill'
 import { fmtTimestamp } from '@/lib/dates'
 import StatusActor from '@/components/StatusActor'
@@ -38,9 +40,84 @@ export default function QuoteTable({
     )
   }
 
+  const numberOf = (quote) => quote.quote_number != null ? `Q-${quote.quote_number}` : '—'
+  const dateOf = (quote) => quote.created_at ? fmtTimestamp(String(quote.created_at)) : '—'
+  const amountOf = (quote) => money(Number(quote.grand_total ?? quote.total_amount ?? 0))
+
+  // Same actions in the table row and the phone card (both are in the DOM; CSS picks one).
+  const renderActions = (quote) => (
+    <>
+      {sentMap[quote.quote_id] && quote.status !== 'Sent' && <SentBadge />}
+      {SENDABLE_QUOTE_STATUSES.includes(quote.status) && (
+        <SendToClientButton
+          id={quote.quote_id}
+          type="quote"
+          onSent={() => {
+            setSentMap(prev => ({ ...prev, [quote.quote_id]: true }))
+            // Reload so the status pill shows Enviada without a manual refresh.
+            if (onSent) onSent(quote.quote_id)
+          }}
+        />
+      )}
+      <PrimaryActionButton
+        quote={quote}
+        onApprove={() => onApprove(quote.quote_id)}
+        onConvert={() => onConvertToInvoice(quote.quote_id)}
+        onViewInvoice={() => onViewInvoice(quote)}
+        canManage={canManage}
+      />
+
+      <OverflowMenu
+        quote={quote}
+        onPreviewPDF={() => onPreviewPDF(quote.quote_id)}
+        onDownloadPDF={() => onDownloadPDF(quote.quote_id)}
+        onGenerateConduce={() => onGenerateConduce(quote.quote_id)}
+        onDuplicate={() => onDuplicate(quote.quote_id)}
+        onEdit={() => onEdit(quote)}
+        onDelete={() => onDelete(quote.quote_id, quote.status)}
+        onApprove={() => onApprove(quote.quote_id)}
+        onReject={onReject ? () => onReject(quote.quote_id) : undefined}
+        onConvertToInvoice={() => onConvertToInvoice(quote.quote_id)}
+        onOpenPhases={onOpenPhases ? () => onOpenPhases(quote.quote_id) : undefined}
+        canManage={canManage}
+      />
+    </>
+  )
+
+  const renderActor = (quote) => (
+    <StatusActor kind='quote' id={quote.quote_id} createdBy={quote.created_by_name}
+      lastBy={quote.last_status_by} lastAt={quote.last_status_at} />
+  )
+
   return (
-    // E-04: the table scrolls inside its card on phones; the page itself no longer scrolls sideways.
-    <div className='overflow-x-auto'>
+    <ResponsiveList
+      bare
+      items={quotes}
+      getKey={(quote, i) => quoteRowKey(quote, i)}
+      renderCard={(quote) => (
+        <ListCard
+          title={numberOf(quote)}
+          chip={<StatusPill status={quote.status} gender="f" />}
+          subtitle={quote.client_name}
+          fields={[
+            { label: es.cot.colProyecto, value: quote.project_name || '-', wide: true },
+            { label: es.cot.colFecha, value: dateOf(quote) },
+            { label: es.cot.colMonto, value: amountOf(quote), numeric: true },
+          ]}
+          extra={
+            <>
+              {renderActor(quote)}
+              {quote.has_invoice && (
+                <div className='text-xs text-accent mt-1'>
+                  {es.cot.facturaLabel} {quote.invoice_number}
+                </div>
+              )}
+            </>
+          }
+          actions={renderActions(quote)}
+        />
+      )}
+    >
     <table className={dt.table}>
       <thead className={dt.thead}>
         <tr>
@@ -50,26 +127,23 @@ export default function QuoteTable({
           <th className={dt.th}>{es.cot.colFecha}</th>
           <th className={dt.thRight}>{es.cot.colMonto}</th>
           <th className={dt.th}>{es.cot.colEstado}</th>
-          <th className={dt.thRight}>{es.cot.colAcciones}</th>
+          <th className={dt.thSticky}>{es.cot.colAcciones}</th>
         </tr>
       </thead>
 
       <tbody className={dt.tbody}>
-        {quotes.map((quote) => (
-          <tr key={quote.quote_id} className={dt.tr}>
-            <td className={dt.td}>{quote.quote_number != null ? `Q-${quote.quote_number}` : '—'}</td>
-            <td className={dt.td}>{quote.client_name}</td>
-            <td className={dt.td}>{quote.project_name || '-'}</td>
-            <td className={dt.td}>{quote.created_at ? fmtTimestamp(String(quote.created_at)) : '—'}</td>
+        {quotes.map((quote, i) => (
+          <tr key={quoteRowKey(quote, i)} className={dt.tr}>
+            <td className={dt.td}>{numberOf(quote)}</td>
+            <td className={dt.tdTrunc} title={quote.client_name}>{quote.client_name}</td>
+            <td className={dt.tdTrunc} title={quote.project_name || undefined}>{quote.project_name || '-'}</td>
+            <td className={dt.td}>{dateOf(quote)}</td>
 
-            <td className={dt.tdRight}>
-              {money(Number(quote.grand_total ?? quote.total_amount ?? 0))}
-            </td>
+            <td className={dt.tdRight}>{amountOf(quote)}</td>
 
             <td className={dt.td}>
               <StatusPill status={quote.status} gender="f" />
-              <StatusActor kind='quote' id={quote.quote_id} createdBy={quote.created_by_name}
-                lastBy={quote.last_status_by} lastAt={quote.last_status_at} />
+              {renderActor(quote)}
               {quote.has_invoice && (
                 <div className='text-xs text-accent mt-1'>
                   {es.cot.facturaLabel} {quote.invoice_number}
@@ -77,49 +151,15 @@ export default function QuoteTable({
               )}
             </td>
 
-            <td className={dt.tdRight}>
-              <div className='flex items-center gap-2 justify-end'>
-                {sentMap[quote.quote_id] && quote.status !== 'Sent' && <SentBadge />}
-                {SENDABLE_QUOTE_STATUSES.includes(quote.status) && (
-                  <SendToClientButton
-                    id={quote.quote_id}
-                    type="quote"
-                    onSent={() => {
-                      setSentMap(prev => ({ ...prev, [quote.quote_id]: true }))
-                      // Reload so the status pill shows Enviada without a manual refresh.
-                      if (onSent) onSent(quote.quote_id)
-                    }}
-                  />
-                )}
-                <PrimaryActionButton
-                  quote={quote}
-                  onApprove={() => onApprove(quote.quote_id)}
-                  onConvert={() => onConvertToInvoice(quote.quote_id)}
-                  onViewInvoice={() => onViewInvoice(quote)}
-                  canManage={canManage}
-                />
-
-                <OverflowMenu
-                  quote={quote}
-                  onPreviewPDF={() => onPreviewPDF(quote.quote_id)}
-                  onDownloadPDF={() => onDownloadPDF(quote.quote_id)}
-                  onGenerateConduce={() => onGenerateConduce(quote.quote_id)}
-                  onDuplicate={() => onDuplicate(quote.quote_id)}
-                  onEdit={() => onEdit(quote)}
-                  onDelete={() => onDelete(quote.quote_id, quote.status)}
-                  onApprove={() => onApprove(quote.quote_id)}
-                  onReject={onReject ? () => onReject(quote.quote_id) : undefined}
-                  onConvertToInvoice={() => onConvertToInvoice(quote.quote_id)}
-                  onOpenPhases={onOpenPhases ? () => onOpenPhases(quote.quote_id) : undefined}
-                  canManage={canManage}
-                />
+            <td className={dt.tdSticky}>
+              <div className='flex items-center gap-3 justify-end'>
+                {renderActions(quote)}
               </div>
             </td>
           </tr>
         ))}
       </tbody>
     </table>
-    </div>
+    </ResponsiveList>
   )
 }
-

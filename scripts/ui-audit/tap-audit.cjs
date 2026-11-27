@@ -73,21 +73,24 @@ const probe = (arg) => {
     // Dialogs: probe only the controls inside the open dialog.
     const go = async (path) => { await p.goto(BASE + path, { waitUntil: "networkidle" }); await p.waitForTimeout(500); };
     const viaMenu = async (label) => {
-      const rows = p.locator("tbody tr"); const n = await rows.count();
+      const rows = p.locator("tbody tr:visible, ul.md\\:hidden > li:visible"); const n = await rows.count(); // table rows >= md, cards below md
       for (let i = 0; i < n; i++) {
         const m = rows.nth(i).getByRole("button", { name: /más|acciones/i }).first(); if (!(await m.count())) continue;
-        await m.scrollIntoViewIfNeeded(); await m.click({ force: true }); await p.waitForTimeout(200);
-        const it = p.getByText(label, { exact: true }).first();
-        if (await it.count() && await it.isVisible()) { await it.click(); return; }
-        await p.keyboard.press("Escape");
+        try {
+          await m.scrollIntoViewIfNeeded({ timeout: 3000 }); await m.click({ force: true, timeout: 3000 }); await p.waitForTimeout(200);
+          const it = p.getByText(label, { exact: true }).first();
+          if (await it.count() && await it.isVisible()) { await it.click(); return; }
+        } catch { /* row without that control: try the next row */ }
+        await p.mouse.click(1, 1);
       }
-      const d = p.getByRole("button", { name: new RegExp(label, "i") }).first(); // some actions are direct row buttons
+      await p.mouse.click(1, 1); // closes any menu left open by the loop (the menu ignores Escape)
+      const d = p.getByRole("button", { name: new RegExp(label, "i") }).filter({ visible: true }).first(); // some actions are direct row buttons
       if (await d.count()) { await d.scrollIntoViewIfNeeded(); await d.click(); }
     };
     const dialogs = [
       ["quotes:convert", async () => { await go("/quotes"); await viaMenu("Convertir"); }],
       ["quotes:phases", async () => { await go("/quotes"); await viaMenu("Facturación por fases"); }],
-      ["quotes:pdf-preview", async () => { await go("/quotes"); await viaMenu("Vista previa"); }],
+      ["quotes:pdf-preview", async () => { await go("/quotes"); await viaMenu("Vista previa PDF"); }],
       ["quotes:conduce", async () => { await go("/quotes"); await viaMenu("Generar conduce"); }],
       ["quotes:delete", async () => { await go("/quotes"); await viaMenu("Eliminar"); }],
       ["invoice:payment", async () => { await go("/invoices/2"); await p.getByRole("button", { name: /^Pago$/ }).click(); }],

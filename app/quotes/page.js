@@ -318,7 +318,7 @@ export default function QuotesPage() {
       title="Cotizar"
       actions={
         // Shared primary button (components/ui/button): same as Nuevo proyecto, Crear paquete.
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-3">
           {isAdmin && estimatorOn ? (
             <Button asChild variant="outline">
               <Link href="/quotes/estimate">{es.est.boton}</Link>
@@ -332,7 +332,7 @@ export default function QuotesPage() {
     />
     <ErrorBanner message={loadError} />
 
-    <div className="bg-surface rounded-lg shadow p-6">
+    <div className="bg-surface rounded-lg shadow p-4 sm:p-6">
       <div className="flex flex-wrap justify-between items-center gap-3 mb-6">
         <h2 className="text-xl font-semibold">{es.cot.existentes}</h2>
 

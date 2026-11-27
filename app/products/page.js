@@ -13,6 +13,7 @@ import { PageHeader } from '@/components/ui/page-header'
 import { Button } from '@/components/ui/button'
 import { fb } from '@/components/ui/filter-bar'
 import { money } from '@/lib/money'
+import { ResponsiveList, ListCard } from '@/components/ui/responsive-list'
 
 // B3 dimensions: '' means empty (sent as null). Sent only when the backend switch is on.
 // Area and volume are calculated by the backend. They are sent only when the user turns on the manual override.
@@ -160,6 +161,41 @@ const handleUpdateProduct = async (e) => {
     }
   }
 
+  // Margin cell, shared by the table and the phone card.
+  function renderMargin(product) {
+    if (product.cost === null || product.cost === undefined) return '—'
+    const m = (product.unit_price ?? 0) - product.cost
+    const pct = product.unit_price ? (m / product.unit_price) * 100 : null
+    return (
+      <span className={m < 0 ? 'text-red-600' : ''}>
+        {money(m)}{pct !== null ? ` · ${pct.toFixed(1)}%` : ''}
+      </span>
+    )
+  }
+
+  // Row actions, shared by the table and the phone card (both are in the DOM; CSS picks one).
+  function renderActions(product) {
+    return (
+      <div className='flex flex-wrap items-center justify-end gap-3'>
+        <Button
+          onClick={() => setEditingProduct(product)}
+          variant='ghost' size='sm' className='text-accent hover:bg-accent/10 hover:text-accent-strong'
+        >
+          {es.prod.editarBoton}
+        </Button>
+
+        {isAdmin && (
+          <Button
+            onClick={() => handleDeleteProduct(product.id)}
+            variant='ghost' size='sm' className='text-red-600 hover:bg-red-50 hover:text-red-700'
+          >
+            Borrar
+          </Button>
+        )}
+      </div>
+    )
+  }
+
   return (
     <div className="w-full px-4 lg:px-8 py-8">
       <PageHeader title="Productos" />
@@ -224,20 +260,23 @@ const handleUpdateProduct = async (e) => {
             className='border p-2 rounded md:col-span-2'
           />
 
-          <input aria-label={es.prod.precio}
-            type='number'
-            placeholder={es.prod.precio}
-            value={editingProduct ? editingProduct.unit_price : newProduct.unit_price}
-            onChange={(e) =>
-              editingProduct
-                ? setEditingProduct({ ...editingProduct, unit_price: parseFloat(e.target.value) || 0 })
-                : setNewProduct({ ...newProduct, unit_price: parseFloat(e.target.value) || 0 })
-            }
-            className='border p-2 rounded'
-            step='0.01'
-            min='0'
-            required
-          />
+          <label className='flex flex-col gap-1 text-sm text-muted'>
+            {es.prod.precio}
+            <input aria-label={es.prod.precio}
+              type='number'
+              placeholder={es.prod.precio}
+              value={editingProduct ? editingProduct.unit_price : newProduct.unit_price}
+              onChange={(e) =>
+                editingProduct
+                  ? setEditingProduct({ ...editingProduct, unit_price: parseFloat(e.target.value) || 0 })
+                  : setNewProduct({ ...newProduct, unit_price: parseFloat(e.target.value) || 0 })
+              }
+              className='border p-2 rounded'
+              step='0.01'
+              min='0'
+              required
+            />
+          </label>
 
           {medidas_enabled && (
             <label className='flex flex-col gap-1 text-sm text-muted'>
@@ -344,6 +383,23 @@ const handleUpdateProduct = async (e) => {
             No hay productos aún. Añade uno arriba o importa desde CSV!
           </div>
         ) : (
+          <ResponsiveList
+            items={products}
+            getKey={(product) => product.id}
+            renderCard={(product) => (
+              <ListCard
+                title={product.name}
+                subtitle={product.description || undefined}
+                fields={[
+                  ...(medidas_enabled ? [{ label: es.pdf.medidas, value: product.unit_of_measure || '-' }] : []),
+                  { label: 'Precio Unitario', value: money(product.unit_price ?? 0), numeric: true },
+                  { label: es.cst.colCosto, value: product.cost === null || product.cost === undefined ? es.cst.sinCosto : money(product.cost), numeric: true },
+                  { label: es.cst.colMargen, value: renderMargin(product), numeric: true },
+                ]}
+                actions={renderActions(product)}
+              />
+            )}
+          >
           <table className={dt.table}>
             <thead className={dt.thead}>
               <tr>
@@ -353,15 +409,15 @@ const handleUpdateProduct = async (e) => {
                 <th className={dt.thRight}>Precio Unitario</th>
                 <th className={dt.thRight}>{es.cst.colCosto}</th>
                 <th className={dt.thRight}>{es.cst.colMargen}</th>
-                <th className={dt.thRight}>Acciones</th>
+                <th className={dt.thSticky}>Acciones</th>
               </tr>
             </thead>
 
             <tbody className={dt.tbody}>
               {products.map((product) => (
                 <tr key={product.id} className={dt.tr}>
-                  <td className={dt.td}>{product.name}</td>
-                  <td className={dt.td}>{product.description || '-'}</td>
+                  <td className={dt.tdTrunc} title={product.name}>{product.name}</td>
+                  <td className={dt.tdTrunc} title={product.description || undefined}>{product.description || '-'}</td>
 
                   {medidas_enabled && <td className={dt.td}>{product.unit_of_measure || '-'}</td>}
 
@@ -376,40 +432,17 @@ const handleUpdateProduct = async (e) => {
                   </td>
 
                   <td className={dt.tdRight}>
-                    {product.cost === null || product.cost === undefined ? '—' : (() => {
-                      const m = (product.unit_price ?? 0) - product.cost
-                      const pct = product.unit_price ? (m / product.unit_price) * 100 : null
-                      return (
-                        <span className={m < 0 ? 'text-red-600' : ''}>
-                          {money(m)}{pct !== null ? ` · ${pct.toFixed(1)}%` : ''}
-                        </span>
-                      )
-                    })()}
+                    {renderMargin(product)}
                   </td>
 
-                  <td className={dt.tdRight}>
-                    <div className='flex justify-end gap-2'>
-                      <Button
-                        onClick={() => setEditingProduct(product)}
-                        variant='ghost' size='sm' className='text-accent hover:bg-accent/10 hover:text-accent-strong'
-                      >
-                        {es.prod.editarBoton}
-                      </Button>
-
-                      {isAdmin && (
-                        <Button
-                          onClick={() => handleDeleteProduct(product.id)}
-                          variant='ghost' size='sm' className='text-red-600 hover:bg-red-50 hover:text-red-700'
-                        >
-                          Borrar
-                        </Button>
-                      )}
-                    </div>
+                  <td className={dt.tdSticky}>
+                    {renderActions(product)}
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
+          </ResponsiveList>
         )}
       </div>
     </div>

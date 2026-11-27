@@ -17,6 +17,7 @@ import RecordPaymentModal from "@/components/invoices/RecordPaymentModal";
 import SendToClientButton from "@/components/SendToClientButton";
 import SentBadge from "@/components/SentBadge";
 import { PageHeader } from "@/components/ui/page-header";
+import { ResponsiveList, ListCard } from "@/components/ui/responsive-list";
 import { useCurrentRole } from "@/lib/currentRole";
 import { Button } from "@/components/ui/button";
 import InvoiceDocPreviewModal from "@/components/invoices/InvoiceDocPreviewModal";
@@ -93,6 +94,47 @@ export default function InvoicesPage() {
     setPaymentOpen(true);
   }
 
+  // The same actions in the table row and in the phone card (both are in the DOM; CSS picks one).
+  function renderActions(inv) {
+    return (
+      <>
+        {sentMap[inv.id] && <SentBadge />}
+        {inv.status !== "Cancelled" && ( // B-10: cancelled invoices cannot be emailed
+          <SendToClientButton
+            id={inv.id}
+            type="invoice"
+            onSent={() => setSentMap(prev => ({ ...prev, [inv.id]: true }))}
+          />
+        )}
+        <Button onClick={() => setPreview({ kind: "factura", id: inv.id, number: inv.invoice_number })}>
+          Vista previa Factura
+        </Button>
+
+        <Button onClick={() => setPreview({ kind: "conduce", id: inv.id, number: inv.invoice_number })}>
+          Vista previa Conduce
+        </Button>
+
+        {!(recordAdminOnly && !isAdmin) && <Button onClick={() => openPaymentModal(inv.id)}>
+          Pago
+        </Button>}
+
+        {isAdmin && (MANUAL_NEXT[inv.status] || []).length > 0 && (
+          <select
+            className="border rounded px-2 py-1 text-sm"
+            value={inv.status}
+            onChange={(e) => handleUpdateStatus(inv.id, e.target.value)}
+            aria-label="Cambiar estado"
+          >
+            <option value={inv.status}>{STATUS_LABELS[inv.status] || inv.status}</option>
+            {MANUAL_NEXT[inv.status].map((s) => (
+              <option key={s} value={s}>{STATUS_LABELS[s]}</option>
+            ))}
+          </select>
+        )}
+      </>
+    );
+  }
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -110,7 +152,33 @@ export default function InvoicesPage() {
         <PageHeader title="Facturas" subtitle="Ver y gestionar todas las facturas" />
         <ErrorBanner message={loadError} />
 
-        <div className="bg-surface shadow rounded-lg overflow-hidden mt-6">
+        <div className="mt-6">
+          <ResponsiveList
+            items={filteredInvoices}
+            getKey={(inv) => inv.id}
+            renderCard={(inv) => (
+              <ListCard
+                title={
+                  <Link href={`/invoices/${inv.id}`} className={dt.link} title="Ver detalle y pagos">
+                    {inv.invoice_number}
+                  </Link>
+                }
+                chip={<StatusPill status={inv.status} gender="f" />}
+                subtitle={inv.client_name}
+                fields={[
+                  { label: "Fecha", value: fmtDay(inv.invoice_date) },
+                  { label: "Total", value: money(inv.total_amount ?? 0), numeric: true },
+                  { label: "Pagado", value: money(inv.amount_paid ?? 0), numeric: true },
+                  { label: "Pendiente", value: money(inv.amount_due ?? (inv.total_amount ?? 0) - (inv.amount_paid ?? 0)), numeric: true },
+                ]}
+                extra={
+                  <StatusActor kind="invoice" id={inv.id} createdBy={inv.created_by_name}
+                    lastBy={inv.last_status_by} lastAt={inv.last_status_at} />
+                }
+                actions={renderActions(inv)}
+              />
+            )}
+          >
           <table className={dt.table}>
             <thead className={dt.thead}>
               <tr>
@@ -121,7 +189,7 @@ export default function InvoicesPage() {
                 <th className={dt.thRight}>Pagado</th>
                 <th className={dt.thRight}>Pendiente</th>
                 <th className={dt.th}>Estado</th>
-                <th className={dt.thRight}>Acciones</th>
+                <th className={dt.thSticky}>Acciones</th>
               </tr>
             </thead>
 
@@ -129,11 +197,11 @@ export default function InvoicesPage() {
               {filteredInvoices.map((inv) => (
                 <tr key={inv.id} className={dt.tr}>
                   <td className={dt.td}>
-                    <Link href={`/invoices/${inv.id}`} className="text-accent underline" title="Ver detalle y pagos">
+                    <Link href={`/invoices/${inv.id}`} className={dt.link} title="Ver detalle y pagos">
                       {inv.invoice_number}
                     </Link>
                   </td>
-                  <td className={dt.td}>{inv.client_name}</td>
+                  <td className={dt.tdTrunc} title={inv.client_name}>{inv.client_name}</td>
                   <td className={dt.td}>{fmtDay(inv.invoice_date)}</td>
 
                   <td className={dt.tdRight}>
@@ -157,47 +225,16 @@ export default function InvoicesPage() {
                       lastBy={inv.last_status_by} lastAt={inv.last_status_at} />
                   </td>
 
-                  <td className={dt.tdRight}>
+                  <td className={dt.tdSticky}>
                     <div className="flex flex-wrap items-center justify-end gap-3">
-                    {sentMap[inv.id] && <SentBadge />}
-                    {inv.status !== "Cancelled" && ( // B-10: cancelled invoices cannot be emailed
-                      <SendToClientButton
-                        id={inv.id}
-                        type="invoice"
-                        onSent={() => setSentMap(prev => ({ ...prev, [inv.id]: true }))}
-                      />
-                    )}
-                    <Button onClick={() => setPreview({ kind: "factura", id: inv.id, number: inv.invoice_number })}>
-                      Vista previa Factura
-                    </Button>
-
-                    <Button onClick={() => setPreview({ kind: "conduce", id: inv.id, number: inv.invoice_number })}>
-                      Vista previa Conduce
-                    </Button>
-
-                    {!(recordAdminOnly && !isAdmin) && <Button onClick={() => openPaymentModal(inv.id)}>
-                      Pago
-                    </Button>}
-
-                    {isAdmin && (MANUAL_NEXT[inv.status] || []).length > 0 && (
-                      <select
-                        className="border rounded px-2 py-1 text-sm"
-                        value={inv.status}
-                        onChange={(e) => handleUpdateStatus(inv.id, e.target.value)}
-                        aria-label="Cambiar estado"
-                      >
-                        <option value={inv.status}>{STATUS_LABELS[inv.status] || inv.status}</option>
-                        {MANUAL_NEXT[inv.status].map((s) => (
-                          <option key={s} value={s}>{STATUS_LABELS[s]}</option>
-                        ))}
-                      </select>
-                    )}
+                      {renderActions(inv)}
                     </div>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
+          </ResponsiveList>
         </div>
       </div>
 

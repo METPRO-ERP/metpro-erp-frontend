@@ -11,6 +11,7 @@ import CSVImportModal from '@/components/client/CSVImportModal'
 import { useCurrentRole } from '@/lib/currentRole'
 import { PageHeader } from '@/components/ui/page-header'
 import { Button, buttonVariants } from '@/components/ui/button'
+import { ResponsiveList, ListCard } from '@/components/ui/responsive-list'
 import ErrorBanner from '@/components/ui/ErrorBanner'
 import SuppliersPanel from '@/components/suppliers/SuppliersPanel'
 
@@ -120,6 +121,37 @@ export default function ClientsPage() {
         description: es.cli.listaActualizada
       })
     }
+  }
+
+  // Row actions, shared by the table and the phone card (both are in the DOM; CSS picks one).
+  function renderActions(client) {
+    return (
+      <div className='flex flex-wrap items-center justify-end gap-3'>
+        <Button
+          onClick={() => setEditingClient(client)}
+          variant='ghost' size='sm' className='text-accent hover:bg-accent/10 hover:text-accent-strong'
+        >
+          Editar
+        </Button>
+
+        {isAdmin && (
+          <Button
+            onClick={() => handleDeleteClient(client.id)}
+            variant='ghost' size='sm' className='text-red-600 hover:bg-red-50 hover:text-red-700'
+          >
+            Eliminar
+          </Button>
+        )}
+
+        {/* NEW: Manage Contacts */}
+        <Link
+          href={`/contacts/${client.id}`}
+          className={buttonVariants({ variant: 'ghost', size: 'sm', className: 'text-accent hover:bg-accent/10 hover:text-accent-strong' })}
+        >
+          Contactos
+        </Link>
+      </div>
+    )
   }
 
   return (
@@ -265,7 +297,7 @@ export default function ClientsPage() {
       </div>
 
       {/* Clients List */}
-      <div className='bg-surface rounded-lg shadow overflow-x-auto'>
+      <div className='bg-surface rounded-lg shadow overflow-hidden'>
         <div className='p-4 border-b font-bold'>Lista de Clientes ({clients.length})</div>
 
         {clients.length === 0 ? (
@@ -273,6 +305,25 @@ export default function ClientsPage() {
             No hay clientes aún. Agrega uno arriba o importa desde CSV!
           </div>
         ) : (
+          <ResponsiveList
+            bare
+            items={clients}
+            getKey={(client) => client.id}
+            renderCard={(client) => (
+              <ListCard
+                title={client.company_name}
+                subtitle={client.contact_name || undefined}
+                fields={[
+                  { label: es.cli.colCorreo, value: client.email || '-', wide: true },
+                  { label: 'Teléfono', value: client.phone || '-' },
+                  { label: 'RCN', value: client.tax_id || '-' },
+                  { label: 'Dirección', value: client.address || '-', wide: true },
+                  { label: 'Notas', value: client.notes || '-', wide: true },
+                ]}
+                actions={renderActions(client)}
+              />
+            )}
+          >
           <table className={dt.table}>
             <thead className={dt.thead}>
               <tr>
@@ -283,52 +334,29 @@ export default function ClientsPage() {
                 <th className={dt.th}>Dirección</th>
                 <th className={dt.th}>Notas</th>
                 <th className={dt.th}>RCN</th>
-                <th className={dt.thRight}>Acciones</th>
+                <th className={dt.thSticky}>Acciones</th>
               </tr>
             </thead>
 
             <tbody className={dt.tbody}>
               {clients.map((client) => (
                 <tr key={client.id} className={dt.tr}>
-                  <td className={dt.td}>{client.company_name}</td>
-                  <td className={dt.td}>{client.contact_name || '-'}</td>
-                  <td className={dt.td}>{client.email || '-'}</td>
+                  <td className={dt.tdTrunc} title={client.company_name || undefined}>{client.company_name}</td>
+                  <td className={dt.tdTrunc} title={client.contact_name || undefined}>{client.contact_name || '-'}</td>
+                  <td className={dt.tdTrunc} title={client.email || undefined}>{client.email || '-'}</td>
                   <td className={dt.td}>{client.phone || '-'}</td>
-                  <td className={dt.td}>{client.address || '-'}</td>
-                  <td className={dt.td}>{client.notes || '-'}</td>
+                  <td className={dt.tdTrunc} title={client.address || undefined}>{client.address || '-'}</td>
+                  <td className={dt.tdTrunc} title={client.notes || undefined}>{client.notes || '-'}</td>
                   <td className={dt.td}>{client.tax_id || '-'}</td>
 
-                  <td className={dt.tdRight}>
-                    <div className='flex justify-end gap-2'>
-                      <Button
-                        onClick={() => setEditingClient(client)}
-                        variant='ghost' size='sm' className='text-accent hover:bg-accent/10 hover:text-accent-strong'
-                      >
-                        Editar
-                      </Button>
-
-                      {isAdmin && (
-                        <Button
-                          onClick={() => handleDeleteClient(client.id)}
-                          variant='ghost' size='sm' className='text-red-600 hover:bg-red-50 hover:text-red-700'
-                        >
-                          Eliminar
-                        </Button>
-                      )}
-
-                      {/* NEW: Manage Contacts */}
-                      <Link
-                        href={`/contacts/${client.id}`}
-                        className={buttonVariants({ variant: 'ghost', size: 'sm', className: 'text-accent hover:bg-accent/10 hover:text-accent-strong' })}
-                      >
-                        Contactos
-                      </Link>
-                    </div>
+                  <td className={dt.tdSticky}>
+                    {renderActions(client)}
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
+          </ResponsiveList>
         )}
       </div>
 

@@ -9,6 +9,7 @@ import { PageHeader } from '@/components/ui/page-header'
 import { useCurrentRole } from '@/lib/currentRole'
 import { es } from '@/lib/i18n/es'
 import { getRfqOptions } from '@/lib/rfqApi'
+import { quoteNumberLabel, invoiceNumberLabel, quoteRowKey, moneyTone, MONEY_TONE_CLASS } from '@/lib/listFields'
 
 // Counts follow the quote and invoice status matrices.
 const PENDING_QUOTE_STATUSES = ['Draft', 'Final', 'Sent']
@@ -121,7 +122,7 @@ export default function DashboardPage() {
       description: 'Gestionar información y contactos de clientes',
       href: '/clients',
       icon: (
-        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
             d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
           />
@@ -133,7 +134,7 @@ export default function DashboardPage() {
       description: 'Gestionar catálogo y precios de productos',
       href: '/products',
       icon: (
-        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
             d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
           />
@@ -145,7 +146,7 @@ export default function DashboardPage() {
       description: 'Crear y gestionar cotizaciones de precios',
       href: '/quotes',
       icon: (
-        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
             d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
           />
@@ -157,7 +158,7 @@ export default function DashboardPage() {
       description: 'Generar y rastrear facturas',
       href: '/invoices',
       icon: (
-        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
             d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2zM10 8.5a.5.5 0 11-1 0 .5.5 0 011 0zm5 5a.5.5 0 11-1 0 .5.5 0 011 0z"
           />
@@ -169,7 +170,7 @@ export default function DashboardPage() {
       description: 'Dar seguimiento a proyectos y trabajos aprobados',
       href: '/proyectos',
       icon: (
-        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
             d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"
           />
@@ -181,7 +182,7 @@ export default function DashboardPage() {
       description: 'Registrar y analizar gastos operativos',
       href: '/expenses',
       icon: (
-        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
             d="M12 8c-1.657 0-3 1.343-3 3h6c0-1.657-1.343-3-3-3zm0 0V5m0 6v6m0 0h3m-3 0H9"
           />
@@ -193,7 +194,7 @@ export default function DashboardPage() {
       description: 'Ver análisis y reportes',
       href: '/reports',
       icon: (
-        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
             d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
           />
@@ -209,7 +210,7 @@ export default function DashboardPage() {
       description: 'Solicitudes de cotización y órdenes de compra a suplidores',
       href: '/compras',
       icon: (
-        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
             d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
           />
@@ -225,7 +226,7 @@ export default function DashboardPage() {
       description: 'Usuarios, encabezados PDF, plantillas, sello y términos',
       href: '/ajustes',
       icon: (
-        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
             d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z M15 12a3 3 0 11-6 0 3 3 0 016 0z"
           />
@@ -233,6 +234,8 @@ export default function DashboardPage() {
       )
     }
   ]
+
+  const allModules = [...modules, ...purchasingModules, ...(isAdmin ? adminModules : [])]
 
   return (
     <div className="text-ink">
@@ -253,128 +256,116 @@ export default function DashboardPage() {
         </div>
       )}
 
-      {/* MODULE GRID */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {[...modules, ...purchasingModules, ...(isAdmin ? adminModules : [])].map((module) => (
-          <Link
-            key={module.name}
-            href={module.href}
-            className="
-              bg-surface border border-line rounded-xl p-6 shadow-card
-              hover:border-accent transition-colors duration-200 cursor-pointer
-            "
-          >
-            <div className="flex items-start gap-4">
-              <div className="text-accent">{module.icon}</div>
-              <div>
-                <h3 className="text-lg font-semibold mb-1 text-ink">{module.name}</h3>
-                <p className="text-sm text-muted">{module.description}</p>
-              </div>
-            </div>
-          </Link>
+      {/* NUMBERS: one grid so column edges line up. Counts first, then money. */}
+      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4 lg:gap-4" aria-busy={loading}>
+        <StatCard label="Clientes" value={loading ? '…' : stats.clients} />
+        <StatCard label="Cotizaciones Pendientes" value={loading ? '…' : stats.pendingQuotes} />
+        <StatCard label="Facturas Abiertas" value={loading ? '…' : stats.openInvoices} />
+        <StatCard label="Gastos Totales" value={loading ? '…' : money(stats.totalExpenses)} />
+
+        <StatCard
+          money
+          label="Cobrado (pagos recibidos, con ITBIS)"
+          value={loading ? '…' : money(stats.revenue)}
+          tone={MONEY_TONE_CLASS[moneyTone('income', stats.revenue)]}
+        />
+        <StatCard
+          money
+          label="Gastos del Mes"
+          value={loading ? '…' : money(stats.monthlyExpenses)}
+          tone={MONEY_TONE_CLASS[moneyTone('spend', stats.monthlyExpenses)]}
+        />
+        <StatCard
+          money
+          wide
+          label="Ganancia Neta (cobrado sin ITBIS − gastos)"
+          value={loading ? '…' : money(stats.profit)}
+          tone={MONEY_TONE_CLASS[moneyTone('net', stats.profit)]}
+        />
+      </div>
+
+      {/* MODULE SHORTCUTS (the app's navigation) */}
+      <ul className="mt-6 grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-4">
+        {allModules.map((module) => (
+          <li key={module.name}>
+            <Link
+              href={module.href}
+              className="flex h-full items-center gap-2.5 rounded-lg border border-line bg-surface p-2.5 shadow-card sm:gap-3 sm:p-3 transition-colors hover:border-accent"
+            >
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-accent/10 text-accent">
+                {module.icon}
+              </span>
+              <span className="min-w-0">
+                <span className="block truncate text-[13px] font-semibold text-ink sm:text-sm">{module.name}</span>
+                <span className="mt-0.5 hidden text-xs text-muted md:block">{module.description}</span>
+              </span>
+            </Link>
+          </li>
         ))}
-      </div>
-
-      {/* QUICK STATS */}
-      <div className="mt-12 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6" aria-busy={loading}>
-
-        <div className="bg-surface border border-line rounded-xl p-6 shadow-card">
-          <div className="text-sm text-muted mb-1">Clientes Activos</div>
-          <div className="text-3xl font-bold text-ink">{loading ? '…' : stats.clients}</div>
-        </div>
-
-        <div className="bg-surface border border-line rounded-xl p-6 shadow-card">
-          <div className="text-sm text-muted mb-1">Cotizaciones Pendientes</div>
-          <div className="text-3xl font-bold text-ink">{loading ? '…' : stats.pendingQuotes}</div>
-        </div>
-
-        <div className="bg-surface border border-line rounded-xl p-6 shadow-card">
-          <div className="text-sm text-muted mb-1">Facturas Abiertas</div>
-          <div className="text-3xl font-bold text-ink">{loading ? '…' : stats.openInvoices}</div>
-        </div>
-
-        <div className="bg-surface border border-line rounded-xl p-6 shadow-card">
-          <div className="text-sm text-muted mb-1">Gastos Totales</div>
-          <div className="text-3xl font-bold">{loading ? '…' : money(stats.totalExpenses)}</div>
-        </div>
-
-      </div>
-
-      {/* FINANCIAL OVERVIEW */}
-      <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
-
-        <div className="bg-surface border border-line rounded-xl p-6 shadow-card">
-          <div className="text-sm text-muted mb-1">Cobrado (pagos recibidos, con ITBIS)</div>
-          <div className="text-3xl font-bold text-emerald-600">{loading ? '…' : money(stats.revenue)}</div>
-        </div>
-
-        <div className="bg-surface border border-line rounded-xl p-6 shadow-card">
-          <div className="text-sm text-muted mb-1">Gastos del Mes</div>
-          <div className="text-3xl font-bold text-amber-600">{loading ? '…' : money(stats.monthlyExpenses)}</div>
-        </div>
-
-        <div className="bg-surface border border-line rounded-xl p-6 shadow-card">
-          <div className="text-sm text-muted mb-1">Ganancia Neta (cobrado sin ITBIS − gastos)</div>
-          <div className={`text-3xl font-bold ${stats.profit >= 0 ? 'text-emerald-600' : 'text-red-600'}`}>
-            {loading ? '…' : money(stats.profit)}
-          </div>
-        </div>
-
-      </div>
+      </ul>
 
       {/* RECENT ACTIVITY */}
-      <div className="mt-12 grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="mt-6 grid grid-cols-1 items-start gap-4 md:grid-cols-2 lg:grid-cols-3">
 
-        {/* Last 5 Quotes */}
-        <div className="bg-surface border border-line rounded-xl p-6 shadow-card">
-          <h2 className="text-lg font-semibold mb-4 text-ink">Cotizaciones Recientes</h2>
-          {recentQuotes.length === 0 && (
-            <p className="text-muted text-sm">No hay cotizaciones recientes</p>
-          )}
-          <ul className="space-y-3">
-            {recentQuotes.map((q) => (
-              <li key={q.id} className="flex justify-between text-sm">
-                <span className="text-ink">#{q.id} — {q.client_name}</span>
-                <span className="text-muted">{localDateEsDO(q.created_at)}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
+        <RecentCard title="Cotizaciones Recientes" empty="No hay cotizaciones recientes" rows={recentQuotes.map((q, i) => ({
+          key: quoteRowKey(q, i),
+          label: quoteNumberLabel(q.quote_number),
+          text: q.client_name,
+          right: localDateEsDO(q.created_at),
+        }))} />
 
-        {/* Last 5 Invoices */}
-        <div className="bg-surface border border-line rounded-xl p-6 shadow-card">
-          <h2 className="text-lg font-semibold mb-4 text-ink">Facturas Recientes</h2>
-          {recentInvoices.length === 0 && (
-            <p className="text-muted text-sm">No hay facturas recientes</p>
-          )}
-          <ul className="space-y-3">
-            {recentInvoices.map((inv) => (
-              <li key={inv.id} className="flex justify-between text-sm">
-                <span className="text-ink">#{inv.invoice_number} — {inv.client_name}</span>
-                <span className="text-muted">{localDateEsDO(inv.created_at)}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
+        <RecentCard title="Facturas Recientes" empty="No hay facturas recientes" rows={recentInvoices.map((inv) => ({
+          key: inv.id,
+          label: invoiceNumberLabel(inv.invoice_number),
+          text: inv.client_name,
+          right: localDateEsDO(inv.created_at),
+        }))} />
 
-        {/* Last 5 Expenses */}
-        <div className="bg-surface border border-line rounded-xl p-6 shadow-card">
-          <h2 className="text-lg font-semibold mb-4 text-ink">Gastos Recientes</h2>
-          {recentExpenses.length === 0 && (
-            <p className="text-muted text-sm">No hay gastos recientes</p>
-          )}
-          <ul className="space-y-3">
-            {recentExpenses.map((exp) => (
-              <li key={exp.expense_id} className="flex justify-between text-sm">
-                <span className="text-ink">{exp.category} — {money(Number(exp.amount))}</span>
-                <span className="text-muted">{localDateEsDO(exp.created_at)}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
+        <RecentCard title="Gastos Recientes" empty="No hay gastos recientes" rows={recentExpenses.map((exp) => ({
+          key: exp.expense_id,
+          text: exp.category,
+          right: money(Number(exp.amount)),
+          rightStrong: true,
+        }))} />
 
       </div>
 
+    </div>
+  )
+}
+
+// One stat tile. Money tiles are a label/value row below md and a stacked tile from md up.
+function StatCard({ label, value, tone = 'text-ink', money: isMoney = false, wide = false }) {
+  return (
+    <div className={[
+      'rounded-lg border border-line bg-surface p-4 shadow-card',
+      isMoney ? 'col-span-2 flex items-baseline justify-between gap-3 md:block' : '',
+      isMoney && !wide ? 'md:col-span-1' : '',
+      wide ? 'md:col-span-2' : '',
+    ].join(' ')}>
+      <div className="text-xs text-muted">{label}</div>
+      <div className={`text-2xl font-semibold tabular-nums md:mt-1 ${tone}`}>{value}</div>
+    </div>
+  )
+}
+
+// Recent activity card: one-line rows (label + truncated text, value on the right), sized to content.
+function RecentCard({ title, empty, rows }) {
+  return (
+    <div className="rounded-lg border border-line bg-surface p-4 shadow-card">
+      <h2 className="mb-2 text-base font-semibold text-ink">{title}</h2>
+      {rows.length === 0 && <p className="text-sm text-muted">{empty}</p>}
+      <ul className="divide-y divide-line">
+        {rows.map((r) => (
+          <li key={r.key} className="flex h-10 items-center justify-between gap-3 text-sm">
+            <span className="flex min-w-0 items-center gap-2">
+              {r.label && <span className="shrink-0 font-medium tabular-nums text-ink">{r.label}</span>}
+              <span className="truncate text-ink" title={r.text}>{r.text}</span>
+            </span>
+            <span className={`shrink-0 tabular-nums ${r.rightStrong ? 'text-ink' : 'text-muted'}`}>{r.right}</span>
+          </li>
+        ))}
+      </ul>
     </div>
   )
 }

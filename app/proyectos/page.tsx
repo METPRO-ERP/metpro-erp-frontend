@@ -11,6 +11,7 @@ import StatusPill from "@/components/ui/StatusPill";
 import { PageHeader } from "@/components/ui/page-header";
 import { Button } from "@/components/ui/button";
 import { dt } from "@/components/ui/data-table";
+import { ResponsiveList, ListCard } from "@/components/ui/responsive-list";
 import { fb } from "@/components/ui/filter-bar";
 
 const t = es.proyectos;
@@ -158,52 +159,65 @@ export default function ProyectosPage() {
       )}
 
       <div className={dt.wrap}>
-        <table className={dt.table}>
-          <thead className={dt.thead}>
-            <tr>
-              <th className={dt.th}>{t.numero}</th>
-              <th className={dt.th}>{t.nombre}</th>
-              <th className={dt.th}>{es.comun.cliente}</th>
-              <th className={dt.th}>{t.cotizacion}</th>
-              <th className={dt.th}>{t.factura}</th>
-              <th className={dt.th}>{es.comun.estado}</th>
-              <th className={dt.th}>{es.comun.fechaInicio}</th>
-            </tr>
-          </thead>
-          <tbody className={dt.tbody}>
-            {loading ? (
-              <tr>
-                <td colSpan={7} className={dt.empty}>
-                  {es.comun.cargando}
-                </td>
-              </tr>
-            ) : proyectos.length === 0 ? (
-              <tr>
-                <td colSpan={7} className={dt.empty}>
-                  {t.vacio}
-                </td>
-              </tr>
-            ) : (
-              proyectos.map((p) => (
-                <tr key={p.id} className={dt.tr}>
-                  <td className={dt.td}>
-                    <Link href={`/proyectos/${p.id}`} className="font-medium text-accent underline">
-                      {p.project_number ?? `P-${p.id}`}
-                    </Link>
-                  </td>
-                  <td className={dt.td}>{p.name}</td>
-                  <td className={dt.td}>{p.client_name ?? es.comun.sinDatos}</td>
-                  <td className={dt.td}>{p.quote_label ?? es.comun.sinDatos}</td>
-                  <td className={dt.td}>{p.invoice_number ?? es.comun.sinDatos}</td>
-                  <td className={dt.td}>
-                    <StatusPill status={p.status} gender="m" />
-                  </td>
-                  <td className={dt.td}>{fmtDay(p.start_date)}</td>
-                </tr>
-              ))
+        {loading || proyectos.length === 0 ? (
+          <p className={dt.empty}>{loading ? es.comun.cargando : t.vacio}</p>
+        ) : (
+          <ResponsiveList
+            bare
+            items={proyectos}
+            getKey={(p) => p.id}
+            renderCard={(p) => (
+              <ListCard
+                title={
+                  <Link href={`/proyectos/${p.id}`} className={dt.link}>
+                    {p.project_number ?? `P-${p.id}`}
+                  </Link>
+                }
+                chip={<StatusPill status={p.status} gender="m" />}
+                subtitle={p.name}
+                fields={[
+                  { label: es.comun.cliente, value: p.client_name ?? es.comun.sinDatos, wide: true },
+                  { label: t.cotizacion, value: p.quote_label ?? es.comun.sinDatos },
+                  { label: t.factura, value: p.invoice_number ?? es.comun.sinDatos },
+                  { label: es.comun.fechaInicio, value: fmtDay(p.start_date) },
+                ]}
+              />
             )}
-          </tbody>
-        </table>
+          >
+            <table className={dt.table}>
+              <thead className={dt.thead}>
+                <tr>
+                  <th className={dt.th}>{t.numero}</th>
+                  <th className={dt.th}>{t.nombre}</th>
+                  <th className={dt.th}>{es.comun.cliente}</th>
+                  <th className={dt.th}>{t.cotizacion}</th>
+                  <th className={dt.th}>{t.factura}</th>
+                  <th className={dt.th}>{es.comun.estado}</th>
+                  <th className={dt.th}>{es.comun.fechaInicio}</th>
+                </tr>
+              </thead>
+              <tbody className={dt.tbody}>
+                {proyectos.map((p) => (
+                  <tr key={p.id} className={dt.tr}>
+                    <td className={dt.td}>
+                      <Link href={`/proyectos/${p.id}`} className={dt.link}>
+                        {p.project_number ?? `P-${p.id}`}
+                      </Link>
+                    </td>
+                    <td className={dt.tdTrunc} title={p.name}>{p.name}</td>
+                    <td className={dt.tdTrunc} title={p.client_name ?? undefined}>{p.client_name ?? es.comun.sinDatos}</td>
+                    <td className={dt.td}>{p.quote_label ?? es.comun.sinDatos}</td>
+                    <td className={dt.td}>{p.invoice_number ?? es.comun.sinDatos}</td>
+                    <td className={dt.td}>
+                      <StatusPill status={p.status} gender="m" />
+                    </td>
+                    <td className={dt.td}>{fmtDay(p.start_date)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </ResponsiveList>
+        )}
       </div>
     </div>
   );
