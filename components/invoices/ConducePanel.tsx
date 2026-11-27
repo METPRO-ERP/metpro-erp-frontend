@@ -11,15 +11,18 @@ import {
   buildLines,
   conduceErrorText,
   createConduce,
-  defaultEntries,
   fetchConducePdf,
   firstViolationId,
   fmtQty,
   getInvoiceDelivery,
+  selectAllPending,
+  selectedCount,
+  setLineSelected,
   stateLabel,
   voidConduce,
   type ConduceRow,
   type DeliveryView,
+  type Selection,
 } from "@/lib/conduceApi";
 import { saveBlob } from "@/lib/invoiceDocs";
 import DeliveryPill from "@/components/quotes/DeliveryPill";
@@ -112,6 +115,7 @@ export default function ConducePanel({ invoiceId, isAdmin }: Props) {
   const [loadError, setLoadError] = useState<string | null>(null);
   const [creating, setCreating] = useState(false);
   const [entries, setEntries] = useState<Record<number, string>>({});
+  const [selected, setSelected] = useState<Selection>({});
   const [errors, setErrors] = useState<Record<number, string>>({});
   const [formError, setFormError] = useState<string | null>(null);
   const [date, setDate] = useState(todayLocal());
@@ -136,7 +140,8 @@ export default function ConducePanel({ invoiceId, isAdmin }: Props) {
   }, [load]);
 
   const openForm = () => {
-    setEntries(defaultEntries(view?.lines ?? []));
+    setEntries({}); // every line opens UNCHECKED and locked: only ticked lines can take a quantity
+    setSelected({});
     setErrors({});
     setFormError(null);
     setDate(todayLocal());
@@ -146,13 +151,13 @@ export default function ConducePanel({ invoiceId, isAdmin }: Props) {
 
   const submit = async () => {
     if (!view || saving) return;
-    const built = buildLines(view.lines, entries);
+    const built = buildLines(view.lines, entries, selected);
     if (!built.ok) {
       setErrors(built.errors);
-      const msg = attemptMessage(attemptProblem(view.lines, entries));
+      const msg = attemptMessage(attemptProblem(view.lines, entries, selected));
       setFormError(msg);
       // The inline warning can be off-screen (360px): bring the first wrong line into view and say why.
-      const bad = firstViolationId(view.lines, entries);
+      const bad = firstViolationId(view.lines, entries, selected);
       if (bad !== null) {
         const el = document.getElementById(`q-${bad}`);
         if (el) {
@@ -182,6 +187,27 @@ export default function ConducePanel({ invoiceId, isAdmin }: Props) {
     } finally {
       setSaving(false);
     }
+  };
+
+  const toggleLine = (l: DeliveryView["lines"][number], on: boolean) => {
+    const next = setLineSelected(l, on, entries, selected);
+    setEntries(next.entries);
+    setSelected(next.selected);
+    setFormError(null); // a stale "select at least one" / over-delivery notice must not outlive the change that answers it
+    setErrors((p) => {
+      const rest = { ...p };
+      delete rest[l.quote_item_id];
+      return rest;
+    });
+  };
+
+  const selectAll = () => {
+    if (!view) return;
+    const all = selectAllPending(view.lines);
+    setEntries(all.entries);
+    setSelected(all.selected);
+    setErrors({});
+    setFormError(null);
   };
 
   const confirmVoid = async () => {
@@ -232,7 +258,20 @@ export default function ConducePanel({ invoiceId, isAdmin }: Props) {
         <ul className="mb-4 space-y-2" aria-label={c.estado}>
           {view.lines.map((l) => (
             <li key={l.quote_item_id} className="rounded border border-line bg-surface p-3">
-              <p className="text-sm font-medium text-ink break-words">{l.product_name}</p>
+              {creating && l.pending > 0 ? (
+                <label className="-mx-1 flex cursor-pointer items-center gap-3 px-1 max-md:min-h-11">
+                  <input
+                    type="checkbox"
+                    className="h-4 w-4 shrink-0 max-md:h-6 max-md:w-6"
+                    checked={!!selected[l.quote_item_id]}
+                    onChange={(e) => toggleLine(l, e.target.checked)}
+                    aria-label={c.incluir(l.product_name)}
+                  />
+                  <span className="text-sm font-medium text-ink break-words">{l.product_name}</span>
+                </label>
+              ) : (
+                <p className="text-sm font-medium text-ink break-words">{l.product_name}</p>
+              )}
               <dl className="mt-2 grid grid-cols-3 gap-2 text-xs">
                 <div>
                   <dt className="text-muted">{c.cotizado}</dt>
@@ -255,8 +294,9 @@ export default function ConducePanel({ invoiceId, isAdmin }: Props) {
                   <input
                     id={`q-${l.quote_item_id}`}
                     inputMode="decimal"
-                    className={inputCls}
+                    className={`${inputCls} disabled:cursor-not-allowed disabled:bg-canvas disabled:text-muted`}
                     value={entries[l.quote_item_id] ?? ""}
+                    disabled={!selected[l.quote_item_id]}
                     onChange={(e) => setEntries((p) => ({ ...p, [l.quote_item_id]: e.target.value }))}
                     aria-invalid={!!errors[l.quote_item_id]}
                     aria-describedby={errors[l.quote_item_id] ? `qe-${l.quote_item_id}` : undefined}
@@ -297,10 +337,10 @@ export default function ConducePanel({ invoiceId, isAdmin }: Props) {
               {formError}
             </p>
           )}
-          <p className="text-xs text-muted">{c.resumen(view.lines.filter((l) => l.pending > 0 && (entries[l.quote_item_id] ?? "").trim() !== "").length)}</p>
+          <p className="text-xs text-muted">{c.resumen(selectedCount(view.lines, selected))}</p>
           <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap [&>button]:w-full sm:[&>button]:w-auto">
             <Button onClick={submit} disabled={saving}>{saving ? c.creando : c.crear}</Button>
-            <Button variant="outline" onClick={() => setEntries(defaultEntries(view.lines))} disabled={saving}>
+            <Button variant="outline" onClick={selectAll} disabled={saving}>
               {c.entregarPendiente}
             </Button>
             <Button variant="outline" onClick={() => setCreating(false)} disabled={saving}>{c.cancelar}</Button>

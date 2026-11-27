@@ -139,12 +139,28 @@ export type BuildResult =
   | { ok: true; lines: ConduceLineInput[] }
   | { ok: false; errors: Record<number, string>; empty: boolean };
 
-export function buildLines(lines: DeliveryLine[], entries: Record<number, string>): BuildResult {
+/** Which lines the user ticked in the create form. A line is in the delivery only while it is true here. */
+export type Selection = Record<number, boolean>;
+
+/**
+ * One line's verdict. "skip" = the line is not part of this delivery (finished, or not selected).
+ * Without `selected` the old rule holds (blank or 0 = not in the delivery); with it, a SELECTED line
+ * must carry a quantity above 0.
+ */
+function lineCheck(l: DeliveryLine, entries: Record<number, string>, selected?: Selection): QtyCheck | "skip" {
+  if (l.pending <= 0) return "skip"; // finished line: it has no input, so a stale entry must not count
+  if (selected && !selected[l.quote_item_id]) return "skip";
+  const c = checkQty(entries[l.quote_item_id] ?? "", l.pending);
+  if (selected && c.ok && c.value === null) return { ok: false, error: es.cond.errCero };
+  return c;
+}
+
+export function buildLines(lines: DeliveryLine[], entries: Record<number, string>, selected?: Selection): BuildResult {
   const errors: Record<number, string> = {};
   const out: ConduceLineInput[] = [];
   for (const l of lines) {
-    if (l.pending <= 0) continue; // finished line: it has no input, so a stale entry must not count
-    const c = checkQty(entries[l.quote_item_id] ?? "", l.pending);
+    const c = lineCheck(l, entries, selected);
+    if (c === "skip") continue;
     if (!c.ok) errors[l.quote_item_id] = c.error;
     else if (c.value !== null) out.push({ quote_item_id: l.quote_item_id, quantity: c.value });
   }
@@ -153,42 +169,75 @@ export function buildLines(lines: DeliveryLine[], entries: Record<number, string
   return { ok: true, lines: out };
 }
 
-export type AttemptProblem = "over" | "invalid" | "empty" | null;
+export type AttemptProblem = "over" | "invalid" | "zero" | "empty" | "none" | null;
 
 /**
  * Why a create attempt cannot go out, for the message above the button. Same rules as buildLines
- * (finished lines are skipped); it only classifies. null = the form is valid and creates as before.
+ * (finished and unselected lines are skipped); it only classifies. null = the form is valid and creates as before.
+ * "none" = a selection form with nothing ticked; "empty" = the old form with no quantity.
  */
-export function attemptProblem(lines: DeliveryLine[], entries: Record<number, string>): AttemptProblem {
+export function attemptProblem(lines: DeliveryLine[], entries: Record<number, string>, selected?: Selection): AttemptProblem {
   let invalid = false;
   let over = false;
+  let zero = false;
   let any = false;
   for (const l of lines) {
-    if (l.pending <= 0) continue;
-    const c = checkQty(entries[l.quote_item_id] ?? "", l.pending);
+    const c = lineCheck(l, entries, selected);
+    if (c === "skip") continue;
     if (!c.ok) {
-      const exceeds = /^\d+([.,]\d{1,2})?$/.test((entries[l.quote_item_id] ?? "").trim());
-      if (exceeds) over = true;
+      const raw = (entries[l.quote_item_id] ?? "").trim();
+      if (c.error === es.cond.errCero) zero = true;
+      else if (/^\d+([.,]\d{1,2})?$/.test(raw)) over = true;
       else invalid = true;
     } else if (c.value !== null) any = true;
   }
   if (over) return "over";
   if (invalid) return "invalid";
-  return any ? null : "empty";
+  if (zero) return "zero";
+  if (any) return null;
+  return selected ? "none" : "empty";
 }
 
 /** First line (in display order) whose entry is wrong, so the page can scroll to it. */
-export function firstViolationId(lines: DeliveryLine[], entries: Record<number, string>): number | null {
+export function firstViolationId(lines: DeliveryLine[], entries: Record<number, string>, selected?: Selection): number | null {
   for (const l of lines) {
-    if (l.pending <= 0) continue;
-    if (!checkQty(entries[l.quote_item_id] ?? "", l.pending).ok) return l.quote_item_id;
+    const c = lineCheck(l, entries, selected);
+    if (c !== "skip" && !c.ok) return l.quote_item_id;
   }
   return null;
+}
+
+/** Ticks a line: the input is prefilled with the full pending quantity (editable down). Unticking clears it. */
+export function setLineSelected(
+  l: DeliveryLine,
+  on: boolean,
+  entries: Record<number, string>,
+  selected: Selection
+): { entries: Record<number, string>; selected: Selection } {
+  if (l.pending <= 0) return { entries, selected };
+  return {
+    entries: { ...entries, [l.quote_item_id]: on ? fmtQty(l.pending) : "" },
+    selected: { ...selected, [l.quote_item_id]: on },
+  };
+}
+
+/** "Entregar todo lo pendiente": every line with something pending is ticked and filled with its pending quantity. */
+export function selectAllPending(lines: DeliveryLine[]): { entries: Record<number, string>; selected: Selection } {
+  const selected: Selection = {};
+  for (const l of lines) if (l.pending > 0) selected[l.quote_item_id] = true;
+  return { entries: defaultEntries(lines), selected };
+}
+
+/** How many ticked lines the delivery will carry (finished lines never count). */
+export function selectedCount(lines: DeliveryLine[], selected: Selection): number {
+  return lines.filter((l) => l.pending > 0 && selected[l.quote_item_id]).length;
 }
 
 export function attemptMessage(problem: AttemptProblem): string | null {
   if (problem === "over") return es.cond.avisoExceden;
   if (problem === "invalid") return es.cond.avisoInvalidas;
+  if (problem === "zero") return es.cond.avisoCero;
+  if (problem === "none") return es.cond.sinSeleccion;
   if (problem === "empty") return es.cond.sinLineas;
   return null;
 }

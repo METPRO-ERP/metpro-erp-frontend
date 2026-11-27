@@ -77,6 +77,9 @@ const probe = (arg) => {
     // R3: the Recibo button in the payment history (needs RECEIPT_INVOICE = an invoice id with a receipt-ready payment and RECEIPT_ENABLED on).
     // The payment history renders cards (below md) and a table (md+) at once; wait for the visible Recibo, not the first in the DOM.
     if (process.env.RECEIPT_INVOICE) states.push(["invoice:recibo", async () => { await p.goto(BASE + "/invoices/" + process.env.RECEIPT_INVOICE, { waitUntil: "networkidle", timeout: 90000 }); await p.locator('button:has-text("Recibo")').filter({ visible: true }).first().waitFor({ timeout: 30000 }); await p.waitForTimeout(500); }]);
+    // Conduce create form: the per-line "Incluir en esta entrega" checkbox rows (needs CONDUCE_INVOICE = an invoice id with pending lines and CONDUCE_LEDGER_ENABLED on).
+    // One line is ticked so both the locked and the enabled quantity inputs are probed.
+    if (process.env.CONDUCE_INVOICE) states.push(["invoice:conduce-form", async () => { await p.goto(BASE + "/invoices/" + process.env.CONDUCE_INVOICE, { waitUntil: "networkidle", timeout: 90000 }); await p.getByRole("button", { name: "Nueva entrega" }).click(); await p.getByRole("checkbox").first().check(); await p.evaluate(() => window.scrollTo(0, 0)); await p.waitForTimeout(800); }]);
     for (const [name, open] of states) {
       try {
         await open();
