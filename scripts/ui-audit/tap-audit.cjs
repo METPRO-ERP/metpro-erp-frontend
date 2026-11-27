@@ -70,6 +70,18 @@ const probe = (arg) => {
         if (touch) fail += r.miss.length + r.neighbour.length; else fail += r.desktopLeak.length;
       } catch (e) { out[path + "@" + vn] = { err: e.message.slice(0, 100) }; }
     }
+    // View states reached by a click (R2: the "Vencidas" view on the invoices list).
+    const states = [
+      ["invoices:vencidas", async () => { await p.goto(BASE + "/invoices", { waitUntil: "networkidle", timeout: 90000 }); await p.click('button:has-text("Vencidas")'); await p.waitForSelector('[data-testid="ageing-strip"]', { timeout: 30000 }); await p.waitForTimeout(500); }],
+    ];
+    for (const [name, open] of states) {
+      try {
+        await open();
+        const r = await p.evaluate(probe, { mode: touch ? "touch" : "mouse", scoped: false });
+        out["state " + name + "@" + vn] = r;
+        if (touch) fail += r.miss.length + r.neighbour.length; else fail += r.desktopLeak.length;
+      } catch (e) { out["state " + name + "@" + vn] = { err: e.message.slice(0, 100) }; fail++; }
+    }
     // Dialogs: probe only the controls inside the open dialog.
     const go = async (path) => { await p.goto(BASE + path, { waitUntil: "networkidle" }); await p.waitForTimeout(500); };
     const viaMenu = async (label) => {

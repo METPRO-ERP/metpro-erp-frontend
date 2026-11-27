@@ -21,6 +21,8 @@ import { ResponsiveList, ListCard } from "@/components/ui/responsive-list";
 import { useCurrentRole } from "@/lib/currentRole";
 import { Button } from "@/components/ui/button";
 import InvoiceDocPreviewModal from "@/components/invoices/InvoiceDocPreviewModal";
+import OverdueView from "@/components/invoices/OverdueView";
+import { usePaymentDueEnabled } from "@/lib/paymentDue";
 
 // Mirrors the backend manual matrix. Paid is reached only by recording payments.
 const STATUS_LABELS = { Pending: getStatusLabel("pending", "f"), Paid: getStatusLabel("paid", "f"), Cancelled: getStatusLabel("cancelled", "f"), Overdue: getStatusLabel("overdue", "f") };
@@ -36,6 +38,10 @@ export default function InvoicesPage() {
   const [loadError, setLoadError] = useState(null)
   const [loading, setLoading] = useState(true);
   const [statusFilter] = useState("all");
+  // R2: "Vencidas" view. Rides PAYMENT_DUE_ENABLED: off (or the options call failed) = no filter, today's page.
+  const paymentDueOn = usePaymentDueEnabled();
+  const [view, setView] = useState("all");
+  const showOverdue = paymentDueOn && view === "overdue";
   const [sentMap, setSentMap] = useState({});
   // { kind: "factura" | "conduce", id, number } while a preview is open
   const [preview, setPreview] = useState(null);
@@ -152,7 +158,20 @@ export default function InvoicesPage() {
         <PageHeader title="Facturas" subtitle="Ver y gestionar todas las facturas" />
         <ErrorBanner message={loadError} />
 
-        <div className="mt-6">
+        {paymentDueOn && (
+          <div className="mt-4 flex flex-wrap items-center gap-3" role="group" aria-label="Vista de facturas">
+            <Button size="sm" variant={view === "all" ? "default" : "secondary"} aria-pressed={view === "all"} onClick={() => setView("all")}>
+              Todas
+            </Button>
+            <Button size="sm" variant={view === "overdue" ? "default" : "secondary"} aria-pressed={view === "overdue"} onClick={() => setView("overdue")}>
+              Vencidas
+            </Button>
+          </div>
+        )}
+
+        {showOverdue && <div className="mt-6"><OverdueView /></div>}
+
+        {!showOverdue && <div className="mt-6">
           <ResponsiveList
             items={filteredInvoices}
             getKey={(inv) => inv.id}
@@ -235,7 +254,7 @@ export default function InvoicesPage() {
             </tbody>
           </table>
           </ResponsiveList>
-        </div>
+        </div>}
       </div>
 
       {preview && (
