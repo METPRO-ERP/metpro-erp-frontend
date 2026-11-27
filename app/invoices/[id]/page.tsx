@@ -20,7 +20,7 @@ import InvoiceDocPreviewModal from "@/components/invoices/InvoiceDocPreviewModal
 import { type InvoiceDocKind } from "@/lib/invoiceDocs";
 import ConducePanel from "@/components/invoices/ConducePanel";
 import DueDatePanel from "@/components/invoices/DueDatePanel";
-import { ResponsiveList, ListCard, TableScroll } from "@/components/ui/responsive-list";
+import { ResponsiveList, ListCard } from "@/components/ui/responsive-list";
 import { dt } from "@/components/ui/data-table";
 import { getConduceOptions } from "@/lib/conduceApi";
 import { openReceipt, showReceiptButton, useReceiptEnabled } from "@/lib/receipt";
@@ -117,6 +117,44 @@ export default function InvoiceDetailPage() {
       setRecordAdminOnly(o.record_admin_only);
     });
   }, []);
+
+  // Shared by the payments table (md and up) and the payment cards (below md): same content, same handlers.
+  const paymentNotes = (p: Payment) => (
+    <>
+      {p.notes || "-"}
+      {p.voided_at && (
+        <div className="text-xs text-red-700">
+          Anulado{p.voided_by_name ? ` por ${p.voided_by_name}` : ""}: {p.void_reason}
+        </div>
+      )}
+      {p.corrects_payment_id != null && (
+        <div className="text-xs text-muted">Corrige el pago #{p.corrects_payment_id}</div>
+      )}
+      {p.corrected_by_payment_id != null && (
+        <div className="text-xs text-muted">Reemplazado por el pago #{p.corrected_by_payment_id}</div>
+      )}
+      <div className="text-xs text-muted">
+        {p.backfilled
+          ? "Registro anterior al control de auditoría"
+          : `Registrado${p.created_by_name ? ` por ${p.created_by_name}` : ""}${p.created_at ? ` el ${fmtDay(p.created_at)}` : ""}`}
+      </div>
+    </>
+  );
+  const paymentButtons = (p: Payment) => (
+    <>
+      {showReceiptButton(isAdmin, receiptEnabled, p) && (
+        <Button variant="outline" disabled={receiptBusy === p.id} onClick={() => printReceipt(p)}>
+          Recibo
+        </Button>
+      )}
+      {correctionEnabled && invoice?.status !== "Cancelled" && (
+        <Button variant="outline" onClick={() => openCorrection(p)}>Corregir pago</Button>
+      )}
+      <Button variant="outline" onClick={() => { setVoiding(p); setVoidReason(""); }}>
+        Anular pago
+      </Button>
+    </>
+  );
 
   const openCorrection = (p: Payment) => {
     setCorrecting(p);
@@ -375,7 +413,30 @@ export default function InvoiceDetailPage() {
           {payments.length === 0 ? (
             <p className="text-muted">No hay pagos registrados.</p>
           ) : (
-            <TableScroll>
+            <ResponsiveList
+              items={payments}
+              getKey={(p) => p.id}
+              renderCard={(p) => (
+                <ListCard
+                  title={
+                    <span className={p.voided_at ? "text-muted" : ""}>
+                      {fmtDay(p.payment_date)} · {p.method}
+                    </span>
+                  }
+                  fields={[
+                    {
+                      label: "Monto",
+                      value: (
+                        <span className={`font-medium ${p.voided_at ? "text-muted line-through" : ""}`}>{money(p.amount ?? 0)}</span>
+                      ),
+                      numeric: true,
+                    },
+                    { label: "Notas", value: <span className={p.voided_at ? "text-muted" : ""}>{paymentNotes(p)}</span>, wide: true },
+                  ]}
+                  actions={isAdmin && !p.voided_at ? paymentButtons(p) : undefined}
+                />
+              )}
+            >
             <table className={dt.table}>
               <thead className={dt.thead}>
                 <tr>
@@ -406,39 +467,13 @@ export default function InvoiceDetailPage() {
                       {money((p.amount ?? 0))}
                     </td>
                     <td className="px-4 py-3 text-ink">
-                      {p.notes || "-"}
-                      {p.voided_at && (
-                        <div className="text-xs text-red-700">
-                          Anulado{p.voided_by_name ? ` por ${p.voided_by_name}` : ""}: {p.void_reason}
-                        </div>
-                      )}
-                      {p.corrects_payment_id != null && (
-                        <div className="text-xs text-muted">Corrige el pago #{p.corrects_payment_id}</div>
-                      )}
-                      {p.corrected_by_payment_id != null && (
-                        <div className="text-xs text-muted">Reemplazado por el pago #{p.corrected_by_payment_id}</div>
-                      )}
-                      <div className="text-xs text-muted">
-                        {p.backfilled
-                          ? "Registro anterior al control de auditoría"
-                          : `Registrado${p.created_by_name ? ` por ${p.created_by_name}` : ""}${p.created_at ? ` el ${fmtDay(p.created_at)}` : ""}`}
-                      </div>
+                      {paymentNotes(p)}
                     </td>
                     {isAdmin && (
                       <td className="whitespace-nowrap px-4 py-3 text-right">
                         {!p.voided_at && (
                           <div className="flex justify-end gap-2">
-                            {showReceiptButton(isAdmin, receiptEnabled, p) && (
-                              <Button variant="outline" disabled={receiptBusy === p.id} onClick={() => printReceipt(p)}>
-                                Recibo
-                              </Button>
-                            )}
-                            {correctionEnabled && invoice.status !== "Cancelled" && (
-                              <Button variant="outline" onClick={() => openCorrection(p)}>Corregir pago</Button>
-                            )}
-                            <Button variant="outline" onClick={() => { setVoiding(p); setVoidReason(""); }}>
-                              Anular pago
-                            </Button>
+                            {paymentButtons(p)}
                           </div>
                         )}
                       </td>
@@ -447,7 +482,7 @@ export default function InvoiceDetailPage() {
                 ))}
               </tbody>
             </table>
-            </TableScroll>
+            </ResponsiveList>
           )}
         </div>
       </div>
