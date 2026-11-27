@@ -23,6 +23,7 @@ import DueDatePanel from "@/components/invoices/DueDatePanel";
 import { ResponsiveList, ListCard, TableScroll } from "@/components/ui/responsive-list";
 import { dt } from "@/components/ui/data-table";
 import { getConduceOptions } from "@/lib/conduceApi";
+import { openReceipt, showReceiptButton, useReceiptEnabled } from "@/lib/receipt";
 
 interface Payment {
   id: number;
@@ -36,6 +37,8 @@ interface Payment {
   created_at?: string | null;
   created_by_name?: string | null;
   backfilled?: boolean;
+  /** R3: true when the payment has stored receipt figures (recorded after R3 and not voided). */
+  has_receipt?: boolean;
   corrects_payment_id?: number | null;
   corrected_by_payment_id?: number | null;
   correction_chain_id?: number | null;
@@ -92,6 +95,18 @@ export default function InvoiceDetailPage() {
   // A2: void-and-correct. The action only shows when the backend switch is on.
   const [correctionEnabled, setCorrectionEnabled] = useState(false);
   const [recordAdminOnly, setRecordAdminOnly] = useState(false);
+  const receiptEnabled = useReceiptEnabled();
+  const [receiptBusy, setReceiptBusy] = useState<number | null>(null);
+  const printReceipt = async (p: Payment) => {
+    setReceiptBusy(p.id);
+    try {
+      await openReceipt(invoiceId, p.id);
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "No se pudo abrir el recibo.");
+    } finally {
+      setReceiptBusy(null);
+    }
+  };
   const [correcting, setCorrecting] = useState<Payment | null>(null);
   const [corr, setCorr] = useState({ amount: "", method: "", notes: "", payment_date: "", reason: "" });
   const [corrBusy, setCorrBusy] = useState(false);
@@ -413,6 +428,11 @@ export default function InvoiceDetailPage() {
                       <td className="whitespace-nowrap px-4 py-3 text-right">
                         {!p.voided_at && (
                           <div className="flex justify-end gap-2">
+                            {showReceiptButton(isAdmin, receiptEnabled, p) && (
+                              <Button variant="outline" disabled={receiptBusy === p.id} onClick={() => printReceipt(p)}>
+                                Recibo
+                              </Button>
+                            )}
                             {correctionEnabled && invoice.status !== "Cancelled" && (
                               <Button variant="outline" onClick={() => openCorrection(p)}>Corregir pago</Button>
                             )}

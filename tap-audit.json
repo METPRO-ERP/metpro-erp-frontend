@@ -1,0 +1,591 @@
+{
+ "/ajustes@360": {
+  "checked": 6,
+  "pass": 6,
+  "noZone": [],
+  "miss": [],
+  "neighbour": [],
+  "desktopLeak": []
+ },
+ "/clients@360": {
+  "checked": 7,
+  "pass": 7,
+  "noZone": [],
+  "miss": [],
+  "neighbour": [],
+  "desktopLeak": []
+ },
+ "/compras@360": {
+  "checked": 6,
+  "pass": 6,
+  "noZone": [],
+  "miss": [],
+  "neighbour": [],
+  "desktopLeak": []
+ },
+ "/compras/po/new@360": {
+  "checked": 6,
+  "pass": 6,
+  "noZone": [],
+  "miss": [],
+  "neighbour": [],
+  "desktopLeak": []
+ },
+ "/compras/rfq/new@360": {
+  "checked": 6,
+  "pass": 6,
+  "noZone": [],
+  "miss": [],
+  "neighbour": [],
+  "desktopLeak": []
+ },
+ "/configuracion/encabezado@360": {
+  "checked": 14,
+  "pass": 14,
+  "noZone": [],
+  "miss": [],
+  "neighbour": [],
+  "desktopLeak": []
+ },
+ "/configuracion/fiscal@360": {
+  "checked": 4,
+  "pass": 4,
+  "noZone": [],
+  "miss": [],
+  "neighbour": [],
+  "desktopLeak": []
+ },
+ "/configuracion/sello@360": {
+  "checked": 4,
+  "pass": 4,
+  "noZone": [],
+  "miss": [],
+  "neighbour": [],
+  "desktopLeak": []
+ },
+ "/configuracion/terminos@360": {
+  "checked": 4,
+  "pass": 4,
+  "noZone": [],
+  "miss": [],
+  "neighbour": [],
+  "desktopLeak": []
+ },
+ "/contacts/2@360": {
+  "checked": 6,
+  "pass": 6,
+  "noZone": [],
+  "miss": [],
+  "neighbour": [],
+  "desktopLeak": []
+ },
+ "/dashboard@360": {
+  "checked": 4,
+  "pass": 4,
+  "noZone": [],
+  "miss": [],
+  "neighbour": [],
+  "desktopLeak": []
+ },
+ "/expenses@360": {
+  "checked": 4,
+  "pass": 4,
+  "noZone": [],
+  "miss": [],
+  "neighbour": [],
+  "desktopLeak": []
+ },
+ "/invoices/2@360": {
+  "checked": 6,
+  "pass": 6,
+  "noZone": [],
+  "miss": [],
+  "neighbour": [],
+  "desktopLeak": []
+ },
+ "/invoices@360": {
+  "checked": 20,
+  "pass": 20,
+  "noZone": [],
+  "miss": [],
+  "neighbour": [],
+  "desktopLeak": []
+ },
+ "/login@360": {
+  "checked": 4,
+  "pass": 4,
+  "noZone": [],
+  "miss": [],
+  "neighbour": [],
+  "desktopLeak": []
+ },
+ "/products@360": {
+  "checked": 5,
+  "pass": 5,
+  "noZone": [],
+  "miss": [],
+  "neighbour": [],
+  "desktopLeak": []
+ },
+ "/proyectos@360": {
+  "checked": 8,
+  "pass": 8,
+  "noZone": [],
+  "miss": [],
+  "neighbour": [],
+  "desktopLeak": []
+ },
+ "/proyectos/1@360": {
+  "checked": 6,
+  "pass": 6,
+  "noZone": [],
+  "miss": [],
+  "neighbour": [],
+  "desktopLeak": []
+ },
+ "/quotes/estimate@360": {
+  "checked": 6,
+  "pass": 6,
+  "noZone": [],
+  "miss": [],
+  "neighbour": [],
+  "desktopLeak": []
+ },
+ "/quotes/new@360": {
+  "checked": 6,
+  "pass": 6,
+  "noZone": [],
+  "miss": [],
+  "neighbour": [],
+  "desktopLeak": []
+ },
+ "/quotes/new/take-off@360": {
+  "checked": 6,
+  "pass": 6,
+  "noZone": [],
+  "miss": [],
+  "neighbour": [],
+  "desktopLeak": []
+ },
+ "/quotes@360": {
+  "checked": 16,
+  "pass": 16,
+  "noZone": [],
+  "miss": [],
+  "neighbour": [],
+  "desktopLeak": []
+ },
+ "/reports@360": {
+  "checked": 6,
+  "pass": 6,
+  "noZone": [],
+  "miss": [],
+  "neighbour": [],
+  "desktopLeak": []
+ },
+ "/template-packs/new@360": {
+  "checked": 8,
+  "pass": 8,
+  "noZone": [],
+  "miss": [],
+  "neighbour": [],
+  "desktopLeak": []
+ },
+ "/template-packs@360": {
+  "checked": 6,
+  "pass": 6,
+  "noZone": [],
+  "miss": [],
+  "neighbour": [],
+  "desktopLeak": []
+ },
+ "/users/create@360": {
+  "checked": 8,
+  "pass": 8,
+  "noZone": [],
+  "miss": [],
+  "neighbour": [],
+  "desktopLeak": []
+ },
+ "/users@360": {
+  "checked": 37,
+  "pass": 37,
+  "noZone": [],
+  "miss": [],
+  "neighbour": [],
+  "desktopLeak": []
+ },
+ "state invoices:vencidas@360": {
+  "checked": 8,
+  "pass": 8,
+  "noZone": [],
+  "miss": [],
+  "neighbour": [],
+  "desktopLeak": []
+ },
+ "state invoice:recibo@360": {
+  "checked": 10,
+  "pass": 10,
+  "noZone": [],
+  "miss": [],
+  "neighbour": [],
+  "desktopLeak": []
+ },
+ "dialog quotes:convert@360": {
+  "opened": false
+ },
+ "dialog quotes:phases@360": {
+  "checked": 2,
+  "pass": 2,
+  "noZone": [],
+  "miss": [],
+  "neighbour": [],
+  "desktopLeak": []
+ },
+ "dialog quotes:pdf-preview@360": {
+  "checked": 6,
+  "pass": 6,
+  "noZone": [],
+  "miss": [],
+  "neighbour": [],
+  "desktopLeak": []
+ },
+ "dialog quotes:conduce@360": {
+  "checked": 2,
+  "pass": 2,
+  "noZone": [],
+  "miss": [],
+  "neighbour": [],
+  "desktopLeak": []
+ },
+ "dialog quotes:delete@360": {
+  "opened": false
+ },
+ "dialog invoice:payment@360": {
+  "err": "locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: /"
+ },
+ "dialog invoice:send@360": {
+  "err": "locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: /"
+ },
+ "dialog contacts:new@360": {
+  "checked": 4,
+  "pass": 4,
+  "noZone": [],
+  "miss": [],
+  "neighbour": [],
+  "desktopLeak": []
+ },
+ "dialog clients:csv@360": {
+  "checked": 6,
+  "pass": 6,
+  "noZone": [],
+  "miss": [],
+  "neighbour": [],
+  "desktopLeak": []
+ },
+ "/ajustes@1280": {
+  "checked": 0,
+  "pass": 0,
+  "noZone": [],
+  "miss": [],
+  "neighbour": [],
+  "desktopLeak": []
+ },
+ "/clients@1280": {
+  "checked": 0,
+  "pass": 0,
+  "noZone": [],
+  "miss": [],
+  "neighbour": [],
+  "desktopLeak": []
+ },
+ "/compras@1280": {
+  "checked": 0,
+  "pass": 0,
+  "noZone": [],
+  "miss": [],
+  "neighbour": [],
+  "desktopLeak": []
+ },
+ "/compras/po/new@1280": {
+  "checked": 0,
+  "pass": 0,
+  "noZone": [],
+  "miss": [],
+  "neighbour": [],
+  "desktopLeak": []
+ },
+ "/compras/rfq/new@1280": {
+  "checked": 0,
+  "pass": 0,
+  "noZone": [],
+  "miss": [],
+  "neighbour": [],
+  "desktopLeak": []
+ },
+ "/configuracion/encabezado@1280": {
+  "checked": 0,
+  "pass": 0,
+  "noZone": [],
+  "miss": [],
+  "neighbour": [],
+  "desktopLeak": []
+ },
+ "/configuracion/fiscal@1280": {
+  "checked": 0,
+  "pass": 0,
+  "noZone": [],
+  "miss": [],
+  "neighbour": [],
+  "desktopLeak": []
+ },
+ "/configuracion/sello@1280": {
+  "checked": 0,
+  "pass": 0,
+  "noZone": [],
+  "miss": [],
+  "neighbour": [],
+  "desktopLeak": []
+ },
+ "/configuracion/terminos@1280": {
+  "checked": 0,
+  "pass": 0,
+  "noZone": [],
+  "miss": [],
+  "neighbour": [],
+  "desktopLeak": []
+ },
+ "/contacts/2@1280": {
+  "checked": 0,
+  "pass": 0,
+  "noZone": [],
+  "miss": [],
+  "neighbour": [],
+  "desktopLeak": []
+ },
+ "/dashboard@1280": {
+  "checked": 0,
+  "pass": 0,
+  "noZone": [],
+  "miss": [],
+  "neighbour": [],
+  "desktopLeak": []
+ },
+ "/expenses@1280": {
+  "checked": 0,
+  "pass": 0,
+  "noZone": [],
+  "miss": [],
+  "neighbour": [],
+  "desktopLeak": []
+ },
+ "/invoices/2@1280": {
+  "checked": 0,
+  "pass": 0,
+  "noZone": [],
+  "miss": [],
+  "neighbour": [],
+  "desktopLeak": []
+ },
+ "/invoices@1280": {
+  "checked": 0,
+  "pass": 0,
+  "noZone": [],
+  "miss": [],
+  "neighbour": [],
+  "desktopLeak": []
+ },
+ "/login@1280": {
+  "checked": 0,
+  "pass": 0,
+  "noZone": [],
+  "miss": [],
+  "neighbour": [],
+  "desktopLeak": []
+ },
+ "/products@1280": {
+  "checked": 0,
+  "pass": 0,
+  "noZone": [],
+  "miss": [],
+  "neighbour": [],
+  "desktopLeak": []
+ },
+ "/proyectos@1280": {
+  "checked": 0,
+  "pass": 0,
+  "noZone": [],
+  "miss": [],
+  "neighbour": [],
+  "desktopLeak": []
+ },
+ "/proyectos/1@1280": {
+  "checked": 0,
+  "pass": 0,
+  "noZone": [],
+  "miss": [],
+  "neighbour": [],
+  "desktopLeak": []
+ },
+ "/quotes/estimate@1280": {
+  "checked": 0,
+  "pass": 0,
+  "noZone": [],
+  "miss": [],
+  "neighbour": [],
+  "desktopLeak": []
+ },
+ "/quotes/new@1280": {
+  "checked": 0,
+  "pass": 0,
+  "noZone": [],
+  "miss": [],
+  "neighbour": [],
+  "desktopLeak": []
+ },
+ "/quotes/new/take-off@1280": {
+  "checked": 0,
+  "pass": 0,
+  "noZone": [],
+  "miss": [],
+  "neighbour": [],
+  "desktopLeak": []
+ },
+ "/quotes@1280": {
+  "checked": 0,
+  "pass": 0,
+  "noZone": [],
+  "miss": [],
+  "neighbour": [],
+  "desktopLeak": []
+ },
+ "/reports@1280": {
+  "checked": 0,
+  "pass": 0,
+  "noZone": [],
+  "miss": [],
+  "neighbour": [],
+  "desktopLeak": []
+ },
+ "/template-packs/new@1280": {
+  "checked": 0,
+  "pass": 0,
+  "noZone": [],
+  "miss": [],
+  "neighbour": [],
+  "desktopLeak": []
+ },
+ "/template-packs@1280": {
+  "checked": 0,
+  "pass": 0,
+  "noZone": [],
+  "miss": [],
+  "neighbour": [],
+  "desktopLeak": []
+ },
+ "/users/create@1280": {
+  "checked": 0,
+  "pass": 0,
+  "noZone": [],
+  "miss": [],
+  "neighbour": [],
+  "desktopLeak": []
+ },
+ "/users@1280": {
+  "checked": 0,
+  "pass": 0,
+  "noZone": [],
+  "miss": [],
+  "neighbour": [],
+  "desktopLeak": []
+ },
+ "state invoices:vencidas@1280": {
+  "checked": 0,
+  "pass": 0,
+  "noZone": [],
+  "miss": [],
+  "neighbour": [],
+  "desktopLeak": []
+ },
+ "state invoice:recibo@1280": {
+  "checked": 0,
+  "pass": 0,
+  "noZone": [],
+  "miss": [],
+  "neighbour": [],
+  "desktopLeak": []
+ },
+ "dialog quotes:convert@1280": {
+  "opened": false
+ },
+ "dialog quotes:phases@1280": {
+  "checked": 0,
+  "pass": 0,
+  "noZone": [],
+  "miss": [],
+  "neighbour": [],
+  "desktopLeak": []
+ },
+ "dialog quotes:pdf-preview@1280": {
+  "checked": 0,
+  "pass": 0,
+  "noZone": [],
+  "miss": [],
+  "neighbour": [],
+  "desktopLeak": []
+ },
+ "dialog quotes:conduce@1280": {
+  "checked": 0,
+  "pass": 0,
+  "noZone": [],
+  "miss": [],
+  "neighbour": [],
+  "desktopLeak": []
+ },
+ "dialog quotes:delete@1280": {
+  "opened": false
+ },
+ "dialog invoice:payment@1280": {
+  "err": "locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: /"
+ },
+ "dialog invoice:send@1280": {
+  "err": "locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: /"
+ },
+ "dialog contacts:new@1280": {
+  "checked": 0,
+  "pass": 0,
+  "noZone": [],
+  "miss": [],
+  "neighbour": [],
+  "desktopLeak": []
+ },
+ "dialog clients:csv@1280": {
+  "checked": 0,
+  "pass": 0,
+  "noZone": [],
+  "miss": [],
+  "neighbour": [],
+  "desktopLeak": []
+ },
+ "_summary": {
+  "touch360": {
+   "probes": 257,
+   "pass": 257,
+   "miss": 0,
+   "neighbour": 0,
+   "controlsWithoutZone": 0
+  },
+  "desktop1280LeakingZones": 0,
+  "failures": 0,
+  "dialogsNotOpened": [
+   "dialog quotes:convert@360",
+   "dialog quotes:delete@360",
+   "dialog invoice:payment@360",
+   "dialog invoice:send@360",
+   "dialog quotes:convert@1280",
+   "dialog quotes:delete@1280",
+   "dialog invoice:payment@1280",
+   "dialog invoice:send@1280"
+  ]
+ }
+}

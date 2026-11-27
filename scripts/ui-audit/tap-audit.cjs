@@ -74,6 +74,8 @@ const probe = (arg) => {
     const states = [
       ["invoices:vencidas", async () => { await p.goto(BASE + "/invoices", { waitUntil: "networkidle", timeout: 90000 }); await p.click('button:has-text("Vencidas")'); await p.waitForSelector('[data-testid="ageing-strip"]', { timeout: 30000 }); await p.waitForTimeout(500); }],
     ];
+    // R3: the Recibo button in the payment history (needs RECEIPT_INVOICE = an invoice id with a receipt-ready payment and RECEIPT_ENABLED on).
+    if (process.env.RECEIPT_INVOICE) states.push(["invoice:recibo", async () => { await p.goto(BASE + "/invoices/" + process.env.RECEIPT_INVOICE, { waitUntil: "networkidle", timeout: 90000 }); await p.waitForSelector('button:has-text("Recibo")', { timeout: 30000 }); await p.waitForTimeout(500); }]);
     for (const [name, open] of states) {
       try {
         await open();
