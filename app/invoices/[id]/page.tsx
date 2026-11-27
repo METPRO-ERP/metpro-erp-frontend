@@ -19,6 +19,7 @@ import FullCopyButton from "@/components/FullCopyButton";
 import InvoiceDocPreviewModal from "@/components/invoices/InvoiceDocPreviewModal";
 import { type InvoiceDocKind } from "@/lib/invoiceDocs";
 import ConducePanel from "@/components/invoices/ConducePanel";
+import DueDatePanel from "@/components/invoices/DueDatePanel";
 import { getConduceOptions } from "@/lib/conduceApi";
 
 interface Payment {
@@ -50,6 +51,8 @@ interface Invoice {
   created_by_name?: string | null;
   ncf?: string | null;
   ncf_valid_until?: string | null;
+  /** B2: present only with PAYMENT_DUE_ENABLED on. */
+  due_date?: string | null;
   payments: Payment[];
   items?: InvoiceLine[];
   payments_error?: string | null;
@@ -238,6 +241,8 @@ export default function InvoiceDetailPage() {
               <p className="font-medium">{ncf.validUntil}</p>
             </div>
           )}
+
+          <DueDatePanel invoiceId={invoiceId} dueDate={invoice.due_date} isAdmin={isAdmin} onChanged={loadInvoice} />
         </div>
 
         <div className="mb-6">

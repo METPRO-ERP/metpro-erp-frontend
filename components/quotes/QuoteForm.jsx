@@ -8,6 +8,7 @@ import TaxTypeSelect from './TaxTypeSelect'
 import TaxTypeInfo from './TaxTypeInfo'
 import { useAutoTax } from './useAutoTax'
 import { Button } from "@/components/ui/button";
+import PaymentTermsFields from "./PaymentTermsFields";
 
 /** @type {Array<{code: string, label: string, rate: number, is_default: boolean}>} */
 const NO_TAX_TYPES = []
@@ -34,6 +35,9 @@ export default function QuoteForm({
   setPaymentTerms,
   validUntil,
   setValidUntil,
+  paymentDueEnabled = false,
+  paymentDays = '',
+  setPaymentDays,
   onSubmit,
   loading,
   onOpenProductModal,
@@ -134,6 +138,11 @@ export default function QuoteForm({
           placeholder='Ej: 50% anticipo, 50% contra entrega'
         />
       </div>
+
+      {/* PAYMENT TERM (days). Only with PAYMENT_DUE_ENABLED on. */}
+      {paymentDueEnabled && setPaymentDays && (
+        <PaymentTermsFields value={paymentDays} onChange={setPaymentDays} />
+      )}
 
       {/* VALID UNTIL */}
       <div className='mb-4'>

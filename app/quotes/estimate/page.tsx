@@ -11,6 +11,8 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useCurrentRole } from "@/lib/currentRole";
 import { formatMoney } from "@/lib/takeOffLines";
 import { termsForGenerate, validUntilIsPast } from "@/lib/quoteTerms";
+import { usePaymentDueEnabled, parseDays, creditDaysForCreate } from "@/lib/paymentDue";
+import PaymentTermsFields from "@/components/quotes/PaymentTermsFields";
 import { businessToday } from "@/lib/dates";
 import { takeOffInputClass, TotalRow } from "@/components/quotes/takeoff/LineCard";
 import { ParityPanel } from "@/components/quotes/estimate/ParityPanel";
@@ -75,6 +77,8 @@ export default function EstimatePage() {
   const [notes, setNotes] = useState("");
   const [paymentTerms, setPaymentTerms] = useState("");
   const [validUntil, setValidUntil] = useState("");
+  const paymentDueEnabled = usePaymentDueEnabled();
+  const [paymentDays, setPaymentDays] = useState("");
 
   const [form, setForm] = useState<EstimateForm>(DEFAULT_FORM);
   const [drafts, setDrafts] = useState<OverrideDrafts>({});
@@ -168,6 +172,7 @@ export default function EstimatePage() {
         project_name: project.trim() || null,
         notes: notes.trim() || null,
         ...termsForGenerate({ paymentTerms, validUntil }),
+        ...creditDaysForCreate(paymentDueEnabled, parseDays(paymentDays)),
       });
       router.push(`/quotes/${r.quote_id}/edit`);
     } catch (e) {
@@ -232,6 +237,9 @@ export default function EstimatePage() {
             <span className="mb-1 block font-medium text-ink">{es.est.terminosPago}</span>
             <input className={takeOffInputClass} value={paymentTerms} onChange={(e) => setPaymentTerms(e.target.value)} placeholder={es.cot.terminosPago} />
           </label>
+          {paymentDueEnabled ? (
+            <PaymentTermsFields value={paymentDays} onChange={setPaymentDays} inputClass={takeOffInputClass} />
+          ) : null}
           <label className="block text-sm">
             <span className="mb-1 block font-medium text-ink">{es.est.validaHasta}</span>
             <input type="date" className={takeOffInputClass} value={validUntil} min={businessToday()} onChange={(e) => setValidUntil(e.target.value)} />

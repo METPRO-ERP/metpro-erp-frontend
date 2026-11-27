@@ -19,6 +19,7 @@ import { PageHeader } from "@/components/ui/page-header";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import QuoteForm from "@/components/quotes/QuoteForm";
+import { usePaymentDueEnabled, parseDays, creditDaysForCreate } from "@/lib/paymentDue";
 import { useTaxTypes } from "@/components/quotes/useTaxTypes";
 import QuoteCostEstimate from "@/components/quotes/QuoteCostEstimate";
 import ProductSelectionModal from "@/components/quotes/ProductSelectionModal";
@@ -79,6 +80,8 @@ function TakeOffScreen() {
   const [notes, setNotes] = useState("");
   const [paymentTerms, setPaymentTerms] = useState("");
   const [validUntil, setValidUntil] = useState("");
+  const paymentDueEnabled = usePaymentDueEnabled();
+  const [paymentDays, setPaymentDays] = useState("");
   // Tax type: "" = the default. The selector shows only when 2+ types are active.
   const { taxTypes } = useTaxTypes();
   const [taxTypeCode, setTaxTypeCode] = useState("");
@@ -217,6 +220,7 @@ function TakeOffScreen() {
         notes: notes.trim() || null,
         payment_terms: paymentTerms.trim() || null,
         valid_until: validUntil || null,
+        ...creditDaysForCreate(paymentDueEnabled, parseDays(paymentDays)),
         ...(taxTypeCode ? { tax_type_code: taxTypeCode } : {}),
         items: quoteItems.map((item) => ({
           ...item,
@@ -300,6 +304,9 @@ function TakeOffScreen() {
         setPaymentTerms={setPaymentTerms}
         validUntil={validUntil}
         setValidUntil={setValidUntil}
+        paymentDueEnabled={paymentDueEnabled}
+        paymentDays={paymentDays}
+        setPaymentDays={setPaymentDays}
         onSubmit={handleSave}
         loading={saving}
         onOpenProductModal={(index?: number) => {

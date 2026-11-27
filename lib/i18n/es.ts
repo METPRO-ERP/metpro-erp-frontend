@@ -705,6 +705,24 @@ export const es = {
     productoGenerico: (id: string | number) => `Producto ${id}`,
     errorSolicitud: (s: number) => `La solicitud falló con el estado ${s}`,
   },
+  // Release B2: plazo de pago estructurado y vencimiento de factura.
+  vencimiento: {
+    plazo: "Plazo de pago",
+    sinPlazo: "Sin plazo definido",
+    personalizado: "Personalizado",
+    dias: "Días de crédito",
+    diasAyuda: "Días desde la fecha de la factura. Vacío: la factura no lleva vencimiento.",
+    etiqueta: "Vencimiento de pago",
+    editar: "Editar vencimiento",
+    nuevaFecha: "Nueva fecha de vencimiento",
+    nota: "Motivo del cambio (obligatorio)",
+    notaRequerida: "El motivo es obligatorio.",
+    guardar: "Guardar",
+    cancelar: "Cancelar",
+    historial: "Historial de vencimiento",
+    sinHistorial: "Sin cambios registrados.",
+    errorGuardar: "No se pudo guardar el vencimiento.",
+  },
   // Estimado de ingeniería (admin). Medidas en metros: supuesto, no confirmado (D29).
   est: {
     terminosPago: "Términos de pago",

@@ -9,6 +9,8 @@ import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { api } from "@/lib/api";
 import { businessToday } from "@/lib/dates";
 import { normDay, termsForUpdate, validUntilIsPast } from "@/lib/quoteTerms";
+import { usePaymentDueEnabled, parseDays, creditDaysForUpdate } from "@/lib/paymentDue";
+import PaymentTermsFields from "@/components/quotes/PaymentTermsFields";
 import {
   finalizeQuote,
   getQuote,
@@ -111,6 +113,8 @@ function DraftEditor() {
   const [notes, setNotes] = useState("");
   const [paymentTerms, setPaymentTerms] = useState("");
   const [validUntil, setValidUntil] = useState("");
+  const paymentDueEnabled = usePaymentDueEnabled();
+  const [paymentDays, setPaymentDays] = useState("");
   const [printItems, setPrintItems] = useState(true);
   // Tax type of this quote (A1). Changeable while Draft; the backend stores the snapshot on save.
   const { taxTypes } = useTaxTypes();
@@ -184,6 +188,7 @@ function DraftEditor() {
     setNotes(q.notes ?? "");
     setPaymentTerms(q.payment_terms ?? "");
     setValidUntil(normDay(q.valid_until));
+    setPaymentDays(q.credit_days === null || q.credit_days === undefined ? "" : String(q.credit_days));
     setPrintItems(q.print_items !== false);
     setTaxTypeCode(q.tax_type_code ?? "");
     setSavedSnapshot(
@@ -256,12 +261,13 @@ function DraftEditor() {
       notes,
       payment_terms: paymentTerms,
       valid_until: normDay(validUntil),
+      credit_days: paymentDays,
       print_items: printItems,
       tax_type_code: taxTypeCode,
       lines,
       charges: charges ?? DEFAULT_INCLUDED_CHARGES,
     }),
-    [projectName, notes, paymentTerms, validUntil, printItems, taxTypeCode, lines, charges]
+    [projectName, notes, paymentTerms, validUntil, paymentDays, printItems, taxTypeCode, lines, charges]
   );
   const dirty = savedSnapshot !== "" && snapshotOf(payload) !== savedSnapshot;
   const includedCount = lines.filter((l) => l.include).length;
@@ -308,6 +314,7 @@ function DraftEditor() {
         project_name: projectName.trim() || null,
         notes: notes.trim() || null,
         ...termsForUpdate(quote?.valid_until, { paymentTerms, validUntil }),
+        ...creditDaysForUpdate(paymentDueEnabled, quote?.credit_days, parseDays(paymentDays)),
         items: toQuoteItems(lines),
         included_charges: charges,
         print_items: printItems,
@@ -513,6 +520,9 @@ function DraftEditor() {
                 className={takeOffInputClass}
               />
             </label>
+            {paymentDueEnabled ? (
+              <PaymentTermsFields value={paymentDays} onChange={setPaymentDays} inputClass={takeOffInputClass} disabled={!canWrite} />
+            ) : null}
             <label className="block text-sm">
               <span className="mb-1 block font-medium text-ink">{es.cot.validaHasta}</span>
               <input

@@ -165,6 +165,8 @@ export interface DraftQuoteInput {
   notes?: string | null;
   payment_terms?: string | null;
   valid_until?: string | null; // YYYY-MM-DD
+  /** B2: only sent with PAYMENT_DUE_ENABLED on. */
+  credit_days?: number;
   items: QuoteLineInput[];
   included_charges: IncludedCharges;
   /** false = PDFs show no item table. Totals unchanged. Omit = on. */
@@ -209,6 +211,8 @@ export interface QuoteOut {
   grand_total?: number | null;
   payment_terms: string | null;
   valid_until: string | null;
+  /** B2: present only with PAYMENT_DUE_ENABLED on. null = no structured term. */
+  credit_days?: number | null;
   finalized_at?: string | null;
   created_at: string | null;
   updated_at: string | null;
@@ -274,6 +278,8 @@ export interface DraftUpdateInput {
   payment_terms?: string | null;
   /** B1: sent only when changed (null = cleared). */
   valid_until?: string | null; // YYYY-MM-DD
+  /** B2: sent only when changed (null = cleared) and the switch is on. */
+  credit_days?: number | null;
   items: QuoteLineInput[];
   included_charges: IncludedCharges;
   print_items?: boolean;

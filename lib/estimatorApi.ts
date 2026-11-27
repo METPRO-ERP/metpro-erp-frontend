@@ -46,6 +46,8 @@ export interface GeneratePayload extends EstimateInputsPayload {
   /** B1: optional. Left out when empty. */
   payment_terms?: string;
   valid_until?: string; // YYYY-MM-DD
+  /** B2: only sent with PAYMENT_DUE_ENABLED on. */
+  credit_days?: number;
 }
 
 export interface EstimateLine {
