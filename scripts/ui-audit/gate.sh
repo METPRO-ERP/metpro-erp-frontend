@@ -19,11 +19,14 @@ API_PORT="${GATE_API_PORT:-8100}"; WEB_PORT="${GATE_WEB_PORT:-3800}"
 DB=metpro_gate
 DBURL="postgresql://postgres:postgres@localhost:5432/$DB"
 case "$PGURL_ADMIN" in *localhost*|*127.0.0.1*) ;; *) echo "gate: refused, PGURL_ADMIN must be local"; exit 2;; esac
+for PT in "$API_PORT" "$WEB_PORT"; do
+  if (exec 3<>"/dev/tcp/127.0.0.1/$PT") 2>/dev/null; then echo "GATE FAIL: port $PT is already in use (a stale server would be audited instead of this build). Stop it first."; exit 2; fi
+done
 WORK="$(mktemp -d)"; T0=$(date +%s)
 APIPID=""; WEBPID=""
 cleanup() {
-  [ -n "$APIPID" ] && kill "$APIPID" 2>/dev/null; [ -n "$WEBPID" ] && kill "$WEBPID" 2>/dev/null
-  pkill -f "next start -p $WEB_PORT" 2>/dev/null
+  [ -n "$APIPID" ] && kill "$APIPID" 2>/dev/null
+  [ -n "$WEBPID" ] && { kill -- -"$WEBPID" 2>/dev/null || kill "$WEBPID" 2>/dev/null; }   # whole process group: npx spawns next-server
   ( cd "$FE" && git checkout -- next-env.d.ts 2>/dev/null )   # next build dirties it
   echo "gate: work files in $WORK"
 }
@@ -54,7 +57,7 @@ step "3/6 seed"
 step "4/6 production build (API url points at the local gate API)"
 NEXT_PUBLIC_API_URL="http://localhost:$API_PORT" npx next build >"$WORK/build.log" 2>&1 || { tail -30 "$WORK/build.log"; fail "next build"; }
 echo "build ok"
-NEXT_PUBLIC_API_URL="http://localhost:$API_PORT" npx next start -p "$WEB_PORT" >"$WORK/web.log" 2>&1 & WEBPID=$!
+NEXT_PUBLIC_API_URL="http://localhost:$API_PORT" setsid npx next start -p "$WEB_PORT" >"$WORK/web.log" 2>&1 & WEBPID=$!
 for i in $(seq 1 40); do curl -s -o /dev/null "http://localhost:$WEB_PORT/login" && break; sleep 1; done
 curl -s -o /dev/null "http://localhost:$WEB_PORT/login" || fail "web did not start"
 
