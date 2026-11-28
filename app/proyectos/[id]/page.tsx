@@ -182,7 +182,7 @@ export default function ProyectoDetallePage() {
             <dd className="font-medium">
               {proyecto.quote_id ? (
                 <span className="inline-flex flex-wrap items-center gap-3">
-                  <Link href={`/quotes/${proyecto.quote_id}/view`} className="text-accent underline">
+                  <Link href={`/quotes/${proyecto.quote_id}/view`} className="hit-44 relative inline-block text-accent underline">
                     {proyecto.quote_label ?? proyecto.quote_id}
                   </Link>
                   <FullCopyButton kind="quote" id={proyecto.quote_id} />
@@ -198,7 +198,7 @@ export default function ProyectoDetallePage() {
             <dd className="font-medium">
               {proyecto.invoice_id ? (
                 <span className="inline-flex flex-wrap items-center gap-3">
-                  <Link href={`/invoices/${proyecto.invoice_id}`} className="text-accent underline">
+                  <Link href={`/invoices/${proyecto.invoice_id}`} className="hit-44 relative inline-block text-accent underline">
                     {proyecto.invoice_number ?? proyecto.invoice_id}
                   </Link>
                   <FullCopyButton kind="invoice" id={proyecto.invoice_id} />

@@ -338,7 +338,7 @@ export default function ConducePanel({ invoiceId, isAdmin }: Props) {
             </p>
           )}
           <p className="text-xs text-muted">{c.resumen(selectedCount(view.lines, selected))}</p>
-          <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap [&>button]:w-full sm:[&>button]:w-auto">
+          <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap [&>button]:w-full sm:[&>button]:w-auto">
             <Button onClick={submit} disabled={saving}>{saving ? c.creando : c.crear}</Button>
             <Button variant="outline" onClick={selectAll} disabled={saving}>
               {c.entregarPendiente}
