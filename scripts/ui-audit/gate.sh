@@ -66,7 +66,7 @@ J() { node -e "console.log(require('$WORK/seed.json').$1)"; }
 export NODE_PATH="$(npm root -g)"
 BASE="http://localhost:$WEB_PORT" TOKEN="$(J token)" QID="$(J qid)" PTOKEN="$(J ptoken)" PROJ="$(J proj)" \
   RECEIPT_INVOICE="$(J receipt_invoice)" CONDUCE_INVOICE="$(J conduce_invoice)" \
-  node ${GATE_STABLE_SCROLL:+--require "$FE/scripts/ui-audit/gate-preload.cjs"} scripts/ui-audit/tap-audit.cjs "$WORK/audit.json" | tail -c 3000
+  node scripts/ui-audit/tap-audit.cjs "$WORK/audit.json" | tail -c 3000
 AUDIT_RC=${PIPESTATUS[0]}
 echo "audit own exit code: $AUDIT_RC (the audit's own rule, unchanged)"
 

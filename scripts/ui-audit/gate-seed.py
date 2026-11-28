@@ -141,15 +141,12 @@ final = quote(1, "Cotizacion enviada", [item("Placa base", 8, 2100.0)], "Final")
 open_a = quote(2, "Aprobada sin facturar A", [item("Anclaje", 24, 180.0), item("Placa", 6, 900.0)], "Approved")
 open_b = quote(0, "Aprobada sin facturar B", [item("Viga W10x12", 5, 4100.0)], "Approved")
 ptoken = sql("SELECT public_token FROM quotes WHERE quote_id=%s", (final,))["public_token"]
-# The audit probes /proyectos/<PROJ>. This project has NO linked documents on purpose: it is the state every earlier
-# gate audited. With linked documents the page shows inline links (Q-/F- numbers) of 20px height without a hit zone.
-# That is a known finding recorded in the register (open item), not a seed choice made to hide it.
-proj = sql("INSERT INTO projects (client_id, name, start_date) VALUES (%s,'Proyecto sin documentos', %s) RETURNING id", (cids[0], TODAY))["id"]
+# The audit probes /proyectos/<PROJ>. This project has LINKED DOCUMENTS (quote Q-10001 and its invoice F-10001), so the
+# page shows the inline document links; that state is audited from now on.
+proj = sql("SELECT id FROM projects WHERE quote_id=%s", (q1,))["id"]
 
-# QID feeds /quotes/<QID>/edit and /view. A FINALIZED quote is used on purpose: the audit scrolls with html{scroll-behavior:smooth}
-# and reads rects mid-animation, so on a DRAFT edit page the first 'Quitar' (starts under the sticky action bar) is reported
-# as a neighbour overlap that is a measurement artifact. Recorded in the register as an open audit finding.
-out = {"token": TOKEN, "qid": final, "ptoken": ptoken, "proj": proj, "receipt_invoice": i1, "conduce_invoice": i3,
+# QID feeds /quotes/<QID>/edit and /view: a DRAFT, so the editable page (items with Quitar, sticky action bar) is audited.
+out = {"token": TOKEN, "qid": draft, "ptoken": ptoken, "proj": proj, "receipt_invoice": i1, "conduce_invoice": i3,
        "invoices": [i1, i2, i3] + aged, "quotes": {"draft": draft, "final": final, "open_a": open_a, "open_b": open_b}}
 with open(os.environ["GATE_SEED_OUT"], "w") as fh:
     json.dump(out, fh)

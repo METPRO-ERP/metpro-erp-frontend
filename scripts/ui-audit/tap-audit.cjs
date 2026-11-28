@@ -61,6 +61,10 @@ const probe = (arg) => {
   for (const [vn, w, h, touch] of [["360", 360, 780, true], ["1280", 1280, 800, false]]) {
     const ctx = await b.newContext({ viewport: { width: w, height: h }, hasTouch: touch });
     await ctx.addInitScript((t) => localStorage.setItem("token", t), TOKEN);
+    // The app sets html { scroll-behavior: smooth }. scrollIntoView then returns before the scroll ends, and the probe below
+    // would read rects mid-animation: controls still below the fold had probe points outside the viewport and were skipped
+    // (not counted, not flagged). The audit measures settled positions: smooth scrolling is switched off in the audit only.
+    await ctx.addInitScript(() => { const add = () => { const st = document.createElement("style"); st.textContent = "html{scroll-behavior:auto !important}"; (document.head || document.documentElement).appendChild(st); }; if (document.head) add(); else document.addEventListener("DOMContentLoaded", add); });
     const p = await ctx.newPage();
     for (const path of routes) {
       try {

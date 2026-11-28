@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-require-imports -- CommonJS script */
 // Summary check for the UI gate. Reads the audit JSON; encodes the GATE RULE. Does not alter the audit.
 // usage: node gate-check.cjs <audit.json> [audit-exit-code]
 const fs = require("fs");
